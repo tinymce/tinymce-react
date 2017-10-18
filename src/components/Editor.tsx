@@ -4,36 +4,34 @@ import * as React from "react";
 
 declare const tinymce: any;
 
-export interface EditorProps { id: string; inline: boolean; tinymce: any; onChange: any; }
-export interface EditorState { editor: any }
+export interface IEditorProps { id: string; inline: boolean; tinymce: any; onChange: any; }
+export interface IEditorState { editor: any; }
 
-export class Editor extends React.Component <EditorProps, EditorState> {
+export class Editor extends React.Component <IEditorProps, IEditorState> {
   constructor() {
     super();
     this.state = {
-      editor: null
-    }
+      editor: null,
+    };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     tinymce.init({
       selector: `#${this.props.id}`,
       inline: this.props.inline,
       setup: (editor: any) => {
-        this.setState({editor})
-        editor.on('change', (e: any) => {
-          this.props.onChange(editor.getContent())
-        })
-      }
-    })
+        this.setState({editor});
+        editor.on("change", (e: any) => {
+          this.props.onChange(editor.getContent());
+        });
+      },
+    });
   }
 
-  render() {
-    console.log(this.props);
-    
+  public render() {
     return (this.props.inline ?
       <div id={this.props.id}></div> :
       <textarea id={this.props.id}></textarea>
-    )
+    );
   }
 }

@@ -1,10 +1,10 @@
 import * as React from "react";
 
-export interface HelloProps { compiler: string; framework: string; }
+export interface IHelloProps { compiler: string; framework: string; }
 
-export class InlineEditor extends React.Component <HelloProps, {}> {
+export class InlineEditor extends React.Component <IHelloProps, {}> {
 
-  render () {
+  public render() {
     return <h1>This is inline component!</h1>;
   }
 }
