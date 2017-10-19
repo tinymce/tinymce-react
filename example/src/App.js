@@ -5,8 +5,14 @@ import './App.css';
 import {Editor} from '@tinymce/tinymce-react';
 
 class App extends Component {
-  handleOnChange(content) {
-    console.log(content)
+  constructor() {
+    super();
+    this.state = {
+      content: 'Hello <b>bold</b> world'
+    }
+  }
+  handleOnChange = (content) => {
+    this.setState({content: content})
   }
   render() {
     return (
@@ -15,8 +21,12 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Testing tinymce-react</h1>
         </header>
-        <Editor id="test" inline onChange={this.handleOnChange.bind(this)} />
-        <Editor id="test2" onChange={this.handleOnChange.bind(this)} />
+        <div className="App-content">
+          <h3>Iframe Editor</h3>
+          <Editor id="test2" value={this.state.content} onChange={this.handleOnChange} />
+          <h3>Inline Editor</h3>
+          <Editor id="test" inline value={this.state.content} onChange={this.handleOnChange} />
+        </div>
       </div>
     );
   }

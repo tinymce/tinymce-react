@@ -14,8 +14,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/react": "^16.0.10",
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.13",
     "@types/react-dom": "^16.0.1",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "tinymce": "^4.7.1"
