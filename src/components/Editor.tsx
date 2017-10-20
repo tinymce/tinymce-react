@@ -5,13 +5,11 @@ import { bindHandlers } from '../Utils';
 
 declare const tinymce: any;
 
-export interface IProps extends IEvents {
+export interface IProps extends Partial<IEvents> {
   id: string;
-  inline: boolean;
-  tinymce: any;
-  onChange: any;
-  value: string;
-  init: object;
+  inline?: boolean;
+  value?: string;
+  init?: object;
 }
 export interface IState {
   editor: any;
@@ -31,39 +29,46 @@ export class Editor extends React.Component <IProps, IState> {
   }
 
   public componentDidMount() {
-    setTimeout(() => {
-      tinymce.init({
-        selector: `#${this.props.id}`,
-        inline: this.props.inline,
+    const setupCallback = this.props.init;
+    const finalInit = {...this.props.init,
+      selector: `#${this.props.id}`,
+      inline: this.props.inline,
         setup: (editor: any) => {
           this.setState({editor});
+          editor.on('init', () => editor.setContent(this.props.value));
           bindHandlers(this.props, editor);
+          if (typeof setupCallback === 'function') {
+            setupCallback(editor);
+          }
         },
-      });
-      this.element.style.display = '';
-    }, 1000);
+    };
+    this.element.style.display = '';
+    tinymce.init(finalInit);
   }
 
   public componentWillUnmount() {
-    tinymce.remove(this.state.editor);
-    this.setState({isActive: false});
+    this.removeEditor();
   }
 
   public render() {
-    const value = this.props.value;
     return (this.props.inline ?
       <div
-        ref={(elm) => { this.element = elm; }}
-        id={this.props.id}
-        dangerouslySetInnerHTML={{__html: value }}
+      ref={(elm) => { this.element = elm; }}
+      id={this.props.id}
+      // dangerouslySetInnerHTML={this.state.isActive ? null : {__html: value } }
       /> :
       <textarea
-        ref={(elm) => { this.element = elm; }}
-        style={{display: 'none'}}
-        id={this.props.id}
-        defaultValue={value}
+      ref={(elm) => { this.element = elm; }}
+      style={{display: 'none'}}
+      id={this.props.id}
+      // defaultValue={this.state.isActive ? null : value}
       />
     );
+  }
+
+  private removeEditor() {
+    tinymce.remove(this.state.editor);
+    this.setState({ isActive: false });
   }
 }
 
@@ -71,67 +76,67 @@ Editor.propTypes = {
   id: PropTypes.string,
   inline: PropTypes.bool,
   value: PropTypes.string,
+  onActivate: PropTypes.func,
+  onAddUndo: PropTypes.func,
+  onBeforeAddUndo: PropTypes.func,
+  onBeforeExecCommand: PropTypes.func,
+  onBeforeGetContent: PropTypes.func,
+  onBeforeRenderUI: PropTypes.func,
+  onBeforeSetContent: PropTypes.func,
+  onBeforepaste: PropTypes.func,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onClearUndos: PropTypes.func,
+  onClick: PropTypes.func,
+  onContextmenu: PropTypes.func,
+  onCopy: PropTypes.func,
+  onCut: PropTypes.func,
+  onDblclick: PropTypes.func,
+  onDeactivate: PropTypes.func,
+  onDirty  : PropTypes.func,
+  onDrag: PropTypes.func,
+  onDragdrop: PropTypes.func,
+  onDragend: PropTypes.func,
+  onDraggesture: PropTypes.func,
+  onDragover: PropTypes.func,
+  onDrop: PropTypes.func,
+  onExecCommand: PropTypes.func,
+  onFocus: PropTypes.func,
   onFocusin: PropTypes.func,
   onFocusout: PropTypes.func,
-  onClick: PropTypes.func,
-  onDblclick: PropTypes.func,
-  onMousedown: PropTypes.func,
-  onMouseup: PropTypes.func,
-  onMousemove: PropTypes.func,
-  onMouseover: PropTypes.func,
-  onBeforepaste: PropTypes.func,
-  onPaste: PropTypes.func,
-  onCut: PropTypes.func,
-  onCopy: PropTypes.func,
-  onSelectionchange: PropTypes.func,
-  onMouseout: PropTypes.func,
-  onMouseenter: PropTypes.func,
-  onMouseleave: PropTypes.func,
+  onGetContent: PropTypes.func,
+  onHide: PropTypes.func,
+  onInit: PropTypes.func,
   onKeydown: PropTypes.func,
   onKeypress: PropTypes.func,
   onKeyup: PropTypes.func,
-  onContextmenu: PropTypes.func,
-  onDragend: PropTypes.func,
-  onDragover: PropTypes.func,
-  onDraggesture: PropTypes.func,
-  onDragdrop: PropTypes.func,
-  onDrop: PropTypes.func,
-  onDrag: PropTypes.func,
-  onBeforeRenderUI: PropTypes.func,
-  onSetAttrib: PropTypes.func,
-  onPreInit: PropTypes.func,
-  onPostRender: PropTypes.func,
-  onInit: PropTypes.func,
-  onDeactivate: PropTypes.func,
-  onActivate: PropTypes.func,
-  onNodeChange: PropTypes.func,
-  onBeforeExecCommand: PropTypes.func,
-  onExecCommand: PropTypes.func,
-  onShow: PropTypes.func,
-  onHide: PropTypes.func,
-  onProgressState: PropTypes.func,
   onLoadContent: PropTypes.func,
-  onSaveContent: PropTypes.func,
-  onBeforeSetContent: PropTypes.func,
-  onSetContent: PropTypes.func,
-  onBeforeGetContent: PropTypes.func,
-  onGetContent: PropTypes.func,
-  onVisualAid: PropTypes.func,
-  onRemove: PropTypes.func,
-  onSubmit: PropTypes.func,
-  onReset: PropTypes.func,
-  onBeforeAddUndo: PropTypes.func,
-  onAddUndo: PropTypes.func,
-  onChange: PropTypes.func,
-  onUndo: PropTypes.func,
-  onRedo: PropTypes.func,
-  onClearUndos: PropTypes.func,
-  onObjectSelected: PropTypes.func,
+  onMousedown: PropTypes.func,
+  onMouseenter: PropTypes.func,
+  onMouseleave: PropTypes.func,
+  onMousemove: PropTypes.func,
+  onMouseout: PropTypes.func,
+  onMouseover: PropTypes.func,
+  onMouseup: PropTypes.func,
+  onNodeChange: PropTypes.func,
   onObjectResizeStart: PropTypes.func,
   onObjectResized: PropTypes.func,
-  onPreProcess: PropTypes.func,
+  onObjectSelected: PropTypes.func,
+  onPaste: PropTypes.func,
   onPostProcess: PropTypes.func,
-  onFocus: PropTypes.func,
-  onBlur: PropTypes.func,
-  onDirty  : PropTypes.func,
+  onPostRender: PropTypes.func,
+  onPreInit: PropTypes.func,
+  onPreProcess: PropTypes.func,
+  onProgressState: PropTypes.func,
+  onRedo: PropTypes.func,
+  onRemove: PropTypes.func,
+  onReset: PropTypes.func,
+  onSaveContent: PropTypes.func,
+  onSelectionchange: PropTypes.func,
+  onSetAttrib: PropTypes.func,
+  onSetContent: PropTypes.func,
+  onShow: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onUndo: PropTypes.func,
+  onVisualAid: PropTypes.func,
 };
