@@ -11,16 +11,15 @@
     "watch": "tsc -w -p ./tsconfig.es2015.json"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Ephox Inc",
+  "license": "Apache 2",
   "dependencies": {
     "@types/prop-types": "^15.5.2",
     "@types/react": "^16.0.18",
     "@types/react-dom": "^16.0.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "tinymce": "^4.7.1"
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
     "rimraf": "^2.6.2",
