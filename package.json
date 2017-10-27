@@ -15,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.13",
-    "@types/react-dom": "^16.0.1",
+    "@types/react": "^16.0.18",
+    "@types/react-dom": "^16.0.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "rimraf": "^2.6.2",
-    "tslint": "^5.7.0",
+    "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   }
 }
