@@ -1,7 +1,7 @@
 export type EventHandler<A> = (a: A, editor?: any) => any;
 
 export interface INativeEvents {
-  onBeforepaste: EventHandler<ClipboardEvent>;
+  onBeforePaste: EventHandler<ClipboardEvent>;
   onBlur: EventHandler<FocusEvent>;
   onClick: EventHandler<MouseEvent>;
   onContextMenu: EventHandler<MouseEvent>;
@@ -15,8 +15,8 @@ export interface INativeEvents {
   onDragOver: EventHandler<DragEvent>;
   onDrop: EventHandler<DragEvent>;
   onFocus: EventHandler<FocusEvent>;
-  onFocusin: EventHandler<FocusEvent>;
-  onFocusout: EventHandler<FocusEvent>;
+  onFocusIn: EventHandler<FocusEvent>;
+  onFocusOut: EventHandler<FocusEvent>;
   onKeyDown: EventHandler<KeyboardEvent>;
   onKeyPress: EventHandler<KeyboardEvent>;
   onKeyUp: EventHandler<KeyboardEvent>;
