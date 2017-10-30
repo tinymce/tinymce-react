@@ -12,7 +12,7 @@ class App extends Component {
     super();
     this.state = {
       content: content,
-      editing: false
+      editing: true
     }
   }
   handleOnChange = (e, editor) => {
@@ -33,7 +33,6 @@ class App extends Component {
         {
           this.state.editing
           ? <Editor
-              id="myEditor"
               inline
               init={{plugins: 'table', height: 500 }} 
               value={this.state.content}

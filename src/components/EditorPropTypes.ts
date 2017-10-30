@@ -3,13 +3,13 @@ import { IEvents } from '../Events';
 import { IProps } from './Editor';
 
 export type CopyProps<T> = {
-  [P in keyof T]: PropTypes.Requireable<any> | PropTypes.Validator<any>
+  [P in keyof T]: PropTypes.Requireable<any>
 };
 
 export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
 
 export const EditorPropTypes: IEditorPropTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   inline: PropTypes.bool,
   value: PropTypes.string,
   onActivate: PropTypes.func,
