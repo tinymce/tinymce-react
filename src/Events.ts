@@ -1,4 +1,4 @@
-export type EventHandler<A> = (a: A) => any;
+export type EventHandler<A> = (a: A, editor?: any) => any;
 
 export interface INativeEvents {
   onBeforepaste: EventHandler<ClipboardEvent>;
@@ -47,7 +47,6 @@ export interface ITinyEvents {
   onGetContent: EventHandler<any>;
   onHide: EventHandler<any>;
   onInit: EventHandler<any>;
-  onInvalid: EventHandler<any>;
   onLoadContent: EventHandler<any>;
   onNodeChange: EventHandler<any>;
   onPostProcess: EventHandler<any>;

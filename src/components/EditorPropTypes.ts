@@ -1,7 +1,15 @@
 import * as PropTypes from 'prop-types';
+import { IEvents } from '../Events';
+import { IProps } from './Editor';
 
-export const EditorPropTypes = {
-  id: PropTypes.string,
+export type CopyProps<T> = {
+  [P in keyof T]: PropTypes.Requireable<any> | PropTypes.Validator<any>
+};
+
+export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
+
+export const EditorPropTypes: IEditorPropTypes = {
+  id: PropTypes.string.isRequired,
   inline: PropTypes.bool,
   value: PropTypes.string,
   onActivate: PropTypes.func,
@@ -16,17 +24,17 @@ export const EditorPropTypes = {
   onChange: PropTypes.func,
   onClearUndos: PropTypes.func,
   onClick: PropTypes.func,
-  onContextmenu: PropTypes.func,
+  onContextMenu: PropTypes.func,
   onCopy: PropTypes.func,
   onCut: PropTypes.func,
   onDblclick: PropTypes.func,
   onDeactivate: PropTypes.func,
-  onDirty  : PropTypes.func,
+  onDirty: PropTypes.func,
   onDrag: PropTypes.func,
-  onDragdrop: PropTypes.func,
-  onDragend: PropTypes.func,
-  onDraggesture: PropTypes.func,
-  onDragover: PropTypes.func,
+  onDragDrop: PropTypes.func,
+  onDragEnd: PropTypes.func,
+  onDragGesture: PropTypes.func,
+  onDragOver: PropTypes.func,
   onDrop: PropTypes.func,
   onExecCommand: PropTypes.func,
   onFocus: PropTypes.func,
@@ -35,17 +43,17 @@ export const EditorPropTypes = {
   onGetContent: PropTypes.func,
   onHide: PropTypes.func,
   onInit: PropTypes.func,
-  onKeydown: PropTypes.func,
-  onKeypress: PropTypes.func,
-  onKeyup: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onKeyPress: PropTypes.func,
+  onKeyUp: PropTypes.func,
   onLoadContent: PropTypes.func,
-  onMousedown: PropTypes.func,
-  onMouseenter: PropTypes.func,
-  onMouseleave: PropTypes.func,
-  onMousemove: PropTypes.func,
-  onMouseout: PropTypes.func,
-  onMouseover: PropTypes.func,
-  onMouseup: PropTypes.func,
+  onMouseDown: PropTypes.func,
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOut: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  onMouseUp: PropTypes.func,
   onNodeChange: PropTypes.func,
   onObjectResizeStart: PropTypes.func,
   onObjectResized: PropTypes.func,
@@ -60,7 +68,7 @@ export const EditorPropTypes = {
   onRemove: PropTypes.func,
   onReset: PropTypes.func,
   onSaveContent: PropTypes.func,
-  onSelectionchange: PropTypes.func,
+  onSelectionChange: PropTypes.func,
   onSetAttrib: PropTypes.func,
   onSetContent: PropTypes.func,
   onShow: PropTypes.func,

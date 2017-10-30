@@ -3,20 +3,23 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { tinymce } from '../TinyMCE';
 import { bindHandlers } from '../Utils';
-import { EditorPropTypes } from './EditorPropTypes';
+import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
-export interface IProps extends Partial<IEvents> {
+export interface IProps {
   id: string;
   inline?: boolean;
   value?: string;
   init?: object;
 }
+
+export interface IAllProps extends IProps, Partial<IEvents> {}
+
 export interface IState {
   editor: any;
 }
 
-export class Editor extends React.Component <IProps, IState> {
-  public static propTypes: ValidationMap<any>;
+export class Editor extends React.Component<IAllProps, IState> {
+  public static propTypes: IEditorPropTypes = EditorPropTypes;
   private element: HTMLTextAreaElement | HTMLDivElement = null;
 
   constructor() {
@@ -28,17 +31,18 @@ export class Editor extends React.Component <IProps, IState> {
 
   public componentDidMount() {
     const setupCallback = this.props.init;
-    const finalInit = {...this.props.init,
+    const finalInit = {
+      ...this.props.init,
       selector: `#${this.props.id}`,
       inline: this.props.inline,
-        setup: (editor: any) => {
-          this.setState({editor});
-          editor.on('init', () => editor.setContent(this.props.value));
-          bindHandlers(this.props, editor);
-          if (typeof setupCallback === 'function') {
-            setupCallback(editor);
-          }
+      setup: (editor: any) => {
+        this.setState({ editor });
+        editor.on('init', () => editor.setContent(this.props.value));
+        bindHandlers(this.props, editor);
+        if (typeof setupCallback === 'function') {
+          setupCallback(editor);
         }
+      }
     };
     this.element.style.visibility = '';
     tinymce.init(finalInit);
@@ -49,15 +53,20 @@ export class Editor extends React.Component <IProps, IState> {
   }
 
   public render() {
-    return (this.props.inline ?
+    return this.props.inline ? (
       <div
-      ref={(elm) => { this.element = elm; }}
-      id={this.props.id}
-      /> :
+        ref={(elm) => {
+          this.element = elm;
+        }}
+        id={this.props.id}
+      />
+    ) : (
       <textarea
-      ref={(elm) => { this.element = elm; }}
-      style={{visibility: 'hidden'}}
-      id={this.props.id}
+        ref={(elm) => {
+          this.element = elm;
+        }}
+        style={{ visibility: 'hidden' }}
+        id={this.props.id}
       />
     );
   }
@@ -66,5 +75,3 @@ export class Editor extends React.Component <IProps, IState> {
     tinymce.remove(this.state.editor);
   }
 }
-
-Editor.propTypes = EditorPropTypes;
