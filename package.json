@@ -1,0 +1,29 @@
+{
+  "name": "@tinymce/tinymce-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/cjs/index.js",
+  "module": "lib/es2015/index.js",
+  "scripts": {
+    "lint": "tslint src/**/*.tsx",
+    "clean": "rimraf lib",
+    "build": "npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
+    "watch": "tsc -w -p ./tsconfig.es2015.json"
+  },
+  "keywords": [],
+  "author": "Ephox Inc",
+  "license": "Apache 2",
+  "dependencies": {
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.18",
+    "@types/react-dom": "^16.0.2",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
+  }
+}
