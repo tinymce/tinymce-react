@@ -2,6 +2,9 @@
   "name": "@tinymce/tinymce-react",
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "url": "https://github.com/tinymce/tinymce-react"
+  },
   "main": "lib/cjs/index.js",
   "module": "lib/es2015/index.js",
   "scripts": {
@@ -12,10 +15,10 @@
   },
   "keywords": [],
   "author": "Ephox Inc",
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "dependencies": {
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.18",
+    "@types/react": "^16.0.19",
     "@types/react-dom": "^16.0.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
