@@ -5,6 +5,12 @@
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
   },
+  "files": [
+    "lib",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE.txt"
+  ],
   "main": "lib/cjs/index.js",
   "module": "lib/es2015/index.js",
   "scripts": {
