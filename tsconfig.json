@@ -10,12 +10,19 @@
     "outDir": "./lib",
     "preserveConstEnums": true,
     "strictNullChecks": true,
-    "target": "es5"
+    "target": "es5",
+    "types": [
+      "node",
+      "prop-types",
+      "react", 
+      "react-dom"
+    ]
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
+    "**/*.test.tsx",
     "node_modules"
   ]
 }
