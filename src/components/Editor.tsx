@@ -10,33 +10,24 @@ import { ValidationMap } from 'prop-types';
 import * as React from 'react';
 import { IEvents } from '../Events';
 import { tinymce } from '../TinyMCE';
-import { bindHandlers, uuid } from '../Utils';
+import { bindHandlers, isTextarea, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
 export interface IProps {
-  id?: string;
-  inline?: boolean;
-  value?: string;
-  init?: object;
+  id: string;
+  inline: boolean;
+  initialValue: string;
+  init: object;
+  tagName: string;
 }
 
-export interface IAllProps extends IProps, Partial<IEvents> {}
+export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
 
-export interface IState {
-  editor: any;
-}
-
-export class Editor extends React.Component<IAllProps, IState> {
+export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
-  private element: HTMLTextAreaElement | HTMLDivElement = null;
+  private element: Element | null = null;
   private id: string;
-
-  constructor() {
-    super();
-    this.state = {
-      editor: null
-    };
-  }
+  private editor: any;
 
   public componentWillMount() {
     this.id = this.id || this.props.id || uuid('tiny-react');
@@ -49,15 +40,19 @@ export class Editor extends React.Component<IAllProps, IState> {
       selector: `#${this.id}`,
       inline: this.props.inline,
       setup: (editor: any) => {
-        this.setState({ editor });
-        editor.on('init', () => editor.setContent(this.props.value));
+        this.editor = editor;
+        editor.on('init', () => editor.setContent(this.props.initialValue));
         bindHandlers(this.props, editor);
         if (typeof setupCallback === 'function') {
           setupCallback(editor);
         }
       }
     };
-    this.element.style.visibility = '';
+
+    if (isTextarea(this.element)) {
+      this.element.style.visibility = '';
+    }
+
     tinymce.init(finalInit);
   }
 
@@ -66,25 +61,33 @@ export class Editor extends React.Component<IAllProps, IState> {
   }
 
   public render() {
-    return this.props.inline ? (
-      <div
-        ref={(elm) => {
-          this.element = elm;
-        }}
-        id={this.id}
-      />
-    ) : (
-      <textarea
-        ref={(elm) => {
-          this.element = elm;
-        }}
-        style={{ visibility: 'hidden' }}
-        id={this.id}
-      />
-    );
+    return this.props.inline ? this.renderInline() : this.renderIframe();
   }
 
+  private renderInline() {
+    const { tagName = 'div' } = this.props;
+
+    return React.createElement(tagName,
+      {
+        ref: (elm) => this.element = elm,
+        id: this.id
+      }
+    );
+}
+
+private renderIframe() {
+  return (
+    <textarea
+      ref={(elm) => {
+        this.element = elm;
+      }}
+      style={{ visibility: 'hidden' }}
+      id={this.id}
+    />
+  );
+}
+
   private removeEditor() {
-    tinymce.remove(this.state.editor);
+    tinymce.remove(this.editor);
   }
 }

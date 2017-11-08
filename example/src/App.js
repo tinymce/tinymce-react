@@ -12,6 +12,7 @@ class App extends Component {
     super();
     this.state = {
       content: content,
+      inline: false,
       editing: true
     }
   }
@@ -20,7 +21,8 @@ class App extends Component {
     this.setState({content: editor.getContent()})
   }
 
-  toggleEditing = () =>this.setState({ editing: !this.state.editing })
+  toggleEditing = () => this.setState({ editing: !this.state.editing })
+  toggleInline = () => this.setState({ inline: !this.state.inline })
 
   render() {
     return (
@@ -33,9 +35,9 @@ class App extends Component {
         {
           this.state.editing
           ? <Editor
-              inline
+              inline={this.state.inline}
               init={{plugins: 'table', height: 500 }} 
-              value={this.state.content}
+              initialValue={this.state.content}
               onChange={this.handleOnChange}
             />
           : <div 
@@ -44,6 +46,7 @@ class App extends Component {
         }
 
         <button onClick={this.toggleEditing}>{this.state.editing ? 'Stop editing' : 'Edit'}</button>
+        {this.state.editing ? '' : <button onClick={this.toggleInline}>{this.state.inline ? 'Inline' : 'Iframe'}</button>}
         </div>
       </div>
     );

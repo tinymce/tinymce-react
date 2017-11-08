@@ -9,6 +9,7 @@
     "declaration": true,
     "outDir": "./lib",
     "preserveConstEnums": true,
+    "strictNullChecks": true,
     "target": "es5"
   },
   "include": [

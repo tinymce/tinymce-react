@@ -19,7 +19,9 @@ export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> 
 export const EditorPropTypes: IEditorPropTypes = {
   id: PropTypes.string,
   inline: PropTypes.bool,
-  value: PropTypes.string,
+  init: PropTypes.object,
+  initialValue: PropTypes.string,
+  tagName: PropTypes.string,
   onActivate: PropTypes.func,
   onAddUndo: PropTypes.func,
   onBeforeAddUndo: PropTypes.func,
