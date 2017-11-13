@@ -25,8 +25,16 @@
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [ "ts", "tsx", "js", "jsx", "json" ],
-    "setupFiles": [ "<rootDir>/test/fakeGlobal.ts" ]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/fakeGlobal.ts"
+    ]
   },
   "keywords": [],
   "author": "Ephox Inc",
@@ -37,8 +45,7 @@
     "@types/react-dom": "^16.0.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "tinymce": "^4.7.2"
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
     "@types/jest": "^21.1.5",

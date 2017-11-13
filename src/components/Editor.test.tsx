@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
-import { getGlobal } from '../TinyMCE';
 
 import { Editor } from './Editor';
 
@@ -37,8 +36,8 @@ describe('tagName prop changes element', () => {
   });
 });
 
-describe('id prop is set automatically if not set', () => {
-  it('gets set normally if set', () => {
+describe('id is set automatically if id prop not provided', () => {
+  it('is set normally if prop is provided', () => {
     const editor: any = TestUtils.renderIntoDocument(
       <Editor id='test' />
     );
