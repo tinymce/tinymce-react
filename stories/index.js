@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, linkTo } from '@storybook/react';
 import { withInfo, setDefaults } from '@storybook/addon-info';
-import { Editor } from '../lib/es2015/index';
+import { Editor } from '../src';
 import { content } from './fakeContent';
 
 setDefaults({

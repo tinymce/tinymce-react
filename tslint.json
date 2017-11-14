@@ -3,7 +3,9 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
+    "jsRules": {
+      "semicolon": true
+    },
     "rules": {
       "object-literal-sort-keys": false,
       "indent": [true, "spaces", 2],
