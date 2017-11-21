@@ -1,7 +1,7 @@
 {
   "name": "@tinymce/tinymce-react",
-  "version": "2.0.0",
-  "description": "",
+  "version": "2.0.1",
+  "description": "Official TinyMCE React Component",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
   },
