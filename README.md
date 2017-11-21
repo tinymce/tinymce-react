@@ -1,4 +1,4 @@
-# TinyMCE React component
+# Official TinyMCE React component
 
 ## Installation
 ```sh
