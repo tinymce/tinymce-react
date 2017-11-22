@@ -34,18 +34,15 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidMount() {
-    const setupCallback = this.props.init;
+    const initialValue = typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
       selector: `#${this.id}`,
       inline: this.props.inline,
       setup: (editor: any) => {
         this.editor = editor;
-        editor.on('init', () => editor.setContent(this.props.initialValue));
+        editor.on('init', () => editor.setContent(initialValue));
         bindHandlers(this.props, editor);
-        if (typeof setupCallback === 'function') {
-          setupCallback(editor);
-        }
       }
     };
 
