@@ -18,7 +18,8 @@
     "clean": "rimraf lib",
     "test": "jest",
     "build": "npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
-    "watch": "tsc -w -p ./tsconfig.es2015.json"
+    "watch": "tsc -w -p ./tsconfig.es2015.json",
+    "prepare": "npm run build"
   },
   "jest": {
     "transform": {
