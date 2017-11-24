@@ -1,5 +1,9 @@
 # Official TinyMCE React component
 
+## About
+
+This package is a thin wrapper around `tinymce` to make it easier to use in an 
+
 ## Installation
 ```sh
 $ npm install @tinymce/tinymce-react

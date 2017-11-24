@@ -15,7 +15,11 @@ storiesOf('Editor', module)
   .add('Iframe editor', withInfo({
     text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
   })(() => (
-    <Editor initialValue={content} onChange={(event, editor) => console.log(editor.getContent())}/>
+    <Editor
+      initialValue={content}
+      init={{branding: false}}
+      onChange={(event, editor) => console.log(editor.getContent())}
+    />
   )))
   .add('Inline editor', withInfo({
     text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
