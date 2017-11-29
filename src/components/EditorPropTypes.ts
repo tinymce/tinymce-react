@@ -17,11 +17,13 @@ export type CopyProps<T> = {
 export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
 
 export const EditorPropTypes: IEditorPropTypes = {
+  apiKey: PropTypes.string,
   id: PropTypes.string,
   inline: PropTypes.bool,
   init: PropTypes.object,
   initialValue: PropTypes.string,
   tagName: PropTypes.string,
+  cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
   onActivate: PropTypes.func,
   onAddUndo: PropTypes.func,
   onBeforeAddUndo: PropTypes.func,
