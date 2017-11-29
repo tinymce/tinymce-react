@@ -17,14 +17,21 @@ storiesOf('Editor', module)
   })(() => (
     <Editor
       initialValue={content}
-      init={{branding: false}}
-      onChange={(event, editor) => console.log(editor.getContent())}
+      onChange={
+        (event, editor) => console.log(editor.getContent())
+      }
     />
   )))
   .add('Inline editor', withInfo({
     text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
   })(() => (
-    <Editor inline initialValue={content} onChange={(event, editor) => console.log(editor.getContent())}/>
+    <Editor
+      inline
+      initialValue={content}
+      onChange={
+        (event, editor) => console.log(editor.getContent())
+      }
+    />
   )))
   .add('Inlite editor', withInfo({
     text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
