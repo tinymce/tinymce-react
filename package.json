@@ -20,6 +20,7 @@
     "build": "npm run test && npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "start-storybook -p 6006",
+    "storybook:build": "build-storybook",
     "prepare": "npm run build"
   },
   "jest": {
