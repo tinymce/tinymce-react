@@ -43,14 +43,15 @@
   "license": "Apache-2.0",
   "dependencies": {
     "prop-types": "^15.6.0",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.16",
     "@storybook/addon-console": "^1.0.0",
     "@storybook/addon-info": "^3.2.16",
     "@storybook/react": "^3.2.16",
+    "@storybook/storybook-deployer": "^2.0.0",
     "@types/jest": "^21.1.8",
     "@types/node": "^8.0.53",
     "@types/prop-types": "^15.5.2",
