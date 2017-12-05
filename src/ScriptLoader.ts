@@ -1,16 +1,21 @@
+/**
+ * Copyright (c) 2017-present, Ephox, Inc.
+ *
+ * This source code is licensed under the Apache 2 license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import { uuid } from './Utils';
 
-type callbackFn = () => void;
+export type callbackFn = () => void;
+export interface IStateObj {
+  listeners: callbackFn[];
+  scriptId: string;
+  scriptLoaded: boolean;
+}
 
-const listeners: callbackFn[] = [];
-const scriptId = uuid('tiny-script');
-let scriptLoaded = false;
-
-const callListeners = () => {
-  listeners.forEach((fn) => fn());
-};
-
-const injectScriptTag = (doc: Document, url: string, callback: callbackFn) => {
+const injectScriptTag = (scriptId: string, doc: Document, url: string, callback: callbackFn) => {
   const scriptTag = doc.createElement('script');
   scriptTag.type = 'application/javascript';
   scriptTag.id = scriptId;
@@ -19,15 +24,23 @@ const injectScriptTag = (doc: Document, url: string, callback: callbackFn) => {
   doc.head.appendChild(scriptTag);
 };
 
-export const loadScript = (doc: Document, url: string, callback: callbackFn) => {
-  if (scriptLoaded) {
+export const create = (): IStateObj => {
+  return {
+    listeners: [],
+    scriptId: uuid('tiny-script'),
+    scriptLoaded: false
+  };
+};
+
+export const load = (state: IStateObj, doc: Document, url: string, callback: callbackFn) => {
+  if (state.scriptLoaded) {
     callback();
   } else {
-    listeners.push(callback);
-    if (!doc.getElementById(scriptId)) {
-      injectScriptTag(doc, url, () => {
-        callListeners();
-        scriptLoaded = true;
+    state.listeners.push(callback);
+    if (!doc.getElementById(state.scriptId)) {
+      injectScriptTag(state.scriptId, doc, url, () => {
+        state.listeners.forEach((fn) => fn());
+        state.scriptLoaded = true;
       });
     }
   }

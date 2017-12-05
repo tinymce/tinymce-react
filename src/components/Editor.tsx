@@ -9,7 +9,7 @@
 import { ValidationMap } from 'prop-types';
 import * as React from 'react';
 import { IEvents } from '../Events';
-import { loadScript } from '../ScriptLoader';
+import * as ScriptLoader from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isTextarea, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
@@ -25,6 +25,7 @@ export interface IProps {
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
+const scriptState = ScriptLoader.create();
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -44,7 +45,9 @@ export class Editor extends React.Component<IAllProps> {
       const channel = this.props.cloudChannel ? this.props.cloudChannel : 'stable';
       const apiKey = this.props.apiKey ? this.props.apiKey : '';
 
-      loadScript(doc, `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`, this.initialise);
+      ScriptLoader.load(
+        scriptState, doc, `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`, this.initialise
+      );
     }
   }
 
