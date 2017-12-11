@@ -9,19 +9,23 @@
 import { ValidationMap } from 'prop-types';
 import * as React from 'react';
 import { IEvents } from '../Events';
-import { tinymce } from '../TinyMCE';
+import * as ScriptLoader from '../ScriptLoader';
+import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isTextarea, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
 export interface IProps {
+  apiKey: string;
   id: string;
   inline: boolean;
   initialValue: string;
   init: object;
   tagName: string;
+  cloudChannel: string;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
+const scriptState = ScriptLoader.create();
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -34,6 +38,28 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidMount() {
+    if (getTinymce() !== null) {
+      this.initialise();
+    } else if (this.element) {
+      const doc = this.element.ownerDocument;
+      const channel = this.props.cloudChannel ? this.props.cloudChannel : 'stable';
+      const apiKey = this.props.apiKey ? this.props.apiKey : '';
+
+      ScriptLoader.load(
+        scriptState, doc, `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`, this.initialise
+      );
+    }
+  }
+
+  public componentWillUnmount() {
+    this.cleanUp();
+  }
+
+  public render() {
+    return this.props.inline ? this.renderInline() : this.renderIframe();
+  }
+
+  private initialise = () => {
     const initialValue = typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
@@ -50,15 +76,7 @@ export class Editor extends React.Component<IAllProps> {
       this.element.style.visibility = '';
     }
 
-    tinymce.init(finalInit);
-  }
-
-  public componentWillUnmount() {
-    this.removeEditor();
-  }
-
-  public render() {
-    return this.props.inline ? this.renderInline() : this.renderIframe();
+    getTinymce().init(finalInit);
   }
 
   private renderInline() {
@@ -84,7 +102,7 @@ private renderIframe() {
   );
 }
 
-  private removeEditor() {
-    tinymce.remove(this.editor);
+  private cleanUp() {
+    getTinymce().remove(this.editor);
   }
 }

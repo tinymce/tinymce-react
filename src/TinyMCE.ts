@@ -14,6 +14,4 @@ const getTinymce = () => {
    return global && global.tinymce ? global.tinymce : null;
 };
 
-const tinymce = getTinymce();
-
-export { tinymce };
+export { getTinymce };
