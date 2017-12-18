@@ -1,3 +1,6 @@
+## 2.1.0 (2017-12-18)
+* Added auto-loading of TinyMCE from TinyMCE Cloud
+
 ## 2.0.3 (2017-11-22)
 * Added check for `initialValue` prop to prevent javascript error that was shown when `tinymce.setContent` was called with undefined.
 
