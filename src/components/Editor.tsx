@@ -19,7 +19,7 @@ export interface IProps {
   id: string;
   inline: boolean;
   initialValue: string;
-  init: object;
+  init: any;
   tagName: string;
   cloudChannel: string;
 }
@@ -69,6 +69,10 @@ export class Editor extends React.Component<IAllProps> {
         this.editor = editor;
         editor.on('init', () => editor.setContent(initialValue));
         bindHandlers(this.props, editor);
+
+        if (this.props.init && typeof this.props.init.setup === 'function') {
+          this.props.init.setup(editor);
+        }
       }
     };
 
