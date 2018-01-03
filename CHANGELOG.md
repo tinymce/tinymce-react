@@ -1,3 +1,6 @@
+## 2.1.1 (2018-01-03)
+* Fix so init setup callback gets called like it should.
+
 ## 2.1.0 (2017-12-18)
 * Added auto-loading of TinyMCE from TinyMCE Cloud
 
