@@ -63,7 +63,7 @@ export class Editor extends React.Component<IAllProps> {
     const initialValue = typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
-      selector: `#${this.id}`,
+      target: this.element,
       inline: this.props.inline,
       setup: (editor: any) => {
         this.editor = editor;
