@@ -1,3 +1,6 @@
+## 2.1.2 (2018-01-08)
+* Use `target` on element instead of `selector` in init config.
+
 ## 2.1.1 (2018-01-03)
 * Fix so init setup callback gets called like it should.
 
