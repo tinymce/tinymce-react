@@ -20,6 +20,7 @@ storiesOf('Editor', module)
       onChange={
         (event, editor) => console.log(editor.getContent())
       }
+      plugins='link table'
     />
   )))
   .add('Inline editor', withInfo({

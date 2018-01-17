@@ -36,3 +36,14 @@ export const uuid = (prefix: string): string => {
 export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => {
   return element !== null && element.tagName.toLowerCase() === 'textarea';
 };
+
+const normalizePluginArray = (plugins?: string | string[]): string[] => {
+  if (typeof plugins === 'undefined' || plugins === '') {
+    return [];
+  }
+
+  return Array.isArray(plugins) ? plugins : plugins.split(' ');
+};
+
+export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) =>
+  normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));

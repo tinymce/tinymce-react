@@ -24,6 +24,8 @@ export const EditorPropTypes: IEditorPropTypes = {
   initialValue: PropTypes.string,
   tagName: PropTypes.string,
   cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
+  plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   onActivate: PropTypes.func,
   onAddUndo: PropTypes.func,
   onBeforeAddUndo: PropTypes.func,

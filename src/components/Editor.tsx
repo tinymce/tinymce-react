@@ -11,7 +11,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import * as ScriptLoader from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { bindHandlers, isTextarea, uuid } from '../Utils';
+import { bindHandlers, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
 export interface IProps {
@@ -22,6 +22,8 @@ export interface IProps {
   init: any;
   tagName: string;
   cloudChannel: string;
+  plugins: string | string[];
+  toolbar: string | string[];
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
@@ -65,6 +67,8 @@ export class Editor extends React.Component<IAllProps> {
       ...this.props.init,
       target: this.element,
       inline: this.props.inline,
+      plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
+      toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
       setup: (editor: any) => {
         this.editor = editor;
         editor.on('init', () => editor.setContent(initialValue));

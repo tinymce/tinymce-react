@@ -10,6 +10,123 @@ For some quick demos, check out the [storybook](https://tinymce.github.io/tinymc
 ```sh
 $ npm install @tinymce/tinymce-react
 ```
+
+## Usage
+
+### Importing the component
+
+First you have to import the component, and how you do this depends on how the app you are developing is set up. 
+
+```js
+// es modules
+import { Editor } from '@tinymce/tinymce-react';
+// commonjs require
+var { Editor } = require('@tinymce/tinymce-react');
+```
+
+### Using the component in your app
+
+Use the editor in your app like this:
+
+```js
+<Editor
+  apiKey="API_KEY"
+  init={{ plugins: 'link table' }}
+/>
+```
+
+### Configuring the editor
+
+The editor accepts the following props:
+* `id`: An id for the editor so you can later grab the instance by using the `tinymce.get('ID')` method on tinymce, defaults to an automatically generated uuid. 
+* `init`: Object sent to the `tinymce.init` method used to initialize the editor.
+* `initialValue`: Initial value that the editor will be initialized with.
+* `inline`: Shorthand for setting that the editor should be inline, `<Editor inline />` is the same as setting `{inline: true}` in the init.
+* `tagName`: Only used if the editor is inline, decides what element to initialize the editor on, defaults to `div`.
+* `plugins`: Shorthand for setting what plugins you want to use, `<Editor plugins="foo bar" />` is the same as setting `{plugins: 'foo bar'}` in the init.
+* `toolbar`: Shorthand for setting what toolbar items you want to show, `<Editor toolbar="foo bar" />` is the same as setting `{toolbar: 'foo bar'}` in the init.
+* `apiKey`: Api key for TinyMCE cloud, more info below.
+* `cloudChannel`: Cloud channel for TinyMCE Cloud, more info below.
+
+### Event binding
+
+You can bind editor events via a shorthand prop on the editor, for example:
+
+```js
+<Editor onSelectionChange="this.handlerFunction" />
+```
+
+Where the handler function will be called with the event and a reference to the editor.
+
+Here is a full list of the events available:
+<details>
+<summary>All available events</summary>
+
+* `onActivate`
+* `onAddUndo`
+* `onBeforeAddUndo`
+* `onBeforeExecCommand`
+* `onBeforeGetContent`
+* `onBeforeRenderUI`
+* `onBeforeSetContent`
+* `onBeforePaste`
+* `onBlur`
+* `onChange`
+* `onClearUndos`
+* `onClick`
+* `onContextMenu`
+* `onCopy`
+* `onCut`
+* `onDblclick`
+* `onDeactivate`
+* `onDirty`
+* `onDrag`
+* `onDragDrop`
+* `onDragEnd`
+* `onDragGesture`
+* `onDragOver`
+* `onDrop`
+* `onExecCommand`
+* `onFocus`
+* `onFocusIn`
+* `onFocusOut`
+* `onGetContent`
+* `onHide`
+* `onInit`
+* `onKeyDown`
+* `onKeyPress`
+* `onKeyUp`
+* `onLoadContent`
+* `onMouseDown`
+* `onMouseEnter`
+* `onMouseLeave`
+* `onMouseMove`
+* `onMouseOut`
+* `onMouseOver`
+* `onMouseUp`
+* `onNodeChange`
+* `onObjectResizeStart`
+* `onObjectResized`
+* `onObjectSelected`
+* `onPaste`
+* `onPostProcess`
+* `onPostRender`
+* `onPreInit`
+* `onPreProcess`
+* `onProgressState`
+* `onRedo`
+* `onRemove`
+* `onReset`
+* `onSaveContent`
+* `onSelectionChange`
+* `onSetAttrib`
+* `onSetContent`
+* `onShow`
+* `onSubmit`
+* `onUndo`
+* `onVisualAid`
+</details>
+
 ## Loading TinyMCE
 ### Auto-loading from TinyMCE Cloud
 The `Editor` component needs TinyMCE to be globally available to work, but to make it as easy as possible it will automatically load [TinyMCE Cloud](https://www.tinymce.com/docs/get-started-cloud/) if it can't find TinyMCE available when the component is mounting. To get rid of the `This domain is not registered...` warning, sign up for the cloud and enter the api key like this:

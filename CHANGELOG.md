@@ -1,3 +1,6 @@
+## 2.1.3 (2018-01-17)
+* Added `plugins` and `toolbar` shorthands.
+
 ## 2.1.2 (2018-01-08)
 * Use `target` on element instead of `selector` in init config.
 
