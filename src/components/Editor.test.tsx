@@ -6,9 +6,7 @@ import { Editor } from './Editor';
 
 describe('tagName prop changes element', () => {
   it('it is div by default for inline', () => {
-    const editor: any = TestUtils.renderIntoDocument(
-      <Editor inline />
-    );
+    const editor: any = TestUtils.renderIntoDocument(<Editor inline />);
 
     const editorNode = ReactDOM.findDOMNode(editor);
 
@@ -17,7 +15,7 @@ describe('tagName prop changes element', () => {
 
   it('it can be changed to p', () => {
     const editor: any = TestUtils.renderIntoDocument(
-      <Editor inline tagName='p' />
+      <Editor inline tagName="p" />
     );
 
     const editorNode = ReactDOM.findDOMNode(editor);
@@ -26,9 +24,7 @@ describe('tagName prop changes element', () => {
   });
 
   it('iframe editor does not change element', () => {
-    const editor: any = TestUtils.renderIntoDocument(
-      <Editor tagName='p' />
-    );
+    const editor: any = TestUtils.renderIntoDocument(<Editor tagName="p" />);
 
     const editorNode = ReactDOM.findDOMNode(editor);
 
@@ -38,9 +34,7 @@ describe('tagName prop changes element', () => {
 
 describe('id is set automatically if id prop not provided', () => {
   it('is set normally if prop is provided', () => {
-    const editor: any = TestUtils.renderIntoDocument(
-      <Editor id='test' />
-    );
+    const editor: any = TestUtils.renderIntoDocument(<Editor id="test" />);
 
     const editorNode = ReactDOM.findDOMNode(editor);
 
@@ -48,9 +42,7 @@ describe('id is set automatically if id prop not provided', () => {
   });
 
   it('gets set automatically to uuid if not set', () => {
-    const editor: any = TestUtils.renderIntoDocument(
-      <Editor />
-    );
+    const editor: any = TestUtils.renderIntoDocument(<Editor />);
 
     const editorNode = ReactDOM.findDOMNode(editor);
 

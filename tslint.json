@@ -1,16 +1,14 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {
-      "semicolon": true
-    },
-    "rules": {
-      "object-literal-sort-keys": false,
-      "indent": [true, "spaces", 2],
-      "quotemark": [true, "single"],
-      "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
-    },
-    "rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "jsRules": {
+    "semicolon": true
+  },
+  "rules": {
+    "object-literal-sort-keys": false,
+    "indent": [true, "spaces", 2],
+    "trailing-comma": [true, { "multiline": "never", "singleline": "never" }],
+    "prettier": [true, { "singleQuote": true, "arrowParens": "always" }]
+  },
+  "rulesDirectory": ["tslint-plugin-prettier"]
 }

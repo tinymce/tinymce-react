@@ -10,11 +10,11 @@ import * as PropTypes from 'prop-types';
 import { IEvents } from '../Events';
 import { IProps } from './Editor';
 
-export type CopyProps<T> = {
-  [P in keyof T]: PropTypes.Requireable<any>
-};
+export type CopyProps<T> = { [P in keyof T]: PropTypes.Requireable<any> };
 
-export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
+export interface IEditorPropTypes
+  extends CopyProps<IEvents>,
+    CopyProps<IProps> {}
 
 export const EditorPropTypes: IEditorPropTypes = {
   apiKey: PropTypes.string,
