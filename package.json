@@ -14,7 +14,7 @@
   "main": "lib/cjs/index.js",
   "module": "lib/es2015/index.js",
   "scripts": {
-    "lint": "tslint src/**/*.tsx",
+    "lint": "tslint 'src/**/*.ts?(x)'",
     "clean": "rimraf lib",
     "test": "jest",
     "build": "npm run test && npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
