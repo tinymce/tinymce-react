@@ -8,8 +8,7 @@
 
 import { EditorPropTypes } from './components/EditorPropTypes';
 
-const isValidKey = (keys: string[]) => (key: string) =>
-  keys.indexOf(key) !== -1;
+const isValidKey = (keys: string[]) => (key: string) => keys.indexOf(key) !== -1;
 
 export const bindHandlers = (props: any, editor: any): void => {
   Object.keys(props)
@@ -34,9 +33,7 @@ export const uuid = (prefix: string): string => {
   return prefix + '_' + random + unique + String(time);
 };
 
-export const isTextarea = (
-  element: Element | null
-): element is HTMLTextAreaElement => {
+export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => {
   return element !== null && element.tagName.toLowerCase() === 'textarea';
 };
 
@@ -48,8 +45,5 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
   return Array.isArray(plugins) ? plugins : plugins.split(' ');
 };
 
-export const mergePlugins = (
-  initPlugins: string | string[],
-  inputPlugins?: string | string[]
-) =>
+export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) =>
   normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));

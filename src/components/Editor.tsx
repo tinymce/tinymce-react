@@ -19,7 +19,7 @@ export interface IProps {
   id: string;
   inline: boolean;
   initialValue: string;
-  init: any;
+  init: Record<string, any>;
   tagName: string;
   cloudChannel: string;
   plugins: string | string[];
@@ -34,9 +34,11 @@ export class Editor extends React.Component<IAllProps> {
   private element: Element | null = null;
   private id: string;
   private editor: any;
+  private inline: boolean;
 
   public componentWillMount() {
     this.id = this.id || this.props.id || uuid('tiny-react');
+    this.inline = this.props.inline ? this.props.inline : this.props.init && this.props.init.inline;
   }
 
   public componentDidMount() {
@@ -44,17 +46,10 @@ export class Editor extends React.Component<IAllProps> {
       this.initialise();
     } else if (this.element) {
       const doc = this.element.ownerDocument;
-      const channel = this.props.cloudChannel
-        ? this.props.cloudChannel
-        : 'stable';
+      const channel = this.props.cloudChannel ? this.props.cloudChannel : 'stable';
       const apiKey = this.props.apiKey ? this.props.apiKey : '';
 
-      ScriptLoader.load(
-        scriptState,
-        doc,
-        `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`,
-        this.initialise
-      );
+      ScriptLoader.load(scriptState, doc, `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`, this.initialise);
     }
   }
 
@@ -63,24 +58,17 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public render() {
-    return this.props.inline ? this.renderInline() : this.renderIframe();
+    return this.inline ? this.renderInline() : this.renderIframe();
   }
 
   private initialise = () => {
-    const initialValue =
-      typeof this.props.initialValue === 'string'
-        ? this.props.initialValue
-        : '';
+    const initialValue = typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
       target: this.element,
-      inline: this.props.inline,
-      plugins: mergePlugins(
-        this.props.init && this.props.init.plugins,
-        this.props.plugins
-      ),
-      toolbar:
-        this.props.toolbar || (this.props.init && this.props.init.toolbar),
+      inline: this.inline,
+      plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
+      toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
       setup: (editor: any) => {
         this.editor = editor;
         editor.on('init', () => editor.setContent(initialValue));
@@ -109,15 +97,7 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private renderIframe() {
-    return (
-      <textarea
-        ref={(elm) => {
-          this.element = elm;
-        }}
-        style={{ visibility: 'hidden' }}
-        id={this.id}
-      />
-    );
+    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} />;
   }
 
   private cleanUp() {

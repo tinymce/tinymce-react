@@ -13,10 +13,16 @@ describe('tagName prop changes element', () => {
     expect(editorNode.tagName).toEqual('DIV');
   });
 
+  it('can be set to inline in init', () => {
+    const editor: any = TestUtils.renderIntoDocument(<Editor init={{ inline: true }} />);
+
+    const editorNode = ReactDOM.findDOMNode(editor);
+
+    expect(editorNode.tagName).toEqual('DIV');
+  });
+
   it('it can be changed to p', () => {
-    const editor: any = TestUtils.renderIntoDocument(
-      <Editor inline tagName="p" />
-    );
+    const editor: any = TestUtils.renderIntoDocument(<Editor inline tagName="p" />);
 
     const editorNode = ReactDOM.findDOMNode(editor);
 

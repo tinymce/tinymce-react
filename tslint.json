@@ -8,7 +8,7 @@
     "object-literal-sort-keys": false,
     "indent": [true, "spaces", 2],
     "trailing-comma": [true, { "multiline": "never", "singleline": "never" }],
-    "prettier": [true, { "singleQuote": true, "arrowParens": "always" }]
+    "prettier": [true, { "singleQuote": true, "arrowParens": "always", "printWidth": 140 }]
   },
   "rulesDirectory": ["tslint-plugin-prettier"]
 }
