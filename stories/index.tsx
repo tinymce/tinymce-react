@@ -15,40 +15,20 @@ storiesOf('Editor', module)
   .add(
     'Iframe editor',
     withInfo({
-      text:
-        'Simple iframe editor with some initial html value. Logs editor content on change event.'
-    })(() => (
-      <Editor
-        initialValue={content}
-        onChange={(event, editor) => console.log(editor.getContent())}
-        plugins="link table"
-      />
-    ))
+      text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
+    })(() => <Editor initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} plugins="link table" />)
   )
   .add(
     'Inline editor',
     withInfo({
-      text:
-        'Simple inline editor with some initial html value. Logs editor content on change event.'
-    })(() => (
-      <Editor
-        inline
-        initialValue={content}
-        onChange={(event, editor) => console.log(editor.getContent())}
-      />
-    ))
+      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
+    })(() => <Editor inline initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} />)
   )
   .add(
     'Inlite editor',
     withInfo({
-      text:
-        'Simple inline editor with some initial html value. Logs editor content on change event.'
+      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
     })(() => (
-      <Editor
-        inline
-        init={{ theme: 'inlite' }}
-        initialValue={content}
-        onChange={(event, editor) => console.log(editor.getContent())}
-      />
+      <Editor inline init={{ theme: 'inlite' }} initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} />
     ))
   );
