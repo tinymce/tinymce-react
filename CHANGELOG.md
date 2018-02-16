@@ -1,3 +1,6 @@
+## 2.1.4 (2018-02-16)
+* Fixed bug where is wasn't possible to set inline in the init object, only on the shorthand.
+
 ## 2.1.3 (2018-01-17)
 * Added `plugins` and `toolbar` shorthands.
 
