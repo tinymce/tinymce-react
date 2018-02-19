@@ -1,3 +1,6 @@
+## 2.2.0 (2018-02-19)
+* Added functionality so you can use the editor as a controlled component by setting the `value` property and using the `onEditorChange` event.
+
 ## 2.1.4 (2018-02-16)
 * Fixed bug where is wasn't possible to set inline in the init object, only on the shorthand.
 
