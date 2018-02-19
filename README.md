@@ -127,6 +127,31 @@ Here is a full list of the events available:
 * `onVisualAid`
 </details>
 
+## Using as a controlled component
+
+If you want to use the component as a [controlled component](https://reactjs.org/docs/forms.html#controlled-components) you should use the `onEditorChange` instead of the `onChange` event, like this:
+
+```js
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { content: '' };
+    this.handleEditorChange = this.handleEditorChange.bind(this);
+  }
+
+  handleEditorChange(content) {
+    this.setState({ content });
+  }
+
+  render() {
+    return (
+      <Editor value={this.state.content} onEditorChange={this.handleEditorChange} />
+    )
+  }
+}
+```
+
 ## Loading TinyMCE
 ### Auto-loading from TinyMCE Cloud
 The `Editor` component needs TinyMCE to be globally available to work, but to make it as easy as possible it will automatically load [TinyMCE Cloud](https://www.tinymce.com/docs/get-started-cloud/) if it can't find TinyMCE available when the component is mounting. To get rid of the `This domain is not registered...` warning, sign up for the cloud and enter the api key like this:

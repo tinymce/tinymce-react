@@ -6,16 +6,19 @@
  *
  */
 
-import { EditorPropTypes } from './components/EditorPropTypes';
+import { eventPropTypes } from './components/EditorPropTypes';
 
 const isValidKey = (keys: string[]) => (key: string) => keys.indexOf(key) !== -1;
 
+// tslint:disable-next-line:ban-types
+export const isFunction = (x: any): x is Function => typeof x === 'function';
+
 export const bindHandlers = (props: any, editor: any): void => {
   Object.keys(props)
-    .filter(isValidKey(Object.keys(EditorPropTypes)))
+    .filter(isValidKey(Object.keys(eventPropTypes)))
     .forEach((key: string) => {
       const handler = props[key];
-      if (typeof handler === 'function') {
+      if (isFunction(handler)) {
         editor.on(key.substring(2), (e: any) => handler(e, editor));
       }
     });

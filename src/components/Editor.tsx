@@ -6,12 +6,11 @@
  *
  */
 
-import { ValidationMap } from 'prop-types';
 import * as React from 'react';
-import { IEvents } from '../Events';
+import { EventHandler, IEvents } from '../Events';
 import * as ScriptLoader from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { bindHandlers, isTextarea, mergePlugins, uuid } from '../Utils';
+import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
 export interface IProps {
@@ -19,6 +18,8 @@ export interface IProps {
   id: string;
   inline: boolean;
   initialValue: string;
+  onEditorChange: EventHandler<any>;
+  value: string;
   init: Record<string, any>;
   tagName: string;
   cloudChannel: string;
@@ -32,9 +33,10 @@ const scriptState = ScriptLoader.create();
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
   private element: Element | null = null;
-  private id: string;
-  private editor: any;
-  private inline: boolean;
+  private id?: string;
+  private editor?: Record<any, any>;
+  private inline?: boolean;
+  private currentContent?: string | null;
 
   public componentWillMount() {
     this.id = this.id || this.props.id || uuid('tiny-react');
@@ -54,7 +56,17 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentWillUnmount() {
-    this.cleanUp();
+    getTinymce().remove(this.editor);
+  }
+
+  public componentWillReceiveProps(nextProps: Partial<IProps>) {
+    if (this.editor && this.editor.initialized) {
+      this.currentContent = this.currentContent || this.editor.getContent();
+
+      if (typeof nextProps.value === 'string' && nextProps.value !== this.props.value && nextProps.value !== this.currentContent) {
+        this.editor.setContent(nextProps.value);
+      }
+    }
   }
 
   public render() {
@@ -62,7 +74,8 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private initialise = () => {
-    const initialValue = typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
+    const initialValue =
+      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
       target: this.element,
@@ -71,8 +84,9 @@ export class Editor extends React.Component<IAllProps> {
       toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
       setup: (editor: any) => {
         this.editor = editor;
-        editor.on('init', () => editor.setContent(initialValue));
-        bindHandlers(this.props, editor);
+        editor.on('init', () => {
+          this.initEditor(editor, initialValue);
+        });
 
         if (this.props.init && typeof this.props.init.setup === 'function') {
           this.props.init.setup(editor);
@@ -87,6 +101,21 @@ export class Editor extends React.Component<IAllProps> {
     getTinymce().init(finalInit);
   };
 
+  private initEditor(editor: any, initialValue: string) {
+    editor.setContent(initialValue);
+
+    if (isFunction(this.props.onEditorChange)) {
+      editor.on('change keyup setcontent', (e: any) => {
+        this.currentContent = editor.getContent();
+        if (isFunction(this.props.onEditorChange)) {
+          this.props.onEditorChange(this.currentContent);
+        }
+      });
+    }
+
+    bindHandlers(this.props, editor);
+  }
+
   private renderInline() {
     const { tagName = 'div' } = this.props;
 
@@ -98,9 +127,5 @@ export class Editor extends React.Component<IAllProps> {
 
   private renderIframe() {
     return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} />;
-  }
-
-  private cleanUp() {
-    getTinymce().remove(this.editor);
   }
 }

@@ -14,16 +14,7 @@ export type CopyProps<T> = { [P in keyof T]: PropTypes.Requireable<any> };
 
 export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
 
-export const EditorPropTypes: IEditorPropTypes = {
-  apiKey: PropTypes.string,
-  id: PropTypes.string,
-  inline: PropTypes.bool,
-  init: PropTypes.object,
-  initialValue: PropTypes.string,
-  tagName: PropTypes.string,
-  cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
-  plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+export const eventPropTypes = {
   onActivate: PropTypes.func,
   onAddUndo: PropTypes.func,
   onBeforeAddUndo: PropTypes.func,
@@ -87,4 +78,19 @@ export const EditorPropTypes: IEditorPropTypes = {
   onSubmit: PropTypes.func,
   onUndo: PropTypes.func,
   onVisualAid: PropTypes.func
+};
+
+export const EditorPropTypes: IEditorPropTypes = {
+  apiKey: PropTypes.string,
+  id: PropTypes.string,
+  inline: PropTypes.bool,
+  init: PropTypes.object,
+  initialValue: PropTypes.string,
+  onEditorChange: PropTypes.func,
+  value: PropTypes.string,
+  tagName: PropTypes.string,
+  cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
+  plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  ...eventPropTypes
 };
