@@ -1,3 +1,6 @@
+## 2.2.1 (2018-04-03)
+* No change, pushed to fix missing readme on npm.
+
 ## 2.2.0 (2018-02-19)
 * Added functionality so you can use the editor as a controlled component by setting the `value` property and using the `onEditorChange` event.
 
