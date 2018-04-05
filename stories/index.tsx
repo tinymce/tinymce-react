@@ -28,6 +28,9 @@ class StateFulEditor extends React.Component<any, { data: string }> {
       this.setState({ data: '<p>new content2</p>' });
     }, 100);
     setTimeout(() => {
+      this.setState({ data: '<p>new content500</p>' });
+    }, 500);
+    setTimeout(() => {
       this.setState({ data: '<p>new content3</p>' });
     }, 1000);
     setTimeout(() => {

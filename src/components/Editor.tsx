@@ -74,8 +74,6 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private initialise = () => {
-    const initialValue =
-      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     const finalInit = {
       ...this.props.init,
       target: this.element,
@@ -85,7 +83,7 @@ export class Editor extends React.Component<IAllProps> {
       setup: (editor: any) => {
         this.editor = editor;
         editor.on('init', () => {
-          this.initEditor(editor, initialValue);
+          this.initEditor(editor);
         });
 
         if (this.props.init && typeof this.props.init.setup === 'function') {
@@ -101,8 +99,10 @@ export class Editor extends React.Component<IAllProps> {
     getTinymce().init(finalInit);
   };
 
-  private initEditor(editor: any, initialValue: string) {
-    editor.setContent(initialValue);
+  private initEditor(editor: any) {
+    const value =
+      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
+    editor.setContent(value);
 
     if (isFunction(this.props.onEditorChange)) {
       editor.on('change keyup setcontent', (e: any) => {
