@@ -111,7 +111,6 @@ Here is a full list of the events available:
 * `onPaste`
 * `onPostProcess`
 * `onPostRender`
-* `onPreInit`
 * `onPreProcess`
 * `onProgressState`
 * `onRedo`

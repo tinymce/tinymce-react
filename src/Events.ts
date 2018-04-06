@@ -59,7 +59,6 @@ export interface ITinyEvents {
   onNodeChange: EventHandler<any>;
   onPostProcess: EventHandler<any>;
   onPostRender: EventHandler<any>;
-  onPreInit: EventHandler<any>;
   onPreProcess: EventHandler<any>;
   onProgressState: EventHandler<any>;
   onRedo: EventHandler<any>;

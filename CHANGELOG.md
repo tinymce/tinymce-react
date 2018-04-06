@@ -1,3 +1,6 @@
+## 2.2.4 (2018-04-06)
+* Removed onPreInit shorthand as it never worked.
+
 ## 2.2.3 (2018-04-06)
 * Fixed a bug with onInit not working.
 

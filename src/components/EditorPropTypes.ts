@@ -64,7 +64,6 @@ export const eventPropTypes = {
   onPaste: PropTypes.func,
   onPostProcess: PropTypes.func,
   onPostRender: PropTypes.func,
-  onPreInit: PropTypes.func,
   onPreProcess: PropTypes.func,
   onProgressState: PropTypes.func,
   onRedo: PropTypes.func,
