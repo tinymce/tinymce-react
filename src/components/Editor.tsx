@@ -82,8 +82,8 @@ export class Editor extends React.Component<IAllProps> {
       toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
       setup: (editor: any) => {
         this.editor = editor;
-        editor.on('init', () => {
-          this.initEditor(editor);
+        editor.on('init', (e: Event) => {
+          this.initEditor(e, editor);
         });
 
         if (this.props.init && typeof this.props.init.setup === 'function') {
@@ -99,7 +99,7 @@ export class Editor extends React.Component<IAllProps> {
     getTinymce().init(finalInit);
   };
 
-  private initEditor(editor: any) {
+  private initEditor(initEvent: Event, editor: any) {
     const value =
       typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     editor.setContent(value);
@@ -113,7 +113,7 @@ export class Editor extends React.Component<IAllProps> {
       });
     }
 
-    bindHandlers(this.props, editor);
+    bindHandlers(this.props, editor, initEvent);
   }
 
   private renderInline() {

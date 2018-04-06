@@ -1,5 +1,9 @@
+## 2.2.3 (2018-04-06)
+* Fixed a bug with onInit not working.
+
 ## 2.2.2 (2018-04-05)
 * Fixed a bug with values set while the editor was initializing.
+
 ## 2.2.1 (2018-04-03)
 * No change, pushed to fix missing readme on npm.
 

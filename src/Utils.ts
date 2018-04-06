@@ -13,13 +13,17 @@ const isValidKey = (keys: string[]) => (key: string) => keys.indexOf(key) !== -1
 // tslint:disable-next-line:ban-types
 export const isFunction = (x: any): x is Function => typeof x === 'function';
 
-export const bindHandlers = (props: any, editor: any): void => {
+export const bindHandlers = (props: any, editor: any, initEvent: Event): void => {
   Object.keys(props)
     .filter(isValidKey(Object.keys(eventPropTypes)))
     .forEach((key: string) => {
       const handler = props[key];
       if (isFunction(handler)) {
-        editor.on(key.substring(2), (e: any) => handler(e, editor));
+        if (key === 'onInit') {
+          handler(initEvent, editor);
+        } else {
+          editor.on(key.substring(2), (e: any) => handler(e, editor));
+        }
       }
     });
 };
