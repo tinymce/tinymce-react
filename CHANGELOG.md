@@ -1,4 +1,4 @@
-## 2.2.4 (2018-04-23)
+## 2.2.5 (2018-04-23)
 * Added a nullcheck in componentWillUnmount to check that tinymce is availabl before running remove.
 
 ## 2.2.4 (2018-04-06)
