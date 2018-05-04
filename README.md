@@ -48,7 +48,7 @@ The editor accepts the following props:
 * `apiKey`: Api key for TinyMCE cloud, more info below.
 * `cloudChannel`: Cloud channel for TinyMCE Cloud, more info below.
 
-None of the configuration props are **required** for the component to work - other than if your are using TinyMCE Cloud you will have to specify the `apiKey` to get rid of the `This domain is not registered...` warning message.
+None of the configuration props are **required** for the component to work - other than if you are using TinyMCE Cloud you will have to specify the `apiKey` to get rid of the `This domain is not registered...` warning message.
 
 ### Event binding
 
