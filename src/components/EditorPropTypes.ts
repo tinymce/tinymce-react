@@ -87,6 +87,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   initialValue: PropTypes.string,
   onEditorChange: PropTypes.func,
   value: PropTypes.string,
+  mode : PropTypes.string,
   tagName: PropTypes.string,
   cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
   plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
