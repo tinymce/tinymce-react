@@ -1,3 +1,6 @@
+## 2.2.6 (2018-09-03)
+* Fixed broken links in readme.
+
 ## 2.2.5 (2018-04-23)
 * Added a nullcheck in componentWillUnmount to check that tinymce is availabl before running remove.
 
