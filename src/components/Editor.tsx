@@ -20,6 +20,7 @@ export interface IProps {
   initialValue: string;
   onEditorChange: EventHandler<any>;
   value: string;
+  mode: string;
   init: Record<string, any>;
   tagName: string;
   cloudChannel: string;
@@ -67,6 +68,9 @@ export class Editor extends React.Component<IAllProps> {
 
       if (typeof nextProps.value === 'string' && nextProps.value !== this.props.value && nextProps.value !== this.currentContent) {
         this.editor.setContent(nextProps.value);
+      }
+      if (typeof nextProps.mode === 'string' && nextProps.mode !== this.props.mode) {
+        this.editor.setMode(nextProps.mode);
       }
     }
   }
