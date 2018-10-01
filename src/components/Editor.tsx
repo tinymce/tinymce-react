@@ -25,6 +25,7 @@ export interface IProps {
   cloudChannel: string;
   plugins: string | string[];
   toolbar: string | string[];
+  disabled: boolean;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
@@ -68,6 +69,9 @@ export class Editor extends React.Component<IAllProps> {
       if (typeof nextProps.value === 'string' && nextProps.value !== this.props.value && nextProps.value !== this.currentContent) {
         this.editor.setContent(nextProps.value);
       }
+      if (typeof nextProps.disabled === 'boolean' && nextProps.disabled !== this.props.disabled) {
+        this.editor.setMode(nextProps.disabled ? 'readonly' : 'design');
+      }
     }
   }
 
@@ -79,6 +83,7 @@ export class Editor extends React.Component<IAllProps> {
     const finalInit = {
       ...this.props.init,
       target: this.element,
+      readonly: this.props.disabled,
       inline: this.inline,
       plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
       toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),

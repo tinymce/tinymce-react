@@ -49,6 +49,28 @@ class StateFulEditor extends React.Component<any, { data: string }> {
   }
 }
 
+// tslint:disable-next-line:max-classes-per-file
+class DisablingEditor extends React.Component<any, { disabled: boolean }> {
+  constructor(props) {
+    super(props);
+    this.state = { disabled: false };
+  }
+
+  public toggleDisabled() {
+    this.setState({ disabled: !this.state.disabled });
+  }
+
+  public render() {
+    console.log(this.state.disabled);
+    return (
+      <div>
+        <Editor disabled={this.state.disabled} />
+        <button onClick={this.toggleDisabled.bind(this)}>{this.state.disabled ? 'enable' : 'disable'}</button>
+      </div>
+    );
+  }
+}
+
 storiesOf('Editor', module)
   .add(
     'Controlled input editor',
@@ -73,6 +95,40 @@ storiesOf('Editor', module)
     withInfo({
       text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
     })(() => <Editor inline plugins="link table wordcount" toolbar="bold link table" />)
+  )
+  .add(
+    'Disabled editor',
+    withInfo({
+      text: 'Simple disabled editor.'
+    })(() => <Editor disabled />)
+  )
+  .add(
+    'Disable editor dynamically with button',
+    withInfo({
+      text: `Shows example with setting the editor into readonly mode using the disabled prop. This is usage:
+      
+      class DisablingEditor extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { disabled: false };
+        }
+      
+        public toggleDisabled() {
+          this.setState({ disabled: !this.state.disabled });
+        }
+      
+        public render() {
+          console.log(this.state.disabled);
+          return (
+            <div>
+              <Editor disabled={this.state.disabled} />
+              <button onClick={this.toggleDisabled.bind(this)}>{this.state.disabled ? 'enable' : 'disable'}</button>
+            </div>
+          );
+        }
+      }
+      `
+    })(() => <DisablingEditor />)
   )
   .add(
     'Inlite editor',

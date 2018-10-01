@@ -1,3 +1,6 @@
+## 2.3.0 (2018-10-01)
+* Added `disabled` prop that sets the editor into readonly mode.
+
 ## 2.2.6 (2018-09-03)
 * Fixed broken links in readme.
 

@@ -91,5 +91,6 @@ export const EditorPropTypes: IEditorPropTypes = {
   cloudChannel: PropTypes.oneOf(['stable', 'dev', 'testing']),
   plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  disabled: PropTypes.bool,
   ...eventPropTypes
 };
