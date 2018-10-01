@@ -107,9 +107,11 @@ export class Editor extends React.Component<IAllProps> {
   };
 
   private initEditor(initEvent: Event, editor: any) {
-    const value =
-      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
-    editor.setContent(value);
+    if (!this.inline) {
+      const value =
+        typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
+      editor.setContent(value);
+    }
 
     if (isFunction(this.props.onEditorChange)) {
       editor.on('change keyup setcontent', (e: any) => {
@@ -133,6 +135,8 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private renderIframe() {
-    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} />;
+    const value =
+      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
+    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} value={value} />;
   }
 }
