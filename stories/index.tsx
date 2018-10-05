@@ -23,21 +23,6 @@ class StateFulEditor extends React.Component<any, { data: string }> {
     this.setState({ data });
   }
 
-  public componentDidMount() {
-    setTimeout(() => {
-      this.setState({ data: '<p>new content2</p>' });
-    }, 100);
-    setTimeout(() => {
-      this.setState({ data: '<p>new content500</p>' });
-    }, 500);
-    setTimeout(() => {
-      this.setState({ data: '<p>new content3</p>' });
-    }, 1000);
-    setTimeout(() => {
-      this.setState({ data: '<p>new content1</p>' });
-    }, 0);
-  }
-
   public render() {
     const textareaStyle = { width: '100%', height: '200px', fontSize: '1em' };
     return (
