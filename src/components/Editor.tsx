@@ -47,7 +47,7 @@ export class Editor extends React.Component<IAllProps> {
   public componentDidMount() {
     if (getTinymce() !== null) {
       this.initialise();
-    } else if (this.element) {
+    } else if (this.element && this.element.ownerDocument) {
       const doc = this.element.ownerDocument;
       const channel = this.props.cloudChannel ? this.props.cloudChannel : 'stable';
       const apiKey = this.props.apiKey ? this.props.apiKey : '';
