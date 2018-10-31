@@ -92,5 +92,6 @@ export const EditorPropTypes: IEditorPropTypes = {
   plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   disabled: PropTypes.bool,
+  formElementName: PropTypes.string,
   ...eventPropTypes
 };
