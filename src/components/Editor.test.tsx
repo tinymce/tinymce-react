@@ -63,7 +63,7 @@ describe('sets name on form', () => {
     expect(editorNode.name).toEqual('');
   });
   it('is set when prop is provided', () => {
-    const editor: any = TestUtils.renderIntoDocument(<Editor formElementName="test" />);
+    const editor: any = TestUtils.renderIntoDocument(<Editor textareaName="test" />);
     const editorNode = ReactDOM.findDOMNode(editor);
     expect(editorNode.name).toEqual('test');
   });

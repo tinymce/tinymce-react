@@ -26,7 +26,7 @@ export interface IProps {
   plugins: string | string[];
   toolbar: string | string[];
   disabled: boolean;
-  formElementName: string;
+  textareaName: string;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
@@ -134,6 +134,6 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private renderIframe() {
-    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} name={this.props.formElementName} />;
+    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} name={this.props.textareaName} />;
   }
 }
