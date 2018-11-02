@@ -55,3 +55,16 @@ describe('id is set automatically if id prop not provided', () => {
     expect(editorNode.id).not.toBeFalsy();
   });
 });
+
+describe('sets name on form', () => {
+  it('is not set when prop is not provided', () => {
+    const editor: any = TestUtils.renderIntoDocument(<Editor />);
+    const editorNode = ReactDOM.findDOMNode(editor);
+    expect(editorNode.name).toEqual('');
+  });
+  it('is set when prop is provided', () => {
+    const editor: any = TestUtils.renderIntoDocument(<Editor textareaName="test" />);
+    const editorNode = ReactDOM.findDOMNode(editor);
+    expect(editorNode.name).toEqual('test');
+  });
+});
