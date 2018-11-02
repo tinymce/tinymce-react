@@ -1,3 +1,6 @@
+## 2.4.0 (2018-11-02)
+* Added `textareaName` prop that sets the name attribute on the textarea for use in forms.
+
 ## 2.3.0 (2018-10-01)
 * Added `disabled` prop that sets the editor into readonly mode.
 

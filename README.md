@@ -48,6 +48,7 @@ The editor accepts the following props:
 * `toolbar`: Shorthand for setting what toolbar items you want to show, `<Editor toolbar="foo bar" />` is the same as setting `{toolbar: 'foo bar'}` in the init.
 * `apiKey`: Api key for TinyMCE cloud, more info below.
 * `cloudChannel`: Cloud channel for TinyMCE Cloud, more info below.
+* `textareaName`: Sets the name attribute on the textarea that the editor is initialised on for use in forms.
 
 None of the configuration props are **required** for the component to work - other than if you are using TinyMCE Cloud you will have to specify the `apiKey` to get rid of the `This domain is not registered...` warning message.
 
