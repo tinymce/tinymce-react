@@ -122,4 +122,10 @@ storiesOf('Editor', module)
     })(() => (
       <Editor inline init={{ theme: 'inlite' }} initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} />
     ))
+  )
+  .add(
+    'editor with cloudchannel fixed to 4',
+    withInfo({
+      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
+    })(() => <Editor cloudChannel="4" onChange={(event, editor) => console.log(editor.getContent())} />)
   );

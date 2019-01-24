@@ -163,7 +163,7 @@ The `Editor` component needs TinyMCE to be globally available to work, but to ma
 <Editor apiKey='YOUR_API_KEY' init={{ /* your other settings */ }} />
 ```
 
-You can also define what cloud channel you want to use out these three
+You can also define what cloud channel you want to use, with these three being the most commonly used:
 * `stable` **Default**. The most stable and well tested version that has passed the Ephox quality assurance process.
 * `testing` This channel will deploy the current candidate for release to the `stable` channel.
 * `dev` The cutting edge version of TinyMCE updated daily for the daring users.

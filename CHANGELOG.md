@@ -1,3 +1,6 @@
+## 2.5.0 (2019-01-24)
+* Loosened cloudChannel proptype to take any string to be able to use the locked version channels.
+
 ## 2.4.0 (2018-11-02)
 * Added `textareaName` prop that sets the name attribute on the textarea for use in forms.
 
