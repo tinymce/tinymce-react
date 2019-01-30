@@ -126,6 +126,12 @@ storiesOf('Editor', module)
   .add(
     'editor with cloudchannel fixed to 4',
     withInfo({
-      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
+      text: 'Editor with cloudChannel set to 4'
     })(() => <Editor cloudChannel="4" onChange={(event, editor) => console.log(editor.getContent())} />)
+  )
+  .add(
+    'editor with cloudchannel fixed to 5-dev',
+    withInfo({
+      text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load tinymce 5'
+    })(() => <Editor cloudChannel="5-dev" onChange={(event, editor) => console.log(editor.getContent())} />)
   );

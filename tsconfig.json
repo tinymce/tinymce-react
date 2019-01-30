@@ -15,6 +15,7 @@
     "target": "es5",
     "types": [
       "node",
+      "jest",
       "prop-types",
       "react", 
       "react-dom"
