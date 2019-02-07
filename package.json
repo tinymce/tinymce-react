@@ -1,6 +1,6 @@
 {
   "name": "@tinymce/tinymce-react",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "Official TinyMCE React Component",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
@@ -68,6 +68,8 @@
     "jest": "^23.0.0",
     "prettier": "^1.16.2",
     "raf": "^3.4.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "rimraf": "^2.6.3",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.3",

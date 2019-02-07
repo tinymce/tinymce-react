@@ -1,4 +1,7 @@
-## 2.5.0 (2019-02-07)
+## 2.6.1 (2019-02-07)
+* Changed `react` and `react-dom` to be peerDependencies and devDependencies.
+
+## 2.6.0 (2019-02-07)
 * Changed `react` and `react-dom` to be peerDependencies.
 
 ## 2.5.0 (2019-01-24)
