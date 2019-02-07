@@ -1,3 +1,6 @@
+## 2.5.0 (2019-02-07)
+* Changed `react` and `react-dom` to be peerDependencies.
+
 ## 2.5.0 (2019-01-24)
 * Loosened cloudChannel proptype to take any string to be able to use the locked version channels.
 
