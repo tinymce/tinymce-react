@@ -1,3 +1,6 @@
+## 3.0.0 (2019-02-11)
+* Changed default cloudChannel to `'5'`.
+
 ## 2.6.1 (2019-02-07)
 * Changed `react` and `react-dom` to be peerDependencies and devDependencies.
 

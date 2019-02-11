@@ -34,6 +34,11 @@ const scriptState = ScriptLoader.create();
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
+
+  public static defaultProps: Partial<IAllProps> = {
+    cloudChannel: '5'
+  };
+
   private element: Element | null = null;
   private id?: string;
   private editor?: Record<any, any>;
@@ -50,7 +55,7 @@ export class Editor extends React.Component<IAllProps> {
       this.initialise();
     } else if (this.element && this.element.ownerDocument) {
       const doc = this.element.ownerDocument;
-      const channel = this.props.cloudChannel ? this.props.cloudChannel : 'stable';
+      const channel = this.props.cloudChannel;
       const apiKey = this.props.apiKey ? this.props.apiKey : '';
 
       ScriptLoader.load(scriptState, doc, `https://cloud.tinymce.com/${channel}/tinymce.min.js?apiKey=${apiKey}`, this.initialise);
