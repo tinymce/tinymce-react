@@ -1,3 +1,6 @@
+## 3.0.1 (2019-02-11)
+* Updated readme on cloud channels.
+
 ## 3.0.0 (2019-02-11)
 * Changed default cloudChannel to `'5'`.
 
