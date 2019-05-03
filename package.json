@@ -16,28 +16,12 @@
   "scripts": {
     "lint": "tslint 'src/**/*.ts?(x)'",
     "clean": "rimraf lib",
-    "test": "jest",
+    "test-manual": "bedrock -f src/**/*.test.tsx",
     "build": "npm run test && npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook",
     "prepare": "npm run build"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ],
-    "setupFiles": [
-      "<rootDir>/test/fakeGlobal.ts"
-    ]
   },
   "keywords": [],
   "author": "Ephox Inc",
@@ -50,6 +34,10 @@
     "react-dom": "^16.7.0"
   },
   "devDependencies": {
+    "@ephox/agar": "^4.12.4",
+    "@ephox/bedrock": "^4.2.8",
+    "@ephox/mcagar": "^4.0.3",
+    "@ephox/tslint-rules": "^1.0.7",
     "@storybook/addon-actions": "^4.1.11",
     "@storybook/addon-console": "^1.1.0",
     "@storybook/addon-info": "^4.1.11",
@@ -66,16 +54,14 @@
     "awesome-typescript-loader": "^5.2.1",
     "core-js": "^2.6.3",
     "jest": "^23.0.0",
-    "prettier": "^1.16.2",
     "raf": "^3.4.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "rimraf": "^2.6.3",
+    "tinymce": "^5.0.4",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.3",
     "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.17.0",
-    "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.2.4",
     "webpack": "^4.29.0"
   }
