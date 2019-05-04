@@ -3,7 +3,7 @@ import { Fun, Option } from '@ephox/katamari';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { getTinymce } from 'src/TinyMCE';
-import { Editor, IAllProps } from './Editor';
+import { Editor, IAllProps } from '../components/Editor';
 import 'tinymce/tinymce';
 
 export interface Payload {
@@ -83,28 +83,8 @@ const cNamedChainDirect = (name: keyof Payload) => NamedChain.direct(
   name
 );
 
-const EventState = () => {
-  const state: Record<string, any> = {};
-
-  const handler = (name: string) => {
-    return (...args: any[]) => {
-      state[name] = args;
-    };
-  };
-
-  const get = (name: string) => {
-    return state[name];
-  };
-
-  return {
-    handler,
-    get
-  };
-};
-
 export {
   cSetup,
   cRemove,
-  cNamedChainDirect,
-  EventState
+  cNamedChainDirect
 };

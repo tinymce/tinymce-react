@@ -2,7 +2,7 @@ import { Assertions, Chain, GeneralSteps, Logger, NamedChain, Pipeline } from '@
 import { UnitTest } from '@ephox/bedrock';
 import { Element } from '@ephox/dom-globals';
 import * as React from 'react';
-import { cRemove, cSetup, cNamedChainDirect } from './TestHelpers';
+import { cRemove, cSetup, cNamedChainDirect } from '../alien/Loader';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {
   const cAssertProperty = (propName: any, expected: any) => {
