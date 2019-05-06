@@ -1,5 +1,6 @@
-## 3.0.2 (TBA)
-* Added the editor as a second argument for onEditorChange
+## 3.1.0 (TBA)
+* Added the editor as a second argument to `onEditorChange`
+* Exported Typescript prop types
 
 ## 3.0.1 (2019-02-11)
 * Updated readme on cloud channels.

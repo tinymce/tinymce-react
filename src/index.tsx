@@ -6,6 +6,6 @@
  *
  */
 
-import { Editor } from './components/Editor';
+import { Editor, IAllProps } from './components/Editor';
 
-export { Editor };
+export { Editor, IAllProps };
