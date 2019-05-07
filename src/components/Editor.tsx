@@ -110,7 +110,7 @@ export class Editor extends React.Component<IAllProps> {
     }
 
     getTinymce().init(finalInit);
-  };
+  }
 
   private initEditor(initEvent: Event, editor: any) {
     const value =
@@ -121,7 +121,7 @@ export class Editor extends React.Component<IAllProps> {
       editor.on('change keyup setcontent', (e: any) => {
         this.currentContent = editor.getContent();
         if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(this.currentContent);
+          this.props.onEditorChange(this.currentContent, editor);
         }
       });
     }

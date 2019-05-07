@@ -61,13 +61,13 @@ storiesOf('Editor', module)
     'Controlled input editor',
     withInfo({
       text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
-    })(() => <StateFulEditor plugins="table" />)
+    })(() => <StateFulEditor plugins='table' />)
   )
   .add(
     'Iframe editor',
     withInfo({
       text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
-    })(() => <Editor initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} plugins="link table" />)
+    })(() => <Editor initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} plugins='link table' />)
   )
   .add(
     'Inline init editor',
@@ -79,7 +79,7 @@ storiesOf('Editor', module)
     'Inline editor',
     withInfo({
       text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
-    })(() => <Editor inline plugins="link table wordcount" toolbar="bold link table" />)
+    })(() => <Editor inline plugins='link table wordcount' toolbar='bold link table' />)
   )
   .add(
     'Disabled editor',
@@ -91,17 +91,17 @@ storiesOf('Editor', module)
     'Disable editor dynamically with button',
     withInfo({
       text: `Shows example with setting the editor into readonly mode using the disabled prop. This is usage:
-      
+
       class DisablingEditor extends React.Component {
         constructor(props) {
           super(props);
           this.state = { disabled: false };
         }
-      
+
         public toggleDisabled() {
           this.setState({ disabled: !this.state.disabled });
         }
-      
+
         public render() {
           console.log(this.state.disabled);
           return (
@@ -127,11 +127,11 @@ storiesOf('Editor', module)
     'editor with cloudchannel fixed to 4',
     withInfo({
       text: 'Editor with cloudChannel set to 4'
-    })(() => <Editor cloudChannel="4" onChange={(event, editor) => console.log(editor.getContent())} />)
+    })(() => <Editor cloudChannel='4' onChange={(event, editor) => console.log(editor.getContent())} />)
   )
   .add(
     'editor with cloudchannel fixed to 5-dev',
     withInfo({
       text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load tinymce 5'
-    })(() => <Editor cloudChannel="5-dev" onChange={(event, editor) => console.log(editor.getContent())} />)
+    })(() => <Editor cloudChannel='5-dev' onChange={(event, editor) => console.log(editor.getContent())} />)
   );
