@@ -83,8 +83,26 @@ const cNamedChainDirect = (name: keyof Payload) => NamedChain.direct(
   name
 );
 
+const cDOMNode = (chain: Chain<any, any>) => {
+  return NamedChain.asChain([
+    cNamedChainDirect('DOMNode'),
+    NamedChain.read('DOMNode', chain),
+    NamedChain.outputInput
+  ]);
+};
+
+const cEditor = (chain: Chain<any, any>) => {
+  return NamedChain.asChain([
+    cNamedChainDirect('editor'),
+    NamedChain.read('editor', chain),
+    NamedChain.outputInput
+  ]);
+};
+
 export {
   cSetup,
   cRemove,
-  cNamedChainDirect
+  cNamedChainDirect,
+  cDOMNode,
+  cEditor
 };
