@@ -3,7 +3,7 @@ import { UnitTest } from '@ephox/bedrock';
 import * as React from 'react';
 import { cRemove, cSetup, cEditor } from '../alien/Loader';
 import { ApiChains } from '@ephox/mcagar';
-import { getTinymce } from '../TinyMCE';
+import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventState } from '../alien/TestHelpers';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {

@@ -2,8 +2,8 @@ import { Chain, NamedChain } from '@ephox/agar';
 import { Fun, Option } from '@ephox/katamari';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { getTinymce } from 'src/TinyMCE';
-import { Editor, IAllProps } from '../components/Editor';
+import { getTinymce } from 'src/main/ts/TinyMCE';
+import { Editor, IAllProps } from '../../../main/ts/components/Editor';
 import 'tinymce/tinymce';
 
 export interface Payload {

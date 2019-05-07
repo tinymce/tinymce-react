@@ -2,7 +2,7 @@
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
-import { Editor } from '../src';
+import { Editor } from '../src/main/ts';
 import { content } from './fakeContent';
 
 setDefaults({
