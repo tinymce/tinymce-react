@@ -36,7 +36,7 @@
     "react-dom": "^16.7.0"
   },
   "devDependencies": {
-    "@ephox/agar": "^4.12.4",
+    "@ephox/agar": "^4.12",
     "@ephox/bedrock": "^4.2.8",
     "@ephox/mcagar": "^4.0.3",
     "@ephox/tslint-rules": "^1.0.7",
