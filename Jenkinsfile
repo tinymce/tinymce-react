@@ -14,12 +14,10 @@ node("primary") {
     }
   }
 
-  stage("Load shared pipelines") {
+  stage("Building") {
     def extExec = load("jenkins-plumbing/exec.groovy")
     def extBedrock = load("jenkins-plumbing/bedrock-tests.groovy")
-  }
 
-  stage("Building") {
     extExec("yarn && yarn run build")
 
     def permutations = [
