@@ -1,51 +1,56 @@
+properties([
+  disableConcurrentBuilds(),
+  pipelineTriggers([
+    pollSCM('H 0 1 1 1')
+  ])
+])
+
 node("primary") {
   echo "Clean workspace"
   cleanWs()
-
-  echo "Checkout master branch"
-  stage("Checkout tinymce-react") {
-    git([branch: "master", url:'ssh://git@stash:7999/tinymce/tinymce-react.git', credentialsId: '8aa93893-84cc-45fc-a029-a42f21197bb3'])
-  }
-
-  stage("Checkout shared pipelines") {
+  
+  stage ("Checkout SCM") {
+    checkout scm
     sh "mkdir -p jenkins-plumbing"
     dir ("jenkins-plumbing") {
       git([branch: "master", url:'ssh://git@stash:7999/van/jenkins-plumbing.git', credentialsId: '8aa93893-84cc-45fc-a029-a42f21197bb3'])
     }
   }
 
+  def extExec = load("jenkins-plumbing/exec.groovy")
+  def extBedrock = load("jenkins-plumbing/bedrock-tests.groovy")
+  def extNpmInstall = load("jenkins-plumbing/npm-install.groovy")
+
   stage("Building") {
-    def extExec = load("jenkins-plumbing/exec.groovy")
-    def extBedrock = load("jenkins-plumbing/bedrock-tests.groovy")
+    extNpmInstall()
+    extExec("yarn run build")
+  }
 
-    extExec("yarn && yarn run build")
+  def permutations = [
+    [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
+    [ name: "win10FF", os: "windows-10", browser: "firefox" ],
+    [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
+    [ name: "win10IE", os: "windows-10", browser: "ie" ]
+  ]
 
-    def permutations = [
-      [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
-      [ name: "win10FF", os: "windows-10", browser: "firefox" ],
-      [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
-      [ name: "win10IE", os: "windows-10", browser: "ie" ]
-    ]
+  def processes = [:]
 
-    def processes = [:]
+  for (int i = 0; i < permutations.size(); i++) {
+    def permutation = permutations.get(i);
+    def name = permutation.name;
+    processes[name] = {
+      node("bedrock-" + permutation.os) {
+        echo "Clean workspace"
+        cleanWs()
 
-    for (int i = 0; i < permutations.size(); i++) {
-      def permutation = permutations.get(i);
-      def name = permutation.name;
-      processes[name] = {
-        node("bedrock-" + permutation.os) {
-          echo "Clean workspace"
-          cleanWs()
+        echo "Slave checkout"
+        checkout scm
 
-          echo "Slave checkout"
-          git([branch: "master", url:'ssh://git@stash:7999/tinymce/tinymce-react.git', credentialsId: '8aa93893-84cc-45fc-a029-a42f21197bb3'])
+        echo "Installing tools"
+        extNpmInstall()          
 
-          echo "Installing tools"
-          extExec("yarn")
-
-          echo "Platform: browser tests for " + permutation.name
-          extBedrock(permutation.name, permutation.browser, "src/test/ts/browser")
-        }
+        echo "Platform: browser tests for " + permutation.name
+        extBedrock(permutation.name, permutation.browser, "src/test/ts/browser")
       }
     }
   }
