@@ -19,7 +19,7 @@
     "clean": "rimraf lib",
     "test": "bedrock-auto -b chrome-headless -f src/test/ts/**/*.test.tsx",
     "test-manual": "bedrock -f src/test/ts/**/*.test.tsx",
-    "build": "npm run test && npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
+    "build": "npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook",
