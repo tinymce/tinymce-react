@@ -51,7 +51,7 @@ const getTestEditor = (onLoaded: OnEditorLoaded): TestEditor => {
 const cSetup = (createElement: (Ed: TestEditor) => JSX.Element) => {
   return Chain.async<Payload, Payload>((_, next, die) => {
     const root = document.createElement('div');
-    document.body.append(root);
+    document.body.appendChild(root);
 
     const onEditorLoaded: OnEditorLoaded = (editor, ref) => {
       Option.from(ref.current)
