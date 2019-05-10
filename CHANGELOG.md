@@ -1,4 +1,4 @@
-## 3.1.0 (TBA)
+## 3.1.0 (2019-05-10)
 * Added the editor as a second argument to `onEditorChange`
 * Exported Typescript prop types
 
