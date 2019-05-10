@@ -3,6 +3,6 @@
   "compilerOptions": {
     "module": "amd",
     "outFile": "./dist/tinymce-react.min.js",
-    "removeComments": true,
+    "removeComments": true
   }
 }
