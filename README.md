@@ -2,7 +2,7 @@
 
 ## About
 
-This package is a thin wrapper around `tinymce` to make it easier to use in a React application. 
+This package is a thin wrapper around [tinymce](https://github.com/tinymce/tinymce) to make it easier to use in a React application. If you need detailed documentation on TinyMCE itself head to the [Documentation Pages](https://www.tiny.cloud/docs/).
 
 For some quick demos, check out the [storybook](https://tinymce.github.io/tinymce-react/).
 
@@ -28,7 +28,7 @@ var { Editor } = require('@tinymce/tinymce-react');
 
 Use the editor in your app like this:
 
-```js
+```html
 <Editor
   apiKey="API_KEY"
   init={{ plugins: 'link table' }}
@@ -56,7 +56,7 @@ None of the configuration props are **required** for the component to work - oth
 
 You can bind editor events via a shorthand prop on the editor, for example:
 
-```js
+```html
 <Editor onSelectionChange="this.handlerFunction" />
 ```
 
@@ -143,7 +143,7 @@ class MyComponent extends React.Component {
     this.handleEditorChange = this.handleEditorChange.bind(this);
   }
 
-  handleEditorChange(content) {
+  handleEditorChange(content, editor) {
     this.setState({ content });
   }
 
@@ -159,7 +159,7 @@ class MyComponent extends React.Component {
 ### Auto-loading from TinyMCE Cloud
 The `Editor` component needs TinyMCE to be globally available to work, but to make it as easy as possible it will automatically load [TinyMCE Cloud](https://www.tiny.cloud/docs/cloud-deployment-guide/) if it can't find TinyMCE available when the component is mounting. To get rid of the `This domain is not registered...` warning, sign up for the cloud and enter the api key like this:
 
-```js
+```html
 <Editor apiKey='YOUR_API_KEY' init={{ /* your other settings */ }} />
 ```
 
@@ -172,3 +172,7 @@ To opt out of using TinyMCE cloud you have to make TinyMCE globally available yo
 ## Documentation
 
 Can be found on [TinyMCE.com](https://www.tinymce.com/docs/integrations/react/).
+
+### Issues
+
+Have you have found an issue with `tinymce-react` or do you have a feature request? Open up an [issue](https://github.com/tinymce/tinymce-react/issues) and let us know or submit a [pull request](https://github.com/tinymce/tinymce-react/pulls). *Note: for issues related to TinyMCE please visit the [TinyMCE repository](https://github.com/tinymce/tinymce).*
