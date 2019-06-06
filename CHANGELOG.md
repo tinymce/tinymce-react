@@ -1,3 +1,6 @@
+## 3.2.0 (2019-06-04)
+* Changed the CDN URL to use `cdn.tiny.cloud`
+
 ## 3.1.1 (2019-05-10)
 * Removed preinstall script
 
