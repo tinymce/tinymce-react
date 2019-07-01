@@ -6,26 +6,44 @@
  *
  */
 
-import { eventPropTypes } from './components/EditorPropTypes';
+import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
+import { IAllProps } from './components/Editor';
+import { EventHandler } from './Events';
 
-const isValidKey = (keys: string[]) => (key: string) => keys.indexOf(key) !== -1;
-
-// tslint:disable-next-line:ban-types
 export const isFunction = (x: any): x is Function => typeof x === 'function';
 
-export const bindHandlers = (props: any, editor: any, initEvent: Event): void => {
-  Object.keys(props)
-    .filter(isValidKey(Object.keys(eventPropTypes)))
-    .forEach((key: string) => {
-      const handler = props[key];
-      if (isFunction(handler)) {
-        if (key === 'onInit') {
-          handler(initEvent, editor);
-        } else {
-          editor.on(key.substring(2), (e: any) => handler(e, editor));
-        }
-      }
-    });
+const isEventProp = (name: string): name is keyof IEventPropTypes => {
+  return name in eventPropTypes;
+};
+
+interface EventHandlerSet {
+  handler: EventHandler<any>;
+  eventName: string;
+}
+
+const findEventHandlers = (props: Partial<IAllProps>): EventHandlerSet[] => {
+  return Object.keys(props)
+    .filter(isEventProp)
+    .filter((name) => isFunction(props[name]))
+    .map((name) => ({
+      handler: props[name] as EventHandler<any>,
+      eventName: name.substring(2)
+    }));
+};
+
+export const bindHandlers = (editor: any, props: Partial<IAllProps>, boundHandlers: Record<string, Function>): void => {
+  findEventHandlers(props).forEach((found) => {
+    // Unbind old handler
+    const oldHandler = boundHandlers[found.eventName];
+    if (isFunction(oldHandler)) {
+      editor.off(found.eventName, oldHandler);
+    }
+
+    // Bind new handler
+    const newHandler = (e: any) => found.handler(e, editor);
+    boundHandlers[found.eventName] = newHandler;
+    editor.on(found.eventName, newHandler);
+  });
 };
 
 let unique = 0;
@@ -52,5 +70,6 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
   return Array.isArray(plugins) ? plugins : plugins.split(' ');
 };
 
-export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) =>
-  normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
+export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) => {
+  return normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
+};

@@ -1,3 +1,6 @@
+## 3.2.1 (TBA)
+* Fixed an issue that made the editor ignore new event handlers provided through props
+
 ## 3.2.0 (2019-06-04)
 * Changed the CDN URL to use `cdn.tiny.cloud`
 
