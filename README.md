@@ -57,7 +57,7 @@ None of the configuration props are **required** for the component to work - oth
 You can bind editor events via a shorthand prop on the editor, for example:
 
 ```html
-<Editor onSelectionChange="this.handlerFunction" />
+<Editor onSelectionChange={this.handlerFunction} />
 ```
 
 Where the handler function will be called with the event and a reference to the editor.
