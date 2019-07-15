@@ -1,31 +1,40 @@
 import { Chain, Assertions } from '@ephox/agar';
+import { Cell } from '@ephox/katamari';
 
 const EventState = () => {
-  const state: Record<string, any> = {};
+  const state: Cell<Record<string, any>> = Cell({});
 
-  const handler = (name: string) => {
+  const createHandler = (name: string) => {
     return (...args: any[]) => {
-      state[name] = args;
+      state.set({
+        ...state.get(),
+        [name]: args
+      });
     };
   };
 
   const get = (name: string) => {
-    return state[name];
+    return state.get()[name];
   };
 
-  const cEach = (name: string, doAssert: (args: any[]) => void) => {
+  const cEach = (name: string, assertState: (args: any[]) => void) => {
     return Chain.fromChains([
-      Chain.op(() => Assertions.assertEq(name + ' should exist', true, !!state[name])),
       Chain.op(() => {
-        doAssert(state[name]);
+        Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
+        assertState(state.get()[name]);
       })
     ]);
   };
 
+  const cClearState = Chain.op(() => {
+    state.set({});
+  });
+
   return {
     cEach,
-    handler,
-    get
+    createHandler,
+    get,
+    cClearState
   };
 };
 

@@ -2,7 +2,6 @@ import { Chain, NamedChain } from '@ephox/agar';
 import { Fun, Option } from '@ephox/katamari';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { getTinymce } from 'src/main/ts/TinyMCE';
 import { Editor, IAllProps } from '../../../main/ts/components/Editor';
 import 'tinymce/tinymce';
 
@@ -10,71 +9,59 @@ export interface Payload {
   DOMNode: Element;
   editor: any;
   ref: React.RefObject<Editor>;
-  root: HTMLElement;
 }
 
-type OnEditorLoaded = (editor: any, ref: React.RefObject<Editor>) => void;
-
-type TestEditor = (props: IAllProps) => JSX.Element;
-
-const setTinymceBaseUrl = (baseUrl: string) => {
-  const tinymce = getTinymce();
-  const prefix = document.location.protocol + '//' + document.location.host;
-  tinymce.baseURL = baseUrl.indexOf('://') === -1 ? prefix + baseUrl : baseUrl;
-  tinymce.baseURI = new tinymce.util.URI(tinymce.baseURL);
+const getRoot = () => {
+  return Option.from(document.getElementById('root')).getOrThunk(() => {
+    const root = document.createElement('div');
+    root.id = 'root';
+    document.body.appendChild(root);
+    return root;
+  });
 };
 
-const getTestEditor = (onLoaded: OnEditorLoaded): TestEditor => {
-  return (props: IAllProps): JSX.Element => {
+const cRender = (props: IAllProps) => {
+  return Chain.async<Payload, Payload>((_, next, die) => {
     const originalInit = props.init || {};
     const originalSetup = originalInit.setup || Fun.noop;
     const ref: React.RefObject<Editor> = React.createRef();
 
     const init: Record<string, any> = {
       ...originalInit,
+      base_url: `/project/node_modules/tinymce`,
       setup: (editor: any) => {
         originalSetup(editor);
 
         editor.on('SkinLoaded', () => {
           setTimeout(() => {
-            onLoaded(editor, ref);
+            Option.from(ref.current)
+            .map(ReactDOM.findDOMNode)
+            .filter((val) => val instanceof Element)
+            .fold(() => die('Could not find DOMNode'), (DOMNode) => {
+              next({
+                ref,
+                editor,
+                DOMNode: DOMNode as Element
+              });
+            });
           }, 0);
         });
       }
     };
 
-    setTinymceBaseUrl(init.base_url || `/project/node_modules/tinymce`);
-    return <Editor ref={ref} {...props} init={init} />;
-  };
-};
-
-const cSetup = (createElement: (Ed: TestEditor) => JSX.Element) => {
-  return Chain.async<Payload, Payload>((_, next, die) => {
-    const root = document.createElement('div');
-    document.body.appendChild(root);
-
-    const onEditorLoaded: OnEditorLoaded = (editor, ref) => {
-      Option.from(ref.current)
-        .map(ReactDOM.findDOMNode)
-        .filter((val) => val instanceof Element)
-        .fold(() => die('Could not find DOMNode'), (DOMNode) => {
-          next({
-            ref,
-            root,
-            editor,
-            DOMNode: DOMNode as Element
-          });
-        });
-    };
-
-    const testEditor = getTestEditor(onEditorLoaded);
-    const editorElement = createElement(testEditor);
-    ReactDOM.render(editorElement, root);
+    ReactDOM.render(<Editor ref={ref} {...props} init={init} />, getRoot());
   });
 };
 
-const cRemove = Chain.op((res: Payload) => {
-  ReactDOM.unmountComponentAtNode(res.root);
+// By rendering the Editor into the same root, React will perform a diff and update.
+const cReRender = (props: IAllProps) => {
+  return Chain.op<Payload>((payload) => {
+    ReactDOM.render(<Editor ref={payload.ref} {...props} />, getRoot());
+  });
+};
+
+const cRemove = Chain.op((_) => {
+  ReactDOM.unmountComponentAtNode(getRoot());
 });
 
 const cNamedChainDirect = (name: keyof Payload) => NamedChain.direct(
@@ -100,7 +87,8 @@ const cEditor = (chain: Chain<any, any>) => {
 };
 
 export {
-  cSetup,
+  cRender,
+  cReRender,
   cRemove,
   cNamedChainDirect,
   cDOMNode,

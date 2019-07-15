@@ -12,9 +12,11 @@ import { IProps } from './Editor';
 
 export type CopyProps<T> = { [P in keyof T]: PropTypes.Requireable<any> };
 
-export interface IEditorPropTypes extends CopyProps<IEvents>, CopyProps<IProps> {}
+export type IEventPropTypes = CopyProps<IEvents>;
 
-export const eventPropTypes = {
+export interface IEditorPropTypes extends IEventPropTypes, CopyProps<IProps> {}
+
+export const eventPropTypes: IEventPropTypes = {
   onActivate: PropTypes.func,
   onAddUndo: PropTypes.func,
   onBeforeAddUndo: PropTypes.func,

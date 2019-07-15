@@ -44,6 +44,7 @@ export class Editor extends React.Component<IAllProps> {
   private editor?: Record<any, any>;
   private inline?: boolean;
   private currentContent?: string | null;
+  private boundHandlers: Record<string, EventHandler<any>> = {};
 
   public componentWillMount() {
     this.id = this.id || this.props.id || uuid('tiny-react');
@@ -68,8 +69,10 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  public componentWillReceiveProps(nextProps: Partial<IProps>) {
+  public componentWillReceiveProps(nextProps: Partial<IAllProps>) {
     if (this.editor && this.editor.initialized) {
+      bindHandlers(this.editor, nextProps, this.boundHandlers);
+
       this.currentContent = this.currentContent || this.editor.getContent();
 
       if (typeof nextProps.value === 'string' && nextProps.value !== this.props.value && nextProps.value !== this.currentContent) {
@@ -126,7 +129,11 @@ export class Editor extends React.Component<IAllProps> {
       });
     }
 
-    bindHandlers(this.props, editor, initEvent);
+    if (isFunction(this.props.onInit)) {
+      this.props.onInit(initEvent, editor);
+    }
+
+    bindHandlers(editor, this.props, this.boundHandlers);
   }
 
   private renderInline() {
