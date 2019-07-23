@@ -62,6 +62,26 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
 
       eventState.cClearState,
       cRemove
+    ])),
+
+    Logger.t('Test value prop', Chain.asStep({}, [
+      cRender({ value: '<p>Initial Value</p>' }),
+      cEditor(ApiChains.cAssertContent('<p>Initial Value</p>')),
+      cReRender({ value: '<p>New Value</p>' }),
+      cEditor(ApiChains.cAssertContent('<p>New Value</p>')),
+      cRemove
+    ])),
+
+    Logger.t('Test disabled prop', Chain.asStep({}, [
+      cRender({}),
+      cEditor(Chain.op((editor) => {
+        Assertions.assertEq('Should be design mode', 'design', editor.mode.get());
+      })),
+      cReRender({ disabled: true }),
+      cEditor(Chain.op((editor) => {
+        Assertions.assertEq('Should be readonly mode', 'readonly', editor.mode.get());
+      })),
+      cRemove
     ]))
   ], success, failure);
 });
