@@ -39,23 +39,41 @@ export class Editor extends React.Component<IAllProps> {
     cloudChannel: '5'
   };
 
-  private element: Element | null = null;
-  private id?: string;
+  private id: string;
+  private elementRef: React.RefObject<Element>;
   private editor?: Record<any, any>;
-  private inline?: boolean;
+  private inline: boolean;
   private currentContent?: string | null;
-  private boundHandlers: Record<string, EventHandler<any>> = {};
+  private boundHandlers: Record<string, EventHandler<any>>;
 
-  public componentWillMount() {
-    this.id = this.id || this.props.id || uuid('tiny-react');
+  constructor (props: Partial<IAllProps>) {
+    super(props);
+    this.id = this.props.id || uuid('tiny-react');
+    this.elementRef = React.createRef<Element>();
     this.inline = this.props.inline ? this.props.inline : this.props.init && this.props.init.inline;
+    this.boundHandlers = {};
+  }
+
+  public componentDidUpdate (prevProps: Partial<IAllProps>) {
+    if (this.editor && this.editor.initialized) {
+      bindHandlers(this.editor, this.props, this.boundHandlers);
+
+      this.currentContent = this.currentContent || this.editor.getContent();
+
+      if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
+        this.editor.setContent(this.props.value);
+      }
+      if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
+        this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
+      }
+    }
   }
 
   public componentDidMount() {
     if (getTinymce() !== null) {
       this.initialise();
-    } else if (this.element && this.element.ownerDocument) {
-      const doc = this.element.ownerDocument;
+    } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
+      const doc = this.elementRef.current.ownerDocument;
       const channel = this.props.cloudChannel;
       const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
 
@@ -69,21 +87,6 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  public componentWillReceiveProps(nextProps: Partial<IAllProps>) {
-    if (this.editor && this.editor.initialized) {
-      bindHandlers(this.editor, nextProps, this.boundHandlers);
-
-      this.currentContent = this.currentContent || this.editor.getContent();
-
-      if (typeof nextProps.value === 'string' && nextProps.value !== this.props.value && nextProps.value !== this.currentContent) {
-        this.editor.setContent(nextProps.value);
-      }
-      if (typeof nextProps.disabled === 'boolean' && nextProps.disabled !== this.props.disabled) {
-        this.editor.setMode(nextProps.disabled ? 'readonly' : 'design');
-      }
-    }
-  }
-
   public render() {
     return this.inline ? this.renderInline() : this.renderIframe();
   }
@@ -91,7 +94,7 @@ export class Editor extends React.Component<IAllProps> {
   private initialise = () => {
     const finalInit = {
       ...this.props.init,
-      target: this.element,
+      target: this.elementRef.current,
       readonly: this.props.disabled,
       inline: this.inline,
       plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
@@ -108,8 +111,8 @@ export class Editor extends React.Component<IAllProps> {
       }
     };
 
-    if (isTextarea(this.element)) {
-      this.element.style.visibility = '';
+    if (isTextarea(this.elementRef.current)) {
+      this.elementRef.current.style.visibility = '';
     }
 
     getTinymce().init(finalInit);
@@ -140,12 +143,17 @@ export class Editor extends React.Component<IAllProps> {
     const { tagName = 'div' } = this.props;
 
     return React.createElement(tagName, {
-      ref: (elm) => (this.element = elm),
+      ref: this.elementRef,
       id: this.id
     });
   }
 
   private renderIframe() {
-    return <textarea ref={(elm) => (this.element = elm)} style={{ visibility: 'hidden' }} id={this.id} name={this.props.textareaName} />;
+    return React.createElement('textarea', {
+      ref: this.elementRef,
+      style: { visibility: 'hidden' },
+      name: this.props.textareaName,
+      id: this.id
+    });
   }
 }
