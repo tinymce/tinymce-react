@@ -1,3 +1,6 @@
+## 3.3.1 (2019-08-16)
+* Changed referrer policy to origin to allow cloud caching
+
 ## 3.3.0 (2019-07-29)
 * Fixed an issue that made the editor ignore new event handlers provided through props
 * Removed use of deprecated lifecycle hooks `componentWillMount` and `componentWillReceiveProps`
