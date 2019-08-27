@@ -1,3 +1,6 @@
+## 3.3.2 (TBA)
+* Fixed an issue that caused `onEditorChange` to fire multiple times
+
 ## 3.3.1 (2019-08-16)
 * Changed referrer policy to origin to allow cloud caching
 

@@ -37,6 +37,22 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
       cRemove
     ])),
 
+    Logger.t('onEditorChange should only fire when the editors content changes', Chain.asStep({}, [
+      cRender({
+        onEditorChange: eventStore.createHandler('onEditorChange')
+      }),
+
+      cEditor(ApiChains.cSetContent('<p>Initial Content</p>')),
+      cEditor(ApiChains.cSetContent('<p>Initial Content</p>')), // Repeat
+
+      eventStore.cEach('onEditorChange', (integrationEvents) => {
+        Assertions.assertEq('onEditorChange should have been fired once', 1, integrationEvents.length);
+      }),
+
+      eventStore.cClearState,
+      cRemove
+    ])),
+
     Logger.t('Should be able to register an event handler after initial render', Chain.asStep({}, [
       cRender({ initialValue: '<p>Initial Content</p>' }),
       cReRender({ onSetContent: eventStore.createHandler('onSetContent') }),

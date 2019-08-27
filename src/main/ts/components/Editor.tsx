@@ -125,9 +125,13 @@ export class Editor extends React.Component<IAllProps> {
 
     if (isFunction(this.props.onEditorChange)) {
       editor.on('change keyup setcontent', (e: any) => {
-        this.currentContent = editor.getContent();
-        if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(this.currentContent, editor);
+        const newContent = editor.getContent();
+
+        if (newContent !== this.currentContent) {
+          this.currentContent = newContent;
+          if (isFunction(this.props.onEditorChange)) {
+            this.props.onEditorChange(this.currentContent, editor);
+          }
         }
       });
     }
