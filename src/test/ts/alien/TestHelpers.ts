@@ -1,23 +1,33 @@
 import { Chain, Assertions } from '@ephox/agar';
-import { Cell } from '@ephox/katamari';
+import { Cell, Obj } from '@ephox/katamari';
+import { EventHandler } from 'src/main/ts/Events';
 
-const EventState = () => {
-  const state: Cell<Record<string, any>> = Cell({});
+interface EventHandlerArgs<T> {
+  editorEvent: T;
+  editor: any;
+}
 
-  const createHandler = (name: string) => {
-    return (...args: any[]) => {
+type EventHandlerState = EventHandlerArgs<any>[];
+
+const EventStore = () => {
+  const state: Cell<Record<string, EventHandlerState>> = Cell({});
+
+  const createHandler = <T = any>(name: string): EventHandler<T> => {
+    return (event: T, editor: any) => {
+      const oldState = state.get();
+
+      const eventHandlerState = Obj.get(oldState, name)
+        .getOr([])
+        .concat([{ editorEvent: event, editor }]);
+
       state.set({
-        ...state.get(),
-        [name]: args
+        ...oldState,
+        [name]: eventHandlerState
       });
     };
   };
 
-  const get = (name: string) => {
-    return state.get()[name];
-  };
-
-  const cEach = (name: string, assertState: (args: any[]) => void) => {
+  const cEach = (name: string, assertState: (state: EventHandlerState) => void) => {
     return Chain.fromChains([
       Chain.op(() => {
         Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
@@ -33,11 +43,10 @@ const EventState = () => {
   return {
     cEach,
     createHandler,
-    get,
     cClearState
   };
 };
 
 export {
-  EventState
+  EventStore
 };
