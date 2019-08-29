@@ -1,4 +1,4 @@
-## 3.3.2 (TBA)
+## 3.3.2 (2019-08-29)
 * Fixed an issue that caused `onEditorChange` to fire multiple times
 
 ## 3.3.1 (2019-08-16)
