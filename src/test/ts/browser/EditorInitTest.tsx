@@ -1,7 +1,8 @@
 import { Assertions, Chain, GeneralSteps, Logger, Pipeline } from '@ephox/agar';
 import { UnitTest } from '@ephox/bedrock';
 import { Element } from '@ephox/dom-globals';
-import { cRemove, cRender, cDOMNode } from '../alien/Loader';
+import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader';
+import { ApiChains } from '@ephox/mcagar';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {
   const cAssertProperty = (propName: any, expected: any) => {
@@ -73,5 +74,25 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
         cRemove
       ])),
     ])),
+
+    Logger.t('Value prop should propagate changes to editor', Chain.asStep({}, [
+      cRender({ value: '<p>Initial Value</p>' }),
+      cEditor(ApiChains.cAssertContent('<p>Initial Value</p>')),
+      cReRender({ value: '<p>New Value</p>' }),
+      cEditor(ApiChains.cAssertContent('<p>New Value</p>')),
+      cRemove
+    ])),
+
+    Logger.t('Disabled prop should disable editor', Chain.asStep({}, [
+      cRender({}),
+      cEditor(Chain.op((editor) => {
+        Assertions.assertEq('Should be design mode', 'design', editor.mode.get());
+      })),
+      cReRender({ disabled: true }),
+      cEditor(Chain.op((editor) => {
+        Assertions.assertEq('Should be readonly mode', 'readonly', editor.mode.get());
+      })),
+      cRemove
+    ]))
   ], success, failure);
 });
