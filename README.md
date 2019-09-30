@@ -7,7 +7,7 @@ This package is a thin wrapper around [TinyMCE](https://github.com/tinymce/tinym
 * If you need detailed documentation on TinyMCE, see: [TinyMCE Documentation](https://www.tiny.cloud/docs/).
 * For the TinyMCE React component Quick Start, see: [TinyMCE Documentation - React Integration](https://www.tiny.cloud/docs/integrations/react/#tinymcereactintegrationquickstartguide).
 * For the TinyMCE React component Technical Reference, see: [TinyMCE Documentation - TinyMCE React technical reference](https://www.tiny.cloud/docs/integrations/react/#tinymcereacttechnicalreference).
-* For see our quick demos, check out the TinyMCE React [storybook](https://tinymce.github.io/tinymce-react/).
+* For our quick demos, check out the TinyMCE React [storybook](https://tinymce.github.io/tinymce-react/).
 
 
 ### Issues
