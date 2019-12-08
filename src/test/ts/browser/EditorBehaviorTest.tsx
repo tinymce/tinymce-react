@@ -1,5 +1,5 @@
 import { Assertions, Chain, Logger, Pipeline } from '@ephox/agar';
-import { UnitTest } from '@ephox/bedrock';
+import { UnitTest } from '@ephox/bedrock-client';
 import { cRemove, cRender, cEditor, cReRender } from '../alien/Loader';
 import { ApiChains } from '@ephox/mcagar';
 import { getTinymce } from '../../../main/ts/TinyMCE';
