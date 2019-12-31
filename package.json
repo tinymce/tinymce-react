@@ -1,9 +1,9 @@
 {
   "name": "tinymce-react-self-hosted",
-  "version": "3.3.2",
-  "description": "Official TinyMCE React Component",
+  "version": "4.0.0",
+  "description": "Official TinyMCE React Component fork with optional self-hosted package delivery",
   "repository": {
-    "url": "https://github.com/tinymce/tinymce-react"
+    "url": "https://github.com/levi2ki/tinymce-react"
   },
   "files": [
     "lib",
