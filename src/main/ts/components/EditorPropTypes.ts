@@ -82,7 +82,6 @@ export const eventPropTypes: IEventPropTypes = {
 };
 
 export const EditorPropTypes: IEditorPropTypes = {
-  apiKey: PropTypes.string,
   id: PropTypes.string,
   inline: PropTypes.bool,
   init: PropTypes.object,
@@ -90,7 +89,6 @@ export const EditorPropTypes: IEditorPropTypes = {
   onEditorChange: PropTypes.func,
   value: PropTypes.string,
   tagName: PropTypes.string,
-  cloudChannel: PropTypes.string,
   plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   disabled: PropTypes.bool,

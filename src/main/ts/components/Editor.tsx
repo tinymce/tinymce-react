@@ -8,13 +8,12 @@
 
 import * as React from 'react';
 import { EventHandler, IEvents } from '../Events';
-import * as ScriptLoader from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+import { editorContext } from './EditorContext';
 
 export interface IProps {
-  apiKey: string;
   id: string;
   inline: boolean;
   initialValue: string;
@@ -22,7 +21,6 @@ export interface IProps {
   value: string;
   init: Record<string, any>;
   tagName: string;
-  cloudChannel: string;
   plugins: string | string[];
   toolbar: string | string[];
   disabled: boolean;
@@ -30,14 +28,10 @@ export interface IProps {
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
-const scriptState = ScriptLoader.create();
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
-
-  public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '5'
-  };
+  public static contextType = editorContext;
 
   private id: string;
   private elementRef: React.RefObject<Element>;
@@ -74,10 +68,13 @@ export class Editor extends React.Component<IAllProps> {
       this.initialise();
     } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
       const doc = this.elementRef.current.ownerDocument;
-      const channel = this.props.cloudChannel;
-      const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
 
-      ScriptLoader.load(scriptState, doc, `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`, this.initialise);
+      if (this.context.load) {
+        this.context.load(doc, this.initialise);
+      } else {
+        // tslint:disable-next-line:no-console
+        console.warn('You must explictly connect EditorProvider to your app tree');
+      }
     }
   }
 

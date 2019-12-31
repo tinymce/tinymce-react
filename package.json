@@ -1,5 +1,5 @@
 {
-  "name": "@tinymce/tinymce-react",
+  "name": "tinymce-react-self-hosted",
   "version": "3.3.2",
   "description": "Official TinyMCE React Component",
   "repository": {

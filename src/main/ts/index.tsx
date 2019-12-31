@@ -7,5 +7,7 @@
  */
 
 import { Editor, IAllProps } from './components/Editor';
+import { IEditorContext, IEditorProviderProps, EditorProvider } from './components/EditorContext';
 
 export { Editor, IAllProps };
+export { IEditorContext, IEditorProviderProps, EditorProvider };

@@ -73,3 +73,6 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
 export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) => {
   return normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
 };
+
+// tslint:disable-next-line:no-empty
+export const noop = () => {};
