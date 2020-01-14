@@ -47,14 +47,21 @@ const cRender = (props: IAllProps) => {
       }
     };
 
-    ReactDOM.render(<Editor ref={ref} {...props} init={init} />, getRoot());
+    /**
+     * NOTE: TinyMCE will manipulate the DOM directly and this may cause issues with React's virtual DOM getting
+     * out of sync. The official fix for this is wrap everything (textarea + editor) in an element. As far as React
+     * is concerned, the wrapper always only has a single child, thus ensuring that React doesn’t have a reason to
+     * touch the nodes created by TinyMCE. Since this only seems to be an issue when rendering TinyMCE 4 directly
+     * into a root and a fix would be a breaking change, let's just wrap the editor in a <div> here for now.
+     */
+    ReactDOM.render(<div><Editor ref={ref} {...props} init={init} /></div>, getRoot());
   });
 };
 
 // By rendering the Editor into the same root, React will perform a diff and update.
 const cReRender = (props: IAllProps) => {
   return Chain.op<Context>((context) => {
-    ReactDOM.render(<Editor ref={context.ref} {...props} />, getRoot());
+    ReactDOM.render(<div><Editor ref={context.ref} {...props} /></div>, getRoot());
   });
 };
 
