@@ -105,5 +105,5 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
   Pipeline.async({}, [
     sTestVersion('5'),
     sTestVersion('4'),
-  ], () => success(), failure);
+  ], success, failure);
 });
