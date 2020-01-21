@@ -3,9 +3,8 @@ import { Fun, Option } from '@ephox/katamari';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Editor, IAllProps } from '../../../main/ts/components/Editor';
-import 'tinymce/tinymce';
 
-export interface Payload {
+export interface Context {
   DOMNode: Element;
   editor: any;
   ref: React.RefObject<Editor>;
@@ -21,14 +20,13 @@ const getRoot = () => {
 };
 
 const cRender = (props: IAllProps) => {
-  return Chain.async<Payload, Payload>((_, next, die) => {
+  return Chain.async<Context, Context>((_, next, die) => {
     const originalInit = props.init || {};
     const originalSetup = originalInit.setup || Fun.noop;
     const ref: React.RefObject<Editor> = React.createRef();
 
     const init: Record<string, any> = {
       ...originalInit,
-      base_url: `/project/node_modules/tinymce`,
       setup: (editor: any) => {
         originalSetup(editor);
 
@@ -49,14 +47,21 @@ const cRender = (props: IAllProps) => {
       }
     };
 
-    ReactDOM.render(<Editor ref={ref} {...props} init={init} />, getRoot());
+    /**
+     * NOTE: TinyMCE will manipulate the DOM directly and this may cause issues with React's virtual DOM getting
+     * out of sync. The official fix for this is wrap everything (textarea + editor) in an element. As far as React
+     * is concerned, the wrapper always only has a single child, thus ensuring that React doesn’t have a reason to
+     * touch the nodes created by TinyMCE. Since this only seems to be an issue when rendering TinyMCE 4 directly
+     * into a root and a fix would be a breaking change, let's just wrap the editor in a <div> here for now.
+     */
+    ReactDOM.render(<div><Editor ref={ref} {...props} init={init} /></div>, getRoot());
   });
 };
 
 // By rendering the Editor into the same root, React will perform a diff and update.
 const cReRender = (props: IAllProps) => {
-  return Chain.op<Payload>((payload) => {
-    ReactDOM.render(<Editor ref={payload.ref} {...props} />, getRoot());
+  return Chain.op<Context>((context) => {
+    ReactDOM.render(<div><Editor ref={context.ref} {...props} /></div>, getRoot());
   });
 };
 
@@ -64,9 +69,9 @@ const cRemove = Chain.op((_) => {
   ReactDOM.unmountComponentAtNode(getRoot());
 });
 
-const cNamedChainDirect = (name: keyof Payload) => NamedChain.direct(
+const cNamedChainDirect = (name: keyof Context) => NamedChain.direct(
   NamedChain.inputName(),
-  Chain.mapper((res: Payload) => res[name]),
+  Chain.mapper((res: Context) => res[name]),
   name
 );
 

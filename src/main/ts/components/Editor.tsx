@@ -21,6 +21,7 @@ export interface IProps {
   onEditorChange: EventHandler<any>;
   value: string;
   init: Record<string, any>;
+  outputFormat: 'html' | 'text';
   tagName: string;
   cloudChannel: string;
   plugins: string | string[];
@@ -58,7 +59,7 @@ export class Editor extends React.Component<IAllProps> {
     if (this.editor && this.editor.initialized) {
       bindHandlers(this.editor, this.props, this.boundHandlers);
 
-      this.currentContent = this.currentContent || this.editor.getContent();
+      this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
         this.editor.setContent(this.props.value);
@@ -125,7 +126,7 @@ export class Editor extends React.Component<IAllProps> {
 
     if (isFunction(this.props.onEditorChange)) {
       editor.on('change keyup setcontent', (e: any) => {
-        const newContent = editor.getContent();
+        const newContent = editor.getContent({ format: this.props.outputFormat });
 
         if (newContent !== this.currentContent) {
           this.currentContent = newContent;
