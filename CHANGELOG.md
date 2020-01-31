@@ -1,4 +1,4 @@
-## 3.4.0 (2019-08-29)
+## 3.4.0 (2020-01-31)
 * Added new `outputFormat` prop for specifying the format of the content emitted via the `onEditorChange` event
 
 ## 3.3.2 (2019-08-29)
