@@ -1,3 +1,6 @@
+#!groovy
+@Library('waluigi') _
+
 properties([
   disableConcurrentBuilds(),
   pipelineTriggers([
@@ -8,29 +11,20 @@ properties([
 node("primary") {
   echo "Clean workspace"
   cleanWs()
-  
+
   stage ("Checkout SCM") {
-    checkout scm
-    sh "mkdir -p jenkins-plumbing"
-    dir ("jenkins-plumbing") {
-      git([branch: "master", url:'ssh://git@stash:7999/van/jenkins-plumbing.git', credentialsId: '8aa93893-84cc-45fc-a029-a42f21197bb3'])
-    }
+    checkout localBranch(scm)
   }
 
-  def extExec = load("jenkins-plumbing/exec.groovy")
-  def extBedrock = load("jenkins-plumbing/bedrock-tests.groovy")
-  def extNpmInstall = load("jenkins-plumbing/npm-install.groovy")
-
   stage("Building") {
-    extNpmInstall()
-    extExec("yarn run build")
+    npmInstall()
+    exec "yarn run build"
   }
 
   def permutations = [
     [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
     [ name: "win10FF", os: "windows-10", browser: "firefox" ],
-    [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
-    [ name: "win10IE", os: "windows-10", browser: "ie" ]
+    [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ]
   ]
 
   def processes = [:]
@@ -43,14 +37,14 @@ node("primary") {
         echo "Clean workspace"
         cleanWs()
 
-        echo "Slave checkout"
+        echo "Checkout"
         checkout scm
 
         echo "Installing tools"
-        extNpmInstall()          
+        npmInstall()
 
         echo "Platform: browser tests for " + permutation.name
-        extBedrock(permutation.name, permutation.browser, "src/test/ts/browser")
+        bedrockTests(permutation.name, permutation.browser, "src/test/ts/browser")
       }
     }
   }
@@ -60,16 +54,10 @@ node("primary") {
   }
 
   stage("Deploying storybook to github") {
-    sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
-      sh("git remote add upstream git@github.com:tinymce/tinymce-react.git")
-      sh('npx storybook-to-ghpages --remote=upstream')
-    }
-  }
-
-  stage("Synching master branch to public github repo") {
-    sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
-      sh("git checkout master")
-      sh("git push upstream master --tags")
+    if (isReleaseBranch()) {
+      sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
+        sh 'yarn storybook-to-ghpages'
+      }
     }
   }
 }
