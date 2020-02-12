@@ -12,6 +12,7 @@ import * as ScriptLoader from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+import { isNullOrUndefined } from 'util';
 
 export interface IProps {
   apiKey: string;
@@ -28,6 +29,7 @@ export interface IProps {
   toolbar: string | string[];
   disabled: boolean;
   textareaName: string;
+  tinymceScriptSrc: string;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
@@ -74,11 +76,12 @@ export class Editor extends React.Component<IAllProps> {
     if (getTinymce() !== null) {
       this.initialise();
     } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
-      const doc = this.elementRef.current.ownerDocument;
-      const channel = this.props.cloudChannel;
-      const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
-
-      ScriptLoader.load(scriptState, doc, `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`, this.initialise);
+      ScriptLoader.load(
+        scriptState,
+        this.elementRef.current.ownerDocument,
+        this.getScriptSrc(),
+        this.initialise
+      );
     }
   }
 
@@ -92,6 +95,14 @@ export class Editor extends React.Component<IAllProps> {
     return this.inline ? this.renderInline() : this.renderIframe();
   }
 
+  private getScriptSrc() {
+    const channel = this.props.cloudChannel;
+    const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
+
+    return isNullOrUndefined(this.props.tinymceScriptSrc) ?
+      `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js` :
+      this.props.tinymceScriptSrc;
+  }
   private initialise = () => {
     const finalInit = {
       ...this.props.init,
