@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { EventHandler, IEvents } from '../Events';
-import * as ScriptLoader from '../ScriptLoader';
+import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
@@ -33,7 +33,6 @@ export interface IProps {
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
-const scriptState = ScriptLoader.create();
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -77,7 +76,6 @@ export class Editor extends React.Component<IAllProps> {
       this.initialise();
     } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
       ScriptLoader.load(
-        scriptState,
         this.elementRef.current.ownerDocument,
         this.getScriptSrc(),
         this.initialise
