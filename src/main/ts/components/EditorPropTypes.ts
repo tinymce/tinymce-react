@@ -96,5 +96,6 @@ export const EditorPropTypes: IEditorPropTypes = {
   toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   disabled: PropTypes.bool,
   textareaName: PropTypes.string,
+  tinymceScriptSrc: PropTypes.string,
   ...eventPropTypes
 };

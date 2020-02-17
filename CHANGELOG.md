@@ -1,3 +1,6 @@
+## 3.5.0 (TBA)
+* Added new `tinymceScriptSrc` prop for specifying an external version of TinyMCE to lazy load
+
 ## 3.4.0 (2020-01-31)
 * Added new `outputFormat` prop for specifying the format of the content emitted via the `onEditorChange` event
 
