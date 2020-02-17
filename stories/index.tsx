@@ -1,23 +1,30 @@
-/* tslint:disable:no-console */
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
+
 import { Editor } from '../src/main/ts';
-import { content } from './fakeContent';
 
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
+const sampleContent = `
+<h2 style="text-align: center;">
+  TinyMCE provides a <span style="text-decoration: underline;">full-featured</span> rich text editing experience, and a featherweight download.
+</h2>
+<p style="text-align: center;">
+  <strong><span style="font-size: 14pt;"><span style="color: #7e8c8d; font-weight: 600;">No matter what you're building, TinyMCE has got you covered.</span></span></strong>
+</p>`;
 
 setDefaults({
   inline: true,
   source: false,
-  propTables: false
+  propTables: false,
+  header: false
 });
 
-class StateFulEditor extends React.Component<any, { data: string }> {
+class ControlledInput extends React.Component<any, { data: string }> {
   constructor(props) {
     super(props);
     this.state = {
-      data: '<p>hello</p>'
+      data: sampleContent
     };
   }
 
@@ -26,21 +33,30 @@ class StateFulEditor extends React.Component<any, { data: string }> {
   }
 
   public render() {
-    const textareaStyle = { width: '100%', height: '200px', fontSize: '1em' };
+    const textareaStyle = { width: '100%', height: '200px' };
     return (
       <div>
-        <Editor apiKey={apiKey} plugins='table' value={this.state.data} onEditorChange={(e) => this.handleChange(e)} />
-        <textarea style={textareaStyle} value={this.state.data} onChange={(e) => this.handleChange(e.target.value)} />
+        <Editor
+          apiKey={apiKey}
+          init={{ height: 300 }}
+          value={this.state.data}
+          onEditorChange={(e) => this.handleChange(e)}
+        />
+        <textarea
+          style={textareaStyle}
+          value={this.state.data}
+          onChange={(e) => this.handleChange(e.target.value)}
+        />
       </div>
     );
   }
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class DisablingEditor extends React.Component<any, { disabled: boolean }> {
+class Disable extends React.Component<any, { disabled: boolean }> {
   constructor(props) {
     super(props);
-    this.state = { disabled: false };
+    this.state = { disabled: true };
   }
 
   public toggleDisabled() {
@@ -48,84 +64,73 @@ class DisablingEditor extends React.Component<any, { disabled: boolean }> {
   }
 
   public render() {
+    // tslint:disable-next-line:no-console
     console.log(this.state.disabled);
     return (
       <div>
-        <Editor apiKey={apiKey} disabled={this.state.disabled} />
-        <button onClick={this.toggleDisabled.bind(this)}>{this.state.disabled ? 'enable' : 'disable'}</button>
+        <button onClick={this.toggleDisabled.bind(this)}>
+          {this.state.disabled ? 'enable' : 'disable'}
+        </button>
+        <Editor
+          apiKey={apiKey}
+          init={{ height: 300 }}
+          initialValue={sampleContent}
+          disabled={this.state.disabled}
+        />
       </div>
     );
   }
 }
 
-storiesOf('Editor', module)
-  .add(
-    'Controlled input editor',
-    withInfo({
-      text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
-    })(() => <StateFulEditor />)
-  )
+storiesOf('tinymce-react', module)
   .add(
     'Iframe editor',
     withInfo({
-      text: 'Simple iframe editor with some initial html value. Logs editor content on change event.'
-    })(() => <Editor apiKey={apiKey} initialValue={content} onChange={(event, editor) => console.log(editor.getContent())} plugins='link table' />)
-  )
-  .add(
-    'Inline init editor',
-    withInfo({
-      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
-    })(() => <Editor apiKey={apiKey} init={{ inline: true, plugins: 'link table wordcount', toolbar: 'bold link table' }} />)
+      text: 'Iframe editor.'
+    })(() =>
+      <Editor
+        apiKey={apiKey}
+        initialValue={sampleContent}
+        init={{ height: 300 }}
+      />
+    )
   )
   .add(
     'Inline editor',
     withInfo({
-      text: 'Simple inline editor with some initial html value. Logs editor content on change event.'
-    })(() => <Editor apiKey={apiKey} inline plugins='link table wordcount' toolbar='bold link table' />)
+      text: 'Inline editor.'
+    })(() =>
+      <div style={{ paddingTop: '100px' }}>
+        <Editor
+          apiKey={apiKey}
+          initialValue={sampleContent}
+          inline
+        />
+      </div>
+    )
   )
   .add(
-    'Disabled editor',
+    'Controlled input',
     withInfo({
-      text: 'Simple disabled editor.'
-    })(() => <Editor apiKey={apiKey} disabled />)
+      text: 'Example of usage as as a controlled component.'
+    })(() => <ControlledInput />)
   )
   .add(
-    'Disable editor dynamically with button',
+    'Disable button',
     withInfo({
-      text: `Shows example with setting the editor into readonly mode using the disabled prop. This is usage:
-
-      class DisablingEditor extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = { disabled: false };
-        }
-
-        public toggleDisabled() {
-          this.setState({ disabled: !this.state.disabled });
-        }
-
-        public render() {
-          console.log(this.state.disabled);
-          return (
-            <div>
-              <Editor disabled={this.state.disabled} />
-              <button onClick={this.toggleDisabled.bind(this)}>{this.state.disabled ? 'enable' : 'disable'}</button>
-            </div>
-          );
-        }
-      }
-      `
-    })(() => <DisablingEditor />)
+      text: `Example with setting the editor into readonly mode using the disabled prop.`
+    })(() => <Disable />)
   )
   .add(
-    'editor with cloudchannel fixed to 4',
+    'cloudChannel set to 5-dev',
     withInfo({
-      text: 'Editor with cloudChannel set to 4'
-    })(() => <Editor apiKey={apiKey} cloudChannel='4' onChange={(event, editor) => console.log(editor.getContent())} />)
-  )
-  .add(
-    'editor with cloudchannel fixed to 5-dev',
-    withInfo({
-      text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load tinymce 5'
-    })(() => <Editor apiKey={apiKey} cloudChannel='5-dev' onChange={(event, editor) => console.log(editor.getContent())} />)
+      text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load tinymce 5.'
+    })(() =>
+      <Editor
+        apiKey={apiKey}
+        cloudChannel='5-dev'
+        initialValue={sampleContent}
+        init={{ height: 300 }}
+      />
+    )
   );
