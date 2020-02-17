@@ -124,7 +124,7 @@ storiesOf('tinymce-react', module)
   .add(
     'cloudChannel set to 5-dev',
     withInfo({
-      text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load tinymce 5.'
+      text: 'Editor with cloudChannel set to 5-dev, please make sure to reload page to load TinyMCE 5.'
     })(() =>
       <Editor
         apiKey={apiKey}
