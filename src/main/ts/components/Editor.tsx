@@ -72,7 +72,7 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidMount() {
-    if (getTinymce() !== null) {
+    if (!this.props.apiKey && getTinymce() !== null) {
       this.initialise();
     } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
       ScriptLoader.load(
