@@ -85,6 +85,9 @@ export class Editor extends React.Component<IAllProps> {
 
   public componentWillUnmount() {
     if (getTinymce() !== null) {
+      if (this.editor) {
+        this.editor.off('SaveContent');
+      }
       getTinymce().remove(this.editor);
     }
   }
