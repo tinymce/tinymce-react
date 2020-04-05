@@ -58,7 +58,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "rimraf": "^2.6.3",
-    "tinymce": "^5.1.5",
+    "tinymce": "npm:tinymce@^5.0.0",
     "tinymce-4": "npm:tinymce@^4.9.7",
     "tinymce-5": "npm:tinymce@^5.0.0",
     "ts-loader": "^5.3.3",
