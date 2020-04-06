@@ -53,7 +53,7 @@
     "@types/storybook__react": "^4.0.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.0",
-    "core-js": "^2.6.3",
+    "core-js": "^3.6.4",
     "raf": "^3.4.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
