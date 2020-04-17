@@ -12,7 +12,6 @@ import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { isNullOrUndefined } from 'util';
 
 export interface IProps {
   apiKey: string;
@@ -97,7 +96,7 @@ export class Editor extends React.Component<IAllProps> {
     const channel = this.props.cloudChannel;
     const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
 
-    return isNullOrUndefined(this.props.tinymceScriptSrc) ?
+    return (this.props.tinymceScriptSrc === undefined || this.props.tinymceScriptSrc === null) ?
       `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js` :
       this.props.tinymceScriptSrc;
   }
