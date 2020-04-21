@@ -1,3 +1,6 @@
+## 3.5.1 (TBD)
+* Remove `util` module fom dependencies by purging usage in code.
+
 ## 3.5.0 (2020-02-24)
 * Added new `tinymceScriptSrc` prop for specifying an external version of TinyMCE to lazy load
 
