@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react';
 import * as React from 'react';
 
 import { Editor } from '../src/main/ts';
+import { TinymceEditor, TinymceBookmark } from '../src/main/ts/TinyMCE';
 
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
 const sampleContent = `
@@ -26,25 +27,24 @@ const countChars = (data: string) => {
   return node.innerText.length;
 };
 
-class ControlledInput extends React.Component<any, { data: string, len: number }> {
-  private prevValue = '';
+class ControlledInput extends React.Component<any, { data: string, bm: TinymceBookmark, len: number }> {
 
   constructor(props) {
     super(props);
     this.state = {
       data: sampleContent,
+      bm: { start: [] },
       len: countChars(sampleContent)
     };
-    this.prevValue = '';
   }
 
-  public handleChange(data: string) {
+  public handleChange(data: string, editor: TinymceEditor | null) {
+    const bm = editor?.selection.getBookmark(3);
     const len = countChars(data);
     if (len <= this.props.maxLen ) {
-      this.prevValue = data;
-      this.setState({ data, len });
+      this.setState({ data, len, bm });
     } else {
-      this.setState({ data: this.prevValue });
+      this.setState({ });
     }
   }
 
@@ -56,13 +56,14 @@ class ControlledInput extends React.Component<any, { data: string, len: number }
           apiKey={apiKey}
           init={{ height: 300 }}
           value={this.state.data}
-          onEditorChange={(e) => this.handleChange(e)}
+          selection={this.state.bm}
+          onEditorChange={(content, editor) => this.handleChange(content, editor)}
         />
-        {this.props.maxLen - this.state.len} of {this.props.maxLen}
+        {this.props.maxLen - this.state.len} characters remaining of {this.props.maxLen}.
         <textarea
           style={textareaStyle}
           value={this.state.data}
-          onChange={(e) => this.handleChange(e.target.value)}
+          onChange={(e) => this.handleChange(e.target.value, null)}
         />
       </div>
     );

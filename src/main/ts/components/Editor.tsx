@@ -20,6 +20,7 @@ export interface IProps {
   initialValue: string;
   onEditorChange: EventHandler<any>;
   value: string;
+  selection: TinymceBookmark;
   init: Record<string, any>;
   outputFormat: 'html' | 'text';
   tagName: string;
@@ -46,6 +47,7 @@ export class Editor extends React.Component<IAllProps> {
   private inline: boolean;
   private currentContent?: string | null;
   private boundHandlers: Record<string, EventHandler<any>>;
+  private updating: boolean;
 
   constructor (props: Partial<IAllProps>) {
     super(props);
@@ -54,6 +56,7 @@ export class Editor extends React.Component<IAllProps> {
     this.inline = this.props.inline ? this.props.inline : this.props.init && this.props.init.inline;
     this.boundHandlers = {};
     this.editor = null;
+    this.updating = false;
   }
 
   public componentDidUpdate (prevProps: Partial<IAllProps>) {
@@ -63,8 +66,17 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== this.currentContent) {
-        console.log('setContent');
-        this.editor.setContent(this.props.value);
+        this.updating = true;
+        try {
+          console.log('setContent');
+          this.editor.setContent(this.props.value);
+          if (this.props.selection) {
+            console.log('moveToBookmark', this.props.selection);
+            this.editor.selection.moveToBookmark(this.props.selection)
+          }
+        } finally {
+          this.updating = false;
+        }
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -136,6 +148,9 @@ export class Editor extends React.Component<IAllProps> {
 
     if (isFunction(this.props.onEditorChange)) {
       editor.on('change keyup setcontent', (_evt) => {
+        if (this.updating) {
+          return;
+        }
         const newContent = editor.getContent({ format: this.props.outputFormat });
 
         if (newContent !== this.currentContent) {
