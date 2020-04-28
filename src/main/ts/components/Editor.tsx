@@ -61,7 +61,8 @@ export class Editor extends React.Component<IAllProps> {
 
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
-      if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
+      if (typeof this.props.value === 'string' && this.props.value !== this.currentContent) {
+        console.log('setContent');
         this.editor.setContent(this.props.value);
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
