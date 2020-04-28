@@ -20,16 +20,32 @@ setDefaults({
   header: false
 });
 
-class ControlledInput extends React.Component<any, { data: string }> {
+const countChars = (data: string) => {
+  const node = document.createElement('div');
+  node.innerHTML = data;
+  return node.innerText.length;
+};
+
+class ControlledInput extends React.Component<any, { data: string, len: number }> {
+  private prevValue = '';
+
   constructor(props) {
     super(props);
     this.state = {
-      data: sampleContent
+      data: sampleContent,
+      len: countChars(sampleContent)
     };
+    this.prevValue = '';
   }
 
   public handleChange(data: string) {
-    this.setState({ data });
+    const len = countChars(data);
+    if (len <= this.props.maxLen ) {
+      this.prevValue = data;
+      this.setState({ data, len });
+    } else {
+      this.setState({ data: this.prevValue });
+    }
   }
 
   public render() {
@@ -42,6 +58,7 @@ class ControlledInput extends React.Component<any, { data: string }> {
           value={this.state.data}
           onEditorChange={(e) => this.handleChange(e)}
         />
+        {this.props.maxLen - this.state.len} of {this.props.maxLen}
         <textarea
           style={textareaStyle}
           value={this.state.data}
@@ -113,7 +130,7 @@ storiesOf('tinymce-react', module)
     'Controlled input',
     withInfo({
       text: 'Example of usage as as a controlled component.'
-    })(() => <ControlledInput />)
+    })(() => <ControlledInput maxLen={200} />)
   )
   .add(
     'Disable button',
