@@ -9,7 +9,7 @@
 import * as React from 'react';
 import { EventHandler, IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
-import { getTinymce } from '../TinyMCE';
+import { getTinymce, TinymceConfig, TinymceEditor, TinymceBookmark } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
@@ -42,7 +42,7 @@ export class Editor extends React.Component<IAllProps> {
 
   private id: string;
   private elementRef: React.RefObject<Element>;
-  private editor?: Record<any, any>;
+  private editor: TinymceEditor | null;
   private inline: boolean;
   private currentContent?: string | null;
   private boundHandlers: Record<string, EventHandler<any>>;
@@ -53,6 +53,7 @@ export class Editor extends React.Component<IAllProps> {
     this.elementRef = React.createRef<Element>();
     this.inline = this.props.inline ? this.props.inline : this.props.init && this.props.init.inline;
     this.boundHandlers = {};
+    this.editor = null;
   }
 
   public componentDidUpdate (prevProps: Partial<IAllProps>) {
@@ -84,8 +85,8 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentWillUnmount() {
-    if (getTinymce() !== null) {
-      getTinymce().remove(this.editor);
+    if (this.editor !== null) {
+      getTinymce()?.remove(this.editor);
     }
   }
 
@@ -102,17 +103,17 @@ export class Editor extends React.Component<IAllProps> {
       this.props.tinymceScriptSrc;
   }
   private initialise = () => {
-    const finalInit = {
+    const finalInit: TinymceConfig = {
       ...this.props.init,
       target: this.elementRef.current,
       readonly: this.props.disabled,
       inline: this.inline,
       plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
       toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
-      setup: (editor: any) => {
+      setup: (editor) => {
         this.editor = editor;
-        editor.on('init', (e: Event) => {
-          this.initEditor(e, editor);
+        editor.on('Init', (evt) => {
+          this.initEditor(evt, editor);
         });
 
         if (this.props.init && typeof this.props.init.setup === 'function') {
@@ -125,16 +126,16 @@ export class Editor extends React.Component<IAllProps> {
       this.elementRef.current.style.visibility = '';
     }
 
-    getTinymce().init(finalInit);
+    getTinymce()?.init(finalInit);
   }
 
-  private initEditor(initEvent: Event, editor: any) {
+  private initEditor(initEvent: unknown, editor: TinymceEditor) {
     const value =
       typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
     editor.setContent(value);
 
     if (isFunction(this.props.onEditorChange)) {
-      editor.on('change keyup setcontent', (e: any) => {
+      editor.on('change keyup setcontent', (_evt) => {
         const newContent = editor.getContent({ format: this.props.outputFormat });
 
         if (newContent !== this.currentContent) {

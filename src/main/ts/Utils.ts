@@ -9,6 +9,7 @@
 import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 import { IAllProps } from './components/Editor';
 import { EventHandler } from './Events';
+import { TinymceEditor } from './TinyMCE';
 
 export const isFunction = (x: any): x is Function => typeof x === 'function';
 
@@ -31,7 +32,7 @@ const findEventHandlers = (props: Partial<IAllProps>): EventHandlerSet[] => {
     }));
 };
 
-export const bindHandlers = (editor: any, props: Partial<IAllProps>, boundHandlers: Record<string, Function>): void => {
+export const bindHandlers = (editor: TinymceEditor, props: Partial<IAllProps>, boundHandlers: Record<string, Function>): void => {
   findEventHandlers(props).forEach((found) => {
     // Unbind old handler
     const oldHandler = boundHandlers[found.eventName];
