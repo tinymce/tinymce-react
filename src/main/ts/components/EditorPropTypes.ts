@@ -90,6 +90,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   onEditorChange: PropTypes.func,
   outputFormat: PropTypes.oneOf(['html', 'text']),
   value: PropTypes.string,
+  selection: PropTypes.object,
   tagName: PropTypes.string,
   cloudChannel: PropTypes.string,
   plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
