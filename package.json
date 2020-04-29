@@ -18,11 +18,11 @@
     "clean": "rimraf lib",
     "test": "bedrock-auto -b chrome-headless -f src/test/ts/**/*Test.ts",
     "test-manual": "bedrock -f src/test/ts/**/*Test.ts",
-    "build": "npm run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
+    "build": "yarn run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook",
-    "prepare": "npm run build"
+    "prepare": "yarn run build"
   },
   "keywords": [],
   "author": "Tiny Technologies",

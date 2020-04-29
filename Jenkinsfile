@@ -1,5 +1,5 @@
 #!groovy
-@Library('waluigi@v3.1.0') _
+@Library('waluigi@v3.2.0') _
 
 standardProperties()
 
@@ -48,17 +48,17 @@ node("primary") {
     parallel processes
   }
 
-  stage("Deploying storybook to github") {
-    if (isReleaseBranch()) {
+  if (isReleaseBranch() && isPackageNewerVersion()) {
+    stage("Deploying storybook to github") {
       sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
         sh 'yarn storybook-to-ghpages'
       }
     }
   }
 
-  if (isReleaseBranch()) {
+  if (isReleaseBranch() && isPackageNewerVersion()) {
     stage("Publish") {
-      sh 'yarn publish'
+      sh 'npm publish'
     }
   }
 }
