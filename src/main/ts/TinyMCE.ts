@@ -69,6 +69,7 @@ export interface TinymceEditor {
 export interface TinymceGlobal {
   init(settings: TinymceConfig): Promise<TinymceEditor[]>;
   remove(editor: TinymceEditor): void;
+  Editor: any;
 }
 
 const getGlobal = (): any => (typeof window !== 'undefined' ? window : global);
@@ -79,4 +80,12 @@ const getTinymce = (): TinymceGlobal | null => {
   return global && global.tinymce ? global.tinymce : null;
 };
 
-export { getTinymce };
+const getTinymceOrError = (errorMessage = 'Global tinymce was not found.'): TinymceGlobal => {
+  const tinymce = getTinymce();
+  if (tinymce === null) {
+    throw new Error(errorMessage);
+  }
+  return tinymce;
+}
+
+export { getTinymce, getTinymceOrError };

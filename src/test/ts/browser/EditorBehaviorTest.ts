@@ -4,12 +4,12 @@ import { cRemove, cRender, cEditor, cReRender } from '../alien/Loader';
 import { ApiChains } from '@ephox/mcagar';
 import { VersionLoader } from '@tinymce/miniature';
 
-import { getTinymce } from '../../../main/ts/TinyMCE';
+import { getTinymceOrError } from '../../../main/ts/TinyMCE';
 import { EventStore } from '../alien/TestHelpers';
 
 UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
   const isEditor = (val: any) => {
-    return val instanceof getTinymce().Editor;
+    return val instanceof getTinymceOrError().Editor;
   };
 
   const eventStore = EventStore();
