@@ -1,5 +1,6 @@
-## 3.5.1 (TBD)
-* Remove `util` module fom dependencies by purging usage in code.
+## 3.5.1 (2020-04-30)
+* Remove `util` module from dependencies by purging usage in code.
+* Upgraded jquery in dev dependencies in response to security alert.
 
 ## 3.5.0 (2020-02-24)
 * Added new `tinymceScriptSrc` prop for specifying an external version of TinyMCE to lazy load
