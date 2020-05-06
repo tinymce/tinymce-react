@@ -53,9 +53,6 @@ export class Editor extends React.Component<IAllProps> {
     this.elementRef = React.createRef<Element>();
     this.inline = this.props.inline ? this.props.inline : this.props.init && this.props.init.inline;
     this.boundHandlers = {};
-    this.initialise = this.initialise.bind(this);
-    this.handleInit = this.handleInit.bind(this);
-    this.handleEditorChange = this.handleEditorChange.bind(this);
   }
 
   public componentDidUpdate (prevProps: Partial<IAllProps>) {
@@ -142,7 +139,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  private handleEditorChange(evt: unknown) {
+  private handleEditorChange = (evt: unknown) => {
     const editor = this.editor;
     if (editor) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
@@ -156,7 +153,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  private handleInit(initEvent: {}) {
+  private handleInit = (initEvent: {}) => {
     const editor = this.editor;
     if (editor) {
       editor.setContent(this.getInitialValue());
