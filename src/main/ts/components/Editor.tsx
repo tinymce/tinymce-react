@@ -83,10 +83,10 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentWillUnmount() {
-    if (getTinymce() !== null && this.editor) {
-      const editor = this.editor;
+    const editor = this.editor;
+    if (getTinymce() !== null && editor) {
+      editor.off('init', this.handleInit);
       if (editor.initialized) {
-        editor.off('init', this.handleInit);
         editor.off('change keyup setcontent', this.handleEditorChange);
         Object.keys(this.boundHandlers).forEach((eventName) => {
           editor.off(eventName, this.boundHandlers[eventName]);
