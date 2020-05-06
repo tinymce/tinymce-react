@@ -1,3 +1,6 @@
+## 3.6.0 (2020-05-07)
+* Fixed an issue that allowed events to be fired during `componentWillUnmount`
+
 ## 3.5.1 (2020-04-30)
 * Remove `util` module from dependencies by purging usage in code.
 * Upgraded jquery in dev dependencies in response to security alert.
