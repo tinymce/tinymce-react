@@ -97,76 +97,22 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentWillUnmount() {
-    if (this.editor !== null) {
-      getTinymce()?.remove(this.editor);
+    const editor = this.editor;
+    if (editor) {
+      editor.off('init', this.handleInit);
+      if (editor.initialized) {
+        editor.off('change keyup setcontent', this.handleEditorChange);
+        Object.keys(this.boundHandlers).forEach((eventName) => {
+          editor.off(eventName, this.boundHandlers[eventName]);
+        });
+        this.boundHandlers = {};
+      }
+      getTinymce()?.remove(editor);
     }
   }
 
   public render() {
     return this.inline ? this.renderInline() : this.renderIframe();
-  }
-
-  private getScriptSrc() {
-    const channel = this.props.cloudChannel;
-    const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
-
-    return (this.props.tinymceScriptSrc === undefined || this.props.tinymceScriptSrc === null) ?
-      `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js` :
-      this.props.tinymceScriptSrc;
-  }
-  private initialise = () => {
-    const finalInit: TinymceConfig = {
-      ...this.props.init,
-      target: this.elementRef.current,
-      readonly: this.props.disabled,
-      inline: this.inline,
-      plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
-      toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
-      setup: (editor) => {
-        this.editor = editor;
-        editor.on('Init', (evt) => {
-          this.initEditor(evt, editor);
-        });
-
-        if (this.props.init && typeof this.props.init.setup === 'function') {
-          this.props.init.setup(editor);
-        }
-      }
-    };
-
-    if (isTextarea(this.elementRef.current)) {
-      this.elementRef.current.style.visibility = '';
-    }
-
-    getTinymce()?.init(finalInit);
-  }
-
-  private initEditor(initEvent: unknown, editor: TinymceEditor) {
-    const value =
-      typeof this.props.value === 'string' ? this.props.value : typeof this.props.initialValue === 'string' ? this.props.initialValue : '';
-    editor.setContent(value);
-
-    if (isFunction(this.props.onEditorChange)) {
-      editor.on('change keyup setcontent', (_evt) => {
-        if (this.updating) {
-          return;
-        }
-        const newContent = editor.getContent({ format: this.props.outputFormat });
-
-        if (newContent !== this.currentContent) {
-          this.currentContent = newContent;
-          if (isFunction(this.props.onEditorChange)) {
-            this.props.onEditorChange(this.currentContent, editor);
-          }
-        }
-      });
-    }
-
-    if (isFunction(this.props.onInit)) {
-      this.props.onInit(initEvent, editor);
-    }
-
-    bindHandlers(editor, this.props, this.boundHandlers);
   }
 
   private renderInline() {
@@ -185,5 +131,81 @@ export class Editor extends React.Component<IAllProps> {
       name: this.props.textareaName,
       id: this.id
     });
+  }
+
+  private getScriptSrc() {
+    if (typeof this.props.tinymceScriptSrc === 'string') {
+      return this.props.tinymceScriptSrc;
+    } else {
+      const channel = this.props.cloudChannel;
+      const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
+      return `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
+    }
+  }
+
+  private getInitialValue() {
+    if (typeof this.props.value === 'string') {
+      return this.props.value;
+    } else if (typeof this.props.initialValue === 'string') {
+      return this.props.initialValue;
+    } else {
+      return '';
+    }
+  }
+
+  private handleEditorChange = (_evt: unknown) => {
+    const editor = this.editor;
+    if (editor && !this.updating) {
+      const newContent = editor.getContent({ format: this.props.outputFormat });
+  
+      if (newContent !== this.currentContent) {
+        this.currentContent = newContent;
+        if (isFunction(this.props.onEditorChange)) {
+          this.props.onEditorChange(this.currentContent, editor);
+        }
+      }
+    }
+  }
+
+  private handleInit = (initEvent: unknown) => {
+    const editor = this.editor;
+    if (editor) {
+      editor.setContent(this.getInitialValue());
+  
+      if (isFunction(this.props.onEditorChange)) {
+        editor.on('change keyup setcontent', this.handleEditorChange);
+      }
+  
+      if (isFunction(this.props.onInit)) {
+        this.props.onInit(initEvent as {}, editor);
+      }
+  
+      bindHandlers(editor, this.props, this.boundHandlers);
+    }
+  }
+
+  private initialise = () => {
+    const finalInit: TinymceConfig = {
+      ...this.props.init,
+      target: this.elementRef.current,
+      readonly: this.props.disabled,
+      inline: this.inline,
+      plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
+      toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
+      setup: (editor) => {
+        this.editor = editor;
+        editor.on('init', this.handleInit);
+
+        if (this.props.init && isFunction(this.props.init.setup)) {
+          this.props.init.setup(editor);
+        }
+      }
+    };
+
+    if (isTextarea(this.elementRef.current)) {
+      this.elementRef.current.style.visibility = '';
+    }
+
+    getTinymce()?.init(finalInit);
   }
 }
