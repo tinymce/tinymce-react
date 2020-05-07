@@ -46,6 +46,7 @@ export class Editor extends React.Component<IAllProps> {
   private editor: TinymceEditor | null;
   private inline: boolean;
   private currentContent?: string | null;
+  private currentSelection?: TinymceBookmark;
   private boundHandlers: Record<string, EventHandler<any>>;
   private updating: boolean;
 
@@ -157,9 +158,11 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor && !this.updating) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
+      const newSelection = editor.selection.getBookmark(3);
   
-      if (newContent !== this.currentContent) {
+      if (newContent !== this.currentContent || newSelection !== this.currentSelection) {
         this.currentContent = newContent;
+        this.currentSelection = newSelection;
         if (isFunction(this.props.onEditorChange)) {
           this.props.onEditorChange(this.currentContent, editor);
         }
@@ -173,7 +176,7 @@ export class Editor extends React.Component<IAllProps> {
       editor.setContent(this.getInitialValue());
   
       if (isFunction(this.props.onEditorChange)) {
-        editor.on('change keyup setcontent', this.handleEditorChange);
+        editor.on('change keyup setcontent SelectionChange', this.handleEditorChange);
       }
   
       if (isFunction(this.props.onInit)) {
