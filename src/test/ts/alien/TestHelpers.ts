@@ -7,17 +7,15 @@ interface EventHandlerArgs<T> {
   editor: any;
 }
 
-type EventHandlerState = EventHandlerArgs<any>[];
-
 const EventStore = () => {
-  const state: Cell<Record<string, EventHandlerState>> = Cell({});
+  const state: Cell<Record<string, EventHandlerArgs<any>[]>> = Cell({});
 
   const createHandler = <T = any>(name: string): EventHandler<T> => {
     return (event: T, editor: any) => {
       const oldState = state.get();
 
       const eventHandlerState = Obj.get(oldState, name)
-        .getOr([])
+        .getOr([] as EventHandlerArgs<any>[])
         .concat([{ editorEvent: event, editor }]);
 
       state.set({
@@ -27,7 +25,7 @@ const EventStore = () => {
     };
   };
 
-  const cEach = (name: string, assertState: (state: EventHandlerState) => void) => {
+  const cEach = (name: string, assertState: (state: EventHandlerArgs<any>[]) => void) => {
     return Chain.fromChains([
       Chain.op(() => {
         Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());

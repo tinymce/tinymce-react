@@ -1,3 +1,6 @@
+## 3.6.1 (2020-09-07)
+* Upgraded dependencies to latest available.
+
 ## 3.6.0 (2020-05-07)
 * Fixed an issue that allowed events to be fired during `componentWillUnmount`
 
