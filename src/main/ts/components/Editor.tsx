@@ -29,9 +29,18 @@ export interface IProps {
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string;
+  /**
+   * A timeout for loading the script to let the other scripts 
+   * load first if the editor is not the main content of the page.
+   */
+  loadTimeOut?: number;
+
+  // 
+  scriptAttributes?: Pick<HTMLScriptElement, 'async' | 'defer'>;
+
 }
 
-export interface IAllProps extends Partial<IProps>, Partial<IEvents> {}
+export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -47,7 +56,7 @@ export class Editor extends React.Component<IAllProps> {
   private currentContent?: string | null;
   private boundHandlers: Record<string, EventHandler<any>>;
 
-  constructor (props: Partial<IAllProps>) {
+  constructor(props: Partial<IAllProps>) {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
     this.elementRef = React.createRef<Element>();
@@ -55,7 +64,7 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
-  public componentDidUpdate (prevProps: Partial<IAllProps>) {
+  public componentDidUpdate(prevProps: Partial<IAllProps>) {
     if (this.editor && this.editor.initialized) {
       bindHandlers(this.editor, this.props, this.boundHandlers);
 
@@ -77,7 +86,9 @@ export class Editor extends React.Component<IAllProps> {
       ScriptLoader.load(
         this.elementRef.current.ownerDocument,
         this.getScriptSrc(),
-        this.initialise
+        this.initialise,
+        this.props.loadTimeOut,
+        this.props.scriptAttributes
       );
     }
   }
@@ -143,7 +154,7 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
-  
+
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
         if (isFunction(this.props.onEditorChange)) {
@@ -157,15 +168,15 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor) {
       editor.setContent(this.getInitialValue());
-  
+
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
       }
-  
+
       if (isFunction(this.props.onInit)) {
         this.props.onInit(initEvent, editor);
       }
-  
+
       bindHandlers(editor, this.props, this.boundHandlers);
     }
   }

@@ -7,6 +7,7 @@
  */
 
 import { uuid } from './Utils';
+import { IProps } from './components/Editor';
 
 export type callbackFn = () => void;
 export interface IStateObj {
@@ -24,19 +25,22 @@ const createState = (): IStateObj => {
 };
 
 interface ScriptLoader {
-  load: (doc: Document, url: string, callback: callbackFn) => void;
+  load: (doc: Document, url: string, callback: callbackFn, loadTimeout?: number, scriptAttributes?: IProps['scriptAttributes']) => void;
   reinitialize: () => void;
 }
 
 const CreateScriptLoader = (): ScriptLoader => {
   let state: IStateObj = createState();
 
-  const injectScriptTag = (scriptId: string, doc: Document, url: string, callback: callbackFn) => {
+  const injectScriptTag = (scriptId: string, doc: Document, url: string, callback: callbackFn, scriptAttributes?: IProps['scriptAttributes']) => {
     const scriptTag = doc.createElement('script');
     scriptTag.referrerPolicy = 'origin';
     scriptTag.type = 'application/javascript';
     scriptTag.id = scriptId;
     scriptTag.src = url;
+
+    if (scriptAttributes)
+      scriptAttributes = { ...scriptAttributes, ...scriptAttributes }
 
     const handler = () => {
       scriptTag.removeEventListener('load', handler);
@@ -48,16 +52,23 @@ const CreateScriptLoader = (): ScriptLoader => {
     }
   };
 
-  const load = (doc: Document, url: string, callback: callbackFn) => {
+  const load = (doc: Document, url: string, callback: callbackFn, loadTimeout?: number, scriptAttributes?: IProps['scriptAttributes']) => {
+
+    function scriptTagInjection() {
+      injectScriptTag(state.scriptId, doc, url, () => {
+        state.listeners.forEach((fn) => fn());
+        state.scriptLoaded = true;
+      }, scriptAttributes);
+    }
+
     if (state.scriptLoaded) {
       callback();
     } else {
       state.listeners.push(callback);
       if (!doc.getElementById(state.scriptId)) {
-        injectScriptTag(state.scriptId, doc, url, () => {
-          state.listeners.forEach((fn) => fn());
-          state.scriptLoaded = true;
-        });
+        if (loadTimeout)
+          setTimeout(scriptTagInjection, loadTimeout);
+        else scriptTagInjection();
       }
     }
   };
