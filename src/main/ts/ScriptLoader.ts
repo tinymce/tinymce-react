@@ -33,14 +33,14 @@ const CreateScriptLoader = (): ScriptLoader => {
   let state: IStateObj = createState();
 
   const injectScriptTag = (scriptId: string, doc: Document, url: string, callback: callbackFn, scriptAttributes?: IProps['scriptAttributes']) => {
-    const scriptTag = doc.createElement('script');
+    let scriptTag = doc.createElement('script');
     scriptTag.referrerPolicy = 'origin';
     scriptTag.type = 'application/javascript';
     scriptTag.id = scriptId;
     scriptTag.src = url;
 
     if (scriptAttributes)
-      scriptAttributes = { ...scriptAttributes, ...scriptAttributes }
+      scriptTag = { ...scriptTag, ...scriptAttributes }
 
     const handler = () => {
       scriptTag.removeEventListener('load', handler);
