@@ -7,12 +7,12 @@
  */
 
 import { uuid } from './Utils';
-import { IProps } from './components/Editor';
 
 export type callbackFn = () => void;
 export interface IStateObj {
   listeners: callbackFn[];
   scriptId: string;
+  scriptLoading: boolean;
   scriptLoaded: boolean;
 }
 
@@ -20,27 +20,27 @@ const createState = (): IStateObj => {
   return {
     listeners: [],
     scriptId: uuid('tiny-script'),
+    scriptLoading: false,
     scriptLoaded: false
   };
 };
 
 interface ScriptLoader {
-  load: (doc: Document, url: string, callback: callbackFn, loadTimeout?: number, scriptAttributes?: IProps['scriptAttributes']) => void;
+  load: (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: callbackFn) => void;
   reinitialize: () => void;
 }
 
 const CreateScriptLoader = (): ScriptLoader => {
   let state: IStateObj = createState();
 
-  const injectScriptTag = (scriptId: string, doc: Document, url: string, callback: callbackFn, scriptAttributes?: IProps['scriptAttributes']) => {
-    let scriptTag = doc.createElement('script');
+  const injectScriptTag = (scriptId: string, doc: Document, url: string, async: boolean, defer: boolean, callback: callbackFn) => {
+    const scriptTag = doc.createElement('script');
     scriptTag.referrerPolicy = 'origin';
     scriptTag.type = 'application/javascript';
     scriptTag.id = scriptId;
     scriptTag.src = url;
-
-    if (scriptAttributes)
-      scriptTag = { ...scriptTag, ...scriptAttributes }
+    scriptTag.async = async;
+    scriptTag.defer = defer;
 
     const handler = () => {
       scriptTag.removeEventListener('load', handler);
@@ -52,23 +52,27 @@ const CreateScriptLoader = (): ScriptLoader => {
     }
   };
 
-  const load = (doc: Document, url: string, callback: callbackFn, loadTimeout?: number, scriptAttributes?: IProps['scriptAttributes']) => {
+  const load = (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: callbackFn) => {
 
-    function scriptTagInjection() {
-      injectScriptTag(state.scriptId, doc, url, () => {
+    const scriptTagInjection = () => injectScriptTag(
+      state.scriptId, doc, url, async, defer,
+      () => {
         state.listeners.forEach((fn) => fn());
         state.scriptLoaded = true;
-      }, scriptAttributes);
-    }
+      }
+    );
 
     if (state.scriptLoaded) {
       callback();
     } else {
       state.listeners.push(callback);
-      if (!doc.getElementById(state.scriptId)) {
-        if (loadTimeout)
-          setTimeout(scriptTagInjection, loadTimeout);
-        else scriptTagInjection();
+      if (!state.scriptLoading) {
+        state.scriptLoading = true;
+        if (delay > 0) {
+          setTimeout(scriptTagInjection, delay);
+        } else {
+          scriptTagInjection();
+        }
       }
     }
   };
