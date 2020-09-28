@@ -68,7 +68,7 @@ const CreateScriptLoader = (): ScriptLoader => {
       state.listeners.push(callback);
       if (!state.scriptLoading) {
         state.scriptLoading = true;
-        if (delay) {
+        if (delay > 0) {
           setTimeout(scriptTagInjection, delay);
         } else {
           scriptTagInjection();
