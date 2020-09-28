@@ -29,15 +29,11 @@ export interface IProps {
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string;
-  /**
-   * A timeout for loading the script to let the other scripts 
-   * load first if the editor is not the main content of the page.
-   */
-  loadTimeOut?: number;
-
-  // 
-  scriptAttributes?: Pick<HTMLScriptElement, 'async' | 'defer'>;
-
+  scriptLoading: {
+    async?: boolean;
+    defer?: boolean;
+    delay?: number;
+  };
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
@@ -86,9 +82,10 @@ export class Editor extends React.Component<IAllProps> {
       ScriptLoader.load(
         this.elementRef.current.ownerDocument,
         this.getScriptSrc(),
-        this.initialise,
-        this.props.loadTimeOut,
-        this.props.scriptAttributes
+        this.props.scriptLoading?.async ?? false,
+        this.props.scriptLoading?.defer ?? false,
+        this.props.scriptLoading?.delay ?? 0,
+        this.initialise
       );
     }
   }
