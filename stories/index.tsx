@@ -20,7 +20,7 @@ setDefaults({
   header: false
 });
 
-class ControlledInput extends React.Component<any, { data: string }> {
+class ControlledInput extends React.Component<unknown, { data: string }> {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +53,7 @@ class ControlledInput extends React.Component<any, { data: string }> {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class Disable extends React.Component<any, { disabled: boolean }> {
+class Disable extends React.Component<unknown, { disabled: boolean }> {
   constructor(props) {
     super(props);
     this.state = { disabled: true };

@@ -9,15 +9,16 @@
 import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 import { IAllProps } from './components/Editor';
 import { EventHandler } from './Events';
+import { Editor as TinyMCEEditor, EditorEvent } from "tinymce-5";
 
-export const isFunction = (x: any): x is Function => typeof x === 'function';
+export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 
 const isEventProp = (name: string): name is keyof IEventPropTypes => {
   return name in eventPropTypes;
 };
 
 interface EventHandlerSet {
-  handler: EventHandler<any>;
+  handler: EventHandler<unknown>;
   eventName: string;
 }
 
@@ -26,12 +27,12 @@ const findEventHandlers = (props: Partial<IAllProps>): EventHandlerSet[] => {
     .filter(isEventProp)
     .filter((name) => isFunction(props[name]))
     .map((name) => ({
-      handler: props[name] as EventHandler<any>,
+      handler: props[name] as EventHandler<unknown>,
       eventName: name.substring(2)
     }));
 };
 
-export const bindHandlers = (editor: any, props: Partial<IAllProps>, boundHandlers: Record<string, Function>): void => {
+export const bindHandlers = (editor: TinyMCEEditor, props: Partial<IAllProps>, boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>): void => {
   findEventHandlers(props).forEach((found) => {
     // Unbind old handler
     const oldHandler = boundHandlers[found.eventName];
@@ -40,7 +41,7 @@ export const bindHandlers = (editor: any, props: Partial<IAllProps>, boundHandle
     }
 
     // Bind new handler
-    const newHandler = (e: any) => found.handler(e, editor);
+    const newHandler = (e: EditorEvent<unknown>) => found.handler(e, editor);
     boundHandlers[found.eventName] = newHandler;
     editor.on(found.eventName, newHandler);
   });
@@ -49,8 +50,7 @@ export const bindHandlers = (editor: any, props: Partial<IAllProps>, boundHandle
 let unique = 0;
 
 export const uuid = (prefix: string): string => {
-  const date = new Date();
-  const time = date.getTime();
+  const time = Date.now();
   const random = Math.floor(Math.random() * 1000000000);
 
   unique++;
@@ -70,6 +70,6 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
   return Array.isArray(plugins) ? plugins : plugins.split(' ');
 };
 
-export const mergePlugins = (initPlugins: string | string[], inputPlugins?: string | string[]) => {
+export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => {
   return normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
 };

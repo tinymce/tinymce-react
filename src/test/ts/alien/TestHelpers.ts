@@ -1,21 +1,23 @@
 import { Chain, Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
-import { EventHandler } from 'src/main/ts/Events';
+import { Editor as TinyMCEEditor } from "tinymce-5";
 
 interface EventHandlerArgs<T> {
   editorEvent: T;
-  editor: any;
+  editor: TinyMCEEditor;
 }
 
-const EventStore = () => {
-  const state: Cell<Record<string, EventHandlerArgs<any>[]>> = Cell({});
+type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown
 
-  const createHandler = <T = any>(name: string): EventHandler<T> => {
-    return (event: T, editor: any) => {
+const EventStore = () => {
+  const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
+
+  const createHandler = <T>(name: string): HandlerType<T> => {
+    return (event: T, editor) => {
       const oldState = state.get();
 
       const eventHandlerState = Obj.get(oldState, name)
-        .getOr([] as EventHandlerArgs<any>[])
+        .getOr([] as EventHandlerArgs<unknown>[])
         .concat([{ editorEvent: event, editor }]);
 
       state.set({
@@ -25,11 +27,11 @@ const EventStore = () => {
     };
   };
 
-  const cEach = (name: string, assertState: (state: EventHandlerArgs<any>[]) => void) => {
+  const cEach = <T>(name: string, assertState: (state: EventHandlerArgs<T>[]) => void) => {
     return Chain.fromChains([
       Chain.op(() => {
         Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
-        assertState(state.get()[name]);
+        assertState(state.get()[name] as unknown as EventHandlerArgs<T>[]);
       })
     ]);
   };
