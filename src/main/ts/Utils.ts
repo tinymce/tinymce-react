@@ -9,7 +9,7 @@
 import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 import { IAllProps } from './components/Editor';
 import { EventHandler } from './Events';
-import { Editor as TinyMCEEditor, EditorEvent } from "tinymce-5";
+import { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 

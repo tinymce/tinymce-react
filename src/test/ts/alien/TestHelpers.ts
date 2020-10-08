@@ -1,6 +1,6 @@
 import { Chain, Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
-import { Editor as TinyMCEEditor } from "tinymce-5";
+import { Editor as TinyMCEEditor } from 'tinymce';
 
 interface EventHandlerArgs<T> {
   editorEvent: T;

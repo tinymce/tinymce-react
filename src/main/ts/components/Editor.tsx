@@ -12,7 +12,7 @@ import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from "tinymce-5";
+import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from 'tinymce';
 
 
 export interface IProps {

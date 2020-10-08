@@ -6,7 +6,7 @@ import { VersionLoader } from '@tinymce/miniature';
 
 import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventStore } from '../alien/TestHelpers';
-import { Editor as TinyMCEEditor, EditorEvent, Events } from "tinymce-5";
+import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
 

@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RawEditorSettings } from 'tinymce';
 import { Editor, IAllProps } from '../../../main/ts/components/Editor';
-import { Editor as TinyMCEEditor } from "tinymce-5";
+import { Editor as TinyMCEEditor } from 'tinymce';
 
 export interface Context {
   DOMNode: HTMLElement;

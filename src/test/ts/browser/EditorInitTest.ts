@@ -2,7 +2,7 @@ import { Assertions, Chain, GeneralSteps, Logger, Pipeline } from '@ephox/agar';
 import { UnitTest } from '@ephox/bedrock-client';
 import { ApiChains } from '@ephox/mcagar';
 import { VersionLoader } from '@tinymce/miniature';
-import { Editor as TinyMCEEditor } from "tinymce-5";
+import { Editor as TinyMCEEditor } from 'tinymce';
 
 import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader';
 
