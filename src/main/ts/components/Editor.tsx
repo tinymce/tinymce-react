@@ -22,7 +22,7 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: RawEditorSettings;
+  init: RawEditorSettings & { selector?: undefined, target?: undefined };
   outputFormat: 'html' | 'text';
   tagName: string;
   cloudChannel: string;
