@@ -28,7 +28,7 @@ const cRender = (props: IAllProps) => {
     const originalSetup = originalInit.setup || Fun.noop;
     const ref = React.createRef<Editor>();
 
-    const init: RawEditorSettings = {
+    const init: RawEditorSettings & { target?: undefined; selector?: undefined } = {
       ...originalInit,
       setup: (editor) => {
         originalSetup(editor);
