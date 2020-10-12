@@ -3,8 +3,7 @@ import { Fun, Optional } from '@ephox/katamari';
 import { SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { RawEditorSettings } from 'tinymce';
-import { Editor, IAllProps } from '../../../main/ts/components/Editor';
+import { Editor, IAllProps, IProps } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
 export interface Context {
@@ -28,7 +27,7 @@ const cRender = (props: IAllProps) => {
     const originalSetup = originalInit.setup || Fun.noop;
     const ref = React.createRef<Editor>();
 
-    const init: RawEditorSettings & { target?: undefined; selector?: undefined } = {
+    const init: IProps['init'] = {
       ...originalInit,
       setup: (editor) => {
         originalSetup(editor);
