@@ -1,10 +1,9 @@
 import { Assertions, Chain, GeneralSteps, Logger, Pipeline } from '@ephox/agar';
 import { UnitTest } from '@ephox/bedrock-client';
-import { ApiChains } from '@ephox/mcagar';
 import { VersionLoader } from '@tinymce/miniature';
-import { Editor as TinyMCEEditor } from 'tinymce';
 
 import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader';
+import { cAssertContent } from '../alien/TestHelpers';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {
   const cAssertProperty = (propName: string, expected: string) => {
@@ -81,9 +80,9 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
 
       Logger.t('Value prop should propagate changes to editor', Chain.asStep({}, [
         cRender({ value: '<p>Initial Value</p>' }),
-        cEditor(ApiChains.cAssertContent('<p>Initial Value</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cAssertContent('<p>Initial Value</p>')),
         cReRender({ value: '<p>New Value</p>' }),
-        cEditor(ApiChains.cAssertContent('<p>New Value</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cAssertContent('<p>New Value</p>')),
         cRemove
       ])),
 

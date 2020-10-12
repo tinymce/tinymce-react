@@ -1,5 +1,6 @@
 import { Chain, Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
+import { ApiChains } from '@ephox/mcagar';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
 interface EventHandlerArgs<T> {
@@ -47,6 +48,12 @@ const EventStore = () => {
   };
 };
 
+// casting needed due to fake types used in mcagar
+const cSetContent = (content: string) => ApiChains.cSetContent(content) as unknown as Chain<TinyMCEEditor, TinyMCEEditor>;
+const cAssertContent = (content: string) => ApiChains.cAssertContent(content) as unknown as Chain<TinyMCEEditor, TinyMCEEditor>;
+
 export {
-  EventStore
+  EventStore,
+  cSetContent,
+  cAssertContent
 };

@@ -1,11 +1,10 @@
 import { Assertions, Chain, Logger, Pipeline, GeneralSteps } from '@ephox/agar';
 import { UnitTest } from '@ephox/bedrock-client';
 import { cRemove, cRender, cEditor, cReRender } from '../alien/Loader';
-import { ApiChains } from '@ephox/mcagar';
 import { VersionLoader } from '@tinymce/miniature';
 
 import { getTinymce } from '../../../main/ts/TinyMCE';
-import { EventStore } from '../alien/TestHelpers';
+import { EventStore, cAssertContent, cSetContent } from '../alien/TestHelpers';
 import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
@@ -22,6 +21,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
   const eventStore = EventStore();
 
+
   const sTestVersion = (version: '4' | '5') => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
@@ -31,7 +31,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
           onSetContent: eventStore.createHandler('onSetContent')
         }),
 
-        cEditor(ApiChains.cSetContent('<p>Initial Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cSetContent('<p>Initial Content</p>')),
 
         // tinymce native event
         eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
@@ -54,8 +54,8 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
           onEditorChange: eventStore.createHandler('onEditorChange')
         }),
 
-        cEditor(ApiChains.cSetContent('<p>Initial Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
-        cEditor(ApiChains.cSetContent('<p>Initial Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>), // Repeat
+        cEditor(cSetContent('<p>Initial Content</p>')),
+        cEditor(cSetContent('<p>Initial Content</p>')), // Repeat
 
         eventStore.cEach('onEditorChange', (events) => {
           Assertions.assertEq('onEditorChange should have been fired once', 1, events.length);
@@ -69,8 +69,8 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
         cRender({ initialValue: '<p>Initial Content</p>' }),
         cReRender({ onSetContent: eventStore.createHandler('onSetContent') }),
 
-        cEditor(ApiChains.cAssertContent('<p>Initial Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
-        cEditor(ApiChains.cSetContent('<p>New Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cAssertContent('<p>Initial Content</p>')),
+        cEditor(cSetContent('<p>New Content</p>')),
 
         eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
           Assertions.assertEq('Should have bound handler, hence new content', '<p>New Content</p>', events[0].editorEvent.content);
@@ -82,10 +82,10 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
       Logger.t('Providing a new event handler and re-rendering should unbind old handler and bind new handler', Chain.asStep({}, [
         cRender({ onSetContent: eventStore.createHandler('InitialHandler') }),
-        cEditor(ApiChains.cSetContent('<p>Initial Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cSetContent('<p>Initial Content</p>')),
 
         cReRender({ onSetContent: eventStore.createHandler('NewHandler') }),
-        cEditor(ApiChains.cSetContent('<p>New Content</p>') as unknown as Chain<TinyMCEEditor, TinyMCEEditor>),
+        cEditor(cSetContent('<p>New Content</p>')),
 
         eventStore.cEach<SetContentEvent>('InitialHandler', (events) => {
           Assertions.assertEq('Initial handler should have been unbound, hence initial content', '<p>Initial Content</p>', events[0].editorEvent.content);
