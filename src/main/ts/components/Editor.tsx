@@ -58,7 +58,7 @@ export class Editor extends React.Component<IAllProps> {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
     this.elementRef = React.createRef<HTMLElement>();
-    this.inline = this.props.inline !== undefined ? (this.props.inline ?? false) : ((this.props.init && this.props.init.inline) ?? false);
+    this.inline = this.props.inline ?? this.props?.init?.inline ?? false;
     this.boundHandlers = {};
   }
 
