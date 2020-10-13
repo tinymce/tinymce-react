@@ -1,6 +1,6 @@
 {
   "name": "@tinymce/tinymce-react",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "description": "Official TinyMCE React Component",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
@@ -28,7 +28,8 @@
   "author": "Tiny Technologies",
   "license": "Apache-2.0",
   "dependencies": {
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.6.2",
+    "tinymce": "^5.5.0"
   },
   "peerDependencies": {
     "react": "^16.7.0",
@@ -36,15 +37,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@ephox/agar": "^4.17.2",
+    "@ephox/agar": "^5.0.1",
     "@ephox/bedrock-client": "^9.6.1",
     "@ephox/bedrock-server": "^9.6.3",
-    "@ephox/mcagar": "^4.2.4",
+    "@ephox/mcagar": "^5.0.1",
+    "@ephox/sugar": "^7.0.1",
     "@ephox/tslint-rules": "^1.0.7",
     "@storybook/addon-info": "^5.3.21",
     "@storybook/react": "^6.0.22",
     "@storybook/storybook-deployer": "^2.8.6",
-    "@tinymce/miniature": "^2.2.2",
+    "@tinymce/miniature": "^3.0.1",
     "@types/node": "^14.11.2",
     "@types/prop-types": "^15.5.8",
     "@types/react": "^16.9.49",
@@ -58,7 +60,6 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "rimraf": "^3.0.2",
-    "tinymce": "npm:tinymce@^5",
     "tinymce-4": "npm:tinymce@^4",
     "tinymce-5": "npm:tinymce@^5",
     "ts-loader": "^8.0.4",

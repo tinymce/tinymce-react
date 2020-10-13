@@ -1,3 +1,6 @@
+## 3.8.0 (2020-10-08)
+* Added types from TinyMCE 5.5 release.
+
 ## 3.7.0 (2020-09-28)
 * Added `scriptLoading` prop with settings `async`, `defer` and `delay` to modify the loading behaviour of the TinyMCE script tag
 

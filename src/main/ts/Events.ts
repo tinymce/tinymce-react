@@ -6,74 +6,78 @@
  *
  */
 
-export type EventHandler<A> = (a: A, editor?: any) => any;
+import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
+
+export type EventHandler<A> = (a: EditorEvent<A>, editor: TinyMCEEditor) => unknown;
+
+type EEventHandler<K extends keyof Events.EditorEventMap> = EventHandler<Events.EditorEventMap[K]>;
 
 export interface INativeEvents {
-  onBeforePaste: EventHandler<ClipboardEvent>;
-  onBlur: EventHandler<FocusEvent>;
-  onClick: EventHandler<MouseEvent>;
-  onContextMenu: EventHandler<MouseEvent>;
-  onCopy: EventHandler<ClipboardEvent>;
-  onCut: EventHandler<ClipboardEvent>;
-  onDblclick: EventHandler<MouseEvent>;
-  onDrag: EventHandler<DragEvent>;
-  onDragDrop: EventHandler<DragEvent>;
-  onDragEnd: EventHandler<DragEvent>;
-  onDragGesture: EventHandler<DragEvent>;
-  onDragOver: EventHandler<DragEvent>;
-  onDrop: EventHandler<DragEvent>;
-  onFocus: EventHandler<FocusEvent>;
-  onFocusIn: EventHandler<FocusEvent>;
-  onFocusOut: EventHandler<FocusEvent>;
-  onKeyDown: EventHandler<KeyboardEvent>;
-  onKeyPress: EventHandler<KeyboardEvent>;
-  onKeyUp: EventHandler<KeyboardEvent>;
-  onMouseDown: EventHandler<MouseEvent>;
-  onMouseEnter: EventHandler<MouseEvent>;
-  onMouseLeave: EventHandler<MouseEvent>;
-  onMouseMove: EventHandler<MouseEvent>;
-  onMouseOut: EventHandler<MouseEvent>;
-  onMouseOver: EventHandler<MouseEvent>;
-  onMouseUp: EventHandler<MouseEvent>;
-  onPaste: EventHandler<ClipboardEvent>;
-  onSelectionChange: EventHandler<Event>;
+  onBeforePaste: EEventHandler<'beforepaste'>;
+  onBlur: EEventHandler<'blur'>;
+  onClick: EEventHandler<'click'>;
+  onContextMenu: EEventHandler<'contextmenu'>;
+  onCopy: EEventHandler<'copy'>;
+  onCut: EEventHandler<'cut'>;
+  onDblclick: EEventHandler<'dblclick'>;
+  onDrag: EEventHandler<'drag'>;
+  onDragDrop: EEventHandler<'dragdrop'>;
+  onDragEnd: EEventHandler<'dragend'>;
+  onDragGesture: EEventHandler<'draggesture'>;
+  onDragOver: EEventHandler<'dragover'>;
+  onDrop: EEventHandler<'drop'>;
+  onFocus: EEventHandler<'focus'>;
+  onFocusIn: EEventHandler<'focusin'>;
+  onFocusOut: EEventHandler<'focusout'>;
+  onKeyDown: EEventHandler<'keydown'>;
+  onKeyPress: EEventHandler<'keypress'>;
+  onKeyUp: EEventHandler<'keyup'>;
+  onMouseDown: EEventHandler<'mousedown'>;
+  onMouseEnter: EEventHandler<'mouseenter'>;
+  onMouseLeave: EEventHandler<'mouseleave'>;
+  onMouseMove: EEventHandler<'mousemove'>;
+  onMouseOut: EEventHandler<'mouseout'>;
+  onMouseOver: EEventHandler<'mouseover'>;
+  onMouseUp: EEventHandler<'mouseup'>;
+  onPaste: EEventHandler<'paste'>;
+  onSelectionChange: EEventHandler<'selectionchange'>;
 }
 
 export interface ITinyEvents {
-  onActivate: EventHandler<any>;
-  onAddUndo: EventHandler<any>;
-  onBeforeAddUndo: EventHandler<any>;
-  onBeforeExecCommand: EventHandler<any>;
-  onBeforeGetContent: EventHandler<any>;
-  onBeforeRenderUI: EventHandler<any>;
-  onBeforeSetContent: EventHandler<any>;
-  onChange: EventHandler<any>;
-  onClearUndos: EventHandler<any>;
-  onDeactivate: EventHandler<any>;
-  onDirty: EventHandler<any>;
-  onExecCommand: EventHandler<any>;
-  onGetContent: EventHandler<any>;
-  onHide: EventHandler<any>;
-  onInit: EventHandler<any>;
-  onLoadContent: EventHandler<any>;
-  onNodeChange: EventHandler<any>;
-  onPostProcess: EventHandler<any>;
-  onPostRender: EventHandler<any>;
-  onPreProcess: EventHandler<any>;
-  onProgressState: EventHandler<any>;
-  onRedo: EventHandler<any>;
-  onRemove: EventHandler<any>;
-  onReset: EventHandler<any>;
-  onSaveContent: EventHandler<any>;
-  onSetAttrib: EventHandler<any>;
-  onObjectResizeStart: EventHandler<any>;
-  onObjectResized: EventHandler<any>;
-  onObjectSelected: EventHandler<any>;
-  onSetContent: EventHandler<any>;
-  onShow: EventHandler<any>;
-  onSubmit: EventHandler<any>;
-  onUndo: EventHandler<any>;
-  onVisualAid: EventHandler<any>;
+  onActivate: EEventHandler<'activate'>;
+  onAddUndo: EEventHandler<'AddUndo'>;
+  onBeforeAddUndo: EEventHandler<'BeforeAddUndo'>;
+  onBeforeExecCommand: EEventHandler<'BeforeExecCommand'>;
+  onBeforeGetContent: EEventHandler<'BeforeGetContent'>;
+  onBeforeRenderUI: EventHandler<unknown>;
+  onBeforeSetContent: EEventHandler<'BeforeSetContent'>;
+  onChange: EventHandler<unknown>;
+  onClearUndos: EEventHandler<'ClearUndos'>;
+  onDeactivate: EEventHandler<'deactivate'>;
+  onDirty: EventHandler<unknown>;
+  onExecCommand: EEventHandler<'ExecCommand'>;
+  onGetContent: EEventHandler<'GetContent'>;
+  onHide: EventHandler<unknown>;
+  onInit: EEventHandler<'init'>;
+  onLoadContent: EEventHandler<'LoadContent'>;
+  onNodeChange: EEventHandler<'NodeChange'>;
+  onPostProcess: EventHandler<unknown>;
+  onPostRender: EEventHandler<'PostRender'>;
+  onPreProcess: EventHandler<unknown>;
+  onProgressState: EEventHandler<'ProgressState'>;
+  onRedo: EEventHandler<'Redo'>;
+  onRemove: EEventHandler<'remove'>;
+  onReset: EventHandler<unknown>;
+  onSaveContent: EventHandler<unknown>;
+  onSetAttrib: EventHandler<unknown>;
+  onObjectResizeStart: EEventHandler<'ObjectResizeStart'>;
+  onObjectResized: EEventHandler<'ObjectResized'>;
+  onObjectSelected: EEventHandler<'ObjectSelected'>;
+  onSetContent: EEventHandler<'SetContent'>;
+  onShow: EventHandler<unknown>;
+  onSubmit: EventHandler<unknown>;
+  onUndo: EEventHandler<'Undo'>;
+  onVisualAid: EventHandler<unknown>;
 }
 
 export interface IEvents extends INativeEvents, ITinyEvents {}

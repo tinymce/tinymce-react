@@ -1,17 +1,19 @@
 import { Chain, NamedChain } from '@ephox/agar';
-import { Fun, Option } from '@ephox/katamari';
+import { Fun, Optional } from '@ephox/katamari';
+import { SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Editor, IAllProps } from '../../../main/ts/components/Editor';
+import { Editor, IAllProps, IProps } from '../../../main/ts/components/Editor';
+import { Editor as TinyMCEEditor } from 'tinymce';
 
 export interface Context {
-  DOMNode: Element;
-  editor: any;
+  DOMNode: HTMLElement;
+  editor: TinyMCEEditor;
   ref: React.RefObject<Editor>;
 }
 
 const getRoot = () => {
-  return Option.from(document.getElementById('root')).getOrThunk(() => {
+  return Optional.from(document.getElementById('root')).getOrThunk(() => {
     const root = document.createElement('div');
     root.id = 'root';
     document.body.appendChild(root);
@@ -20,26 +22,29 @@ const getRoot = () => {
 };
 
 const cRender = (props: IAllProps) => {
-  return Chain.async<Context, Context>((_, next, die) => {
+  return Chain.async<unknown, Context>((_, next, die) => {
     const originalInit = props.init || {};
     const originalSetup = originalInit.setup || Fun.noop;
-    const ref: React.RefObject<Editor> = React.createRef();
+    const ref = React.createRef<Editor>();
 
-    const init: Record<string, any> = {
+    const init: IProps['init'] = {
       ...originalInit,
-      setup: (editor: any) => {
+      setup: (editor) => {
         originalSetup(editor);
 
         editor.on('SkinLoaded', () => {
           setTimeout(() => {
-            Option.from(ref.current)
+            Optional.from(ref.current)
             .map(ReactDOM.findDOMNode)
-            .filter((val) => val instanceof Element)
+            .bind(Optional.from)
+            .map(SugarElement.fromDom)
+            .filter(SugarNode.isHTMLElement)
+            .map((val) => val.dom)
             .fold(() => die('Could not find DOMNode'), (DOMNode) => {
               next({
                 ref,
                 editor,
-                DOMNode: DOMNode as Element
+                DOMNode
               });
             });
           }, 0);
@@ -75,16 +80,16 @@ const cNamedChainDirect = (name: keyof Context) => NamedChain.direct(
   name
 );
 
-const cDOMNode = (chain: Chain<any, any>) => {
-  return NamedChain.asChain([
+const cDOMNode = (chain: Chain<Context['DOMNode'], unknown>): Chain<Context, Context> => {
+  return NamedChain.asChain<Context>([
     cNamedChainDirect('DOMNode'),
     NamedChain.read('DOMNode', chain),
     NamedChain.outputInput
   ]);
 };
 
-const cEditor = (chain: Chain<any, any>) => {
-  return NamedChain.asChain([
+const cEditor = (chain: Chain<Context['editor'], unknown>): Chain<Context, Context> => {
+  return NamedChain.asChain<Context>([
     cNamedChainDirect('editor'),
     NamedChain.read('editor', chain),
     NamedChain.outputInput
@@ -95,7 +100,6 @@ export {
   cRender,
   cReRender,
   cRemove,
-  cNamedChainDirect,
   cDOMNode,
   cEditor
 };
