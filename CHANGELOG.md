@@ -1,3 +1,6 @@
+## 3.8.1 (2020-10-22)
+* Fixed an issue where the component would throw an error when unmounted while loading
+
 ## 3.8.0 (2020-10-08)
 * Added types from TinyMCE 5.5 release.
 
