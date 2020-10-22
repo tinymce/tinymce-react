@@ -181,13 +181,14 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private initialise = () => {
+    const target = this.elementRef.current;
+    if (!target) {
+      return; // Editor has been unmounted
+    }
+    
     const tinymce = getTinymce();
     if (!tinymce) {
       throw new Error('tinymce should have been loaded into global scope');
-    }
-    const target = this.elementRef.current;
-    if (!target) {
-      throw new Error('Expected target ref');
     }
 
     const finalInit: RawEditorSettings = {
