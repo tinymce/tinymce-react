@@ -70,7 +70,7 @@ export class Editor extends React.Component<IAllProps> {
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
         const localEditor = this.editor;
-        localEditor.undoManager.transact(() => localEditor.setContent(this.props.value));
+        localEditor.undoManager.transact(() => localEditor.setContent(this.props.value as string));
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
