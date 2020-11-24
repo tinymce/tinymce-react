@@ -1,3 +1,6 @@
+## 3.8.2 (TBD)
+* Fixed external changes not generating undo levels
+
 ## 3.8.1 (2020-10-22)
 * Fixed an issue where the component would throw an error when unmounted while loading
 
