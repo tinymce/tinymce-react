@@ -39,7 +39,7 @@
     "@babel/core": "^7.11.6",
     "@ephox/agar": "^5.0.1",
     "@ephox/bedrock-client": "^9.6.1",
-    "@ephox/bedrock-server": "^9.6.3",
+    "@ephox/bedrock-server": "^9.7.1",
     "@ephox/mcagar": "^5.0.1",
     "@ephox/sugar": "^7.0.1",
     "@ephox/tslint-rules": "^1.0.7",
