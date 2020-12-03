@@ -1,4 +1,4 @@
-## 3.8.2 (TBD)
+## 3.8.2 (2020-12-03)
 * Fixed external changes not generating undo levels
 
 ## 3.8.1 (2020-10-22)
