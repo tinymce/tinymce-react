@@ -36,6 +36,7 @@ export interface IProps {
     defer?: boolean;
     delay?: number;
   };
+  onEditorReady: (editor: TinyMCEEditor) => void;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
@@ -181,6 +182,10 @@ export class Editor extends React.Component<IAllProps> {
       }
 
       bindHandlers(editor, this.props, this.boundHandlers);
+
+      if (this.props.onEditorReady) {
+        this.props.onEditorReady(editor);
+      }
     }
   }
 
