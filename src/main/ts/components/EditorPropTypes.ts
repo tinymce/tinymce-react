@@ -102,5 +102,6 @@ export const EditorPropTypes: IEditorPropTypes = {
     'defer': PropTypes.bool,
     'delay': PropTypes.number
   }),
+  onEditorReady: PropTypes.func,
   ...eventPropTypes
 };
