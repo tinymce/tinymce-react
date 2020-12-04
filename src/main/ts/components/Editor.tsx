@@ -69,7 +69,8 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent ?? this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        this.editor.setContent(this.props.value);
+        const localEditor = this.editor;
+        localEditor.undoManager.transact(() => localEditor.setContent(this.props.value as string));
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -167,6 +168,9 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor) {
       editor.setContent(this.getInitialValue());
+      editor.undoManager.clear();
+      editor.undoManager.add();
+      editor.setDirty(false);
 
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
@@ -185,7 +189,7 @@ export class Editor extends React.Component<IAllProps> {
     if (!target) {
       return; // Editor has been unmounted
     }
-    
+
     const tinymce = getTinymce();
     if (!tinymce) {
       throw new Error('tinymce should have been loaded into global scope');
