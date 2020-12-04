@@ -41,6 +41,8 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
+export interface ITinyMCEEditor extends TinyMCEEditor { }
+
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
