@@ -64,7 +64,7 @@ export class Editor extends React.Component<IAllProps> {
 
   public componentDidUpdate(prevProps: Partial<IAllProps>) {
     if (this.editor && this.editor.initialized) {
-      bindHandlers(this.editor, this.props, this.boundHandlers);
+      bindHandlers(this.editor, prevProps, this.props, this.boundHandlers);
 
       this.currentContent = this.currentContent ?? this.editor.getContent({ format: this.props.outputFormat });
 
@@ -176,7 +176,7 @@ export class Editor extends React.Component<IAllProps> {
         this.props.onInit(initEvent, editor);
       }
 
-      bindHandlers(editor, this.props, this.boundHandlers);
+      bindHandlers(editor, {}, this.props, this.boundHandlers);
     }
   }
 
