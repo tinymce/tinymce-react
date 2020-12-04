@@ -16,7 +16,7 @@ const isEventProp = (name: string): name is keyof IEventPropTypes => {
   return name in eventPropTypes;
 };
 
-const eventAttrToEventName = <T extends string>(attrName: `on${string & T}`): T => {
+const eventAttrToEventName = <T extends string>(attrName: `on${T}`): T => {
   return attrName.substr(2) as T;
 }
 
