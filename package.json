@@ -41,6 +41,7 @@
     "@ephox/bedrock-client": "^9.6.1",
     "@ephox/bedrock-server": "^9.7.1",
     "@ephox/mcagar": "^5.1.1",
+    "@ephox/sand": "^4.0.3",
     "@ephox/sugar": "^7.0.3",
     "@ephox/tslint-rules": "^1.0.7",
     "@storybook/addon-info": "^5.3.21",
