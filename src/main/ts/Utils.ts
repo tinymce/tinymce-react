@@ -21,29 +21,40 @@ const eventAttrToEventName = <T extends string>(attrName: `on${T}`): T => {
 }
 
 export const bindHandlers = (editor: TinyMCEEditor, prevProps: Partial<IAllProps>, props: Partial<IAllProps>, boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>): void => {
+  return bindHandlers2(editor.on.bind(editor), editor.off.bind(editor), (handler) => (e) => handler(e, editor), prevProps, props, boundHandlers);
+};
+
+export const bindHandlers2 = <H> (
+    on: (name: string, handler: H) => void,
+    off: (name: string, handler: H) => void,
+    adapter: (handler: (event: EditorEvent<unknown>, editor: TinyMCEEditor) => unknown) => H,
+    prevProps: Partial<IAllProps>,
+    props: Partial<IAllProps>,
+    boundHandlers: Record<string, H>
+  ): void => {
   const prevEventKeys = Object.keys(prevProps).filter(isEventProp);
   const currEventKeys = Object.keys(props).filter(isEventProp);
 
-  const removedKeys = prevEventKeys.filter((key) => !currEventKeys.includes(key));
-  const changedKeys = currEventKeys.filter((key) => prevEventKeys.includes(key) && prevProps[key] != props[key]);
-  const addedKeys = currEventKeys.filter((key) => !prevEventKeys.includes(key));
+  const removedKeys = prevEventKeys.filter((key) => props[key] === undefined);
+  const changedKeys = currEventKeys.filter((key) => prevProps[key] !== undefined && prevProps[key] != props[key]);
+  const addedKeys = currEventKeys.filter((key) => prevProps[key] === undefined);
 
   [...removedKeys, ...changedKeys].forEach((key) => {
     // remove event handler
     const eventName = eventAttrToEventName(key);
     const wrappedHandler = boundHandlers[eventName];
-    editor.off(eventName, wrappedHandler);
+    off(eventName, wrappedHandler);
     delete boundHandlers[eventName];
   });
 
   [...changedKeys, ...addedKeys].forEach((key) => {
     // add event handler
     const handler = props[key];
-    if (isFunction(handler)) {
+    if (handler !== undefined) {
       const eventName = eventAttrToEventName(key);
-      const wrappedHandler = (e: EditorEvent<unknown>) => handler(e as any, editor);
+      const wrappedHandler = adapter(handler as (event: EditorEvent<unknown>, editor: TinyMCEEditor) => unknown);
       boundHandlers[eventName] = wrappedHandler;
-      editor.on(eventName, wrappedHandler);
+      on(eventName, wrappedHandler);
     }
   });
 };
