@@ -1,3 +1,7 @@
+## 3.8.3 (2020-12-08)
+* Fixed event binding to only rebind handler on changes to the specific property instead of any property.
+* Updated TinyMCE types to 5.6 release.
+
 ## 3.8.2 (2020-12-03)
 * Fixed external changes not generating undo levels
 
