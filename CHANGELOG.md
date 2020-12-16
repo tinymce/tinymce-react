@@ -1,3 +1,6 @@
+## 3.8.4 (2020-12-16)
+* Updated dependencies to latest available
+
 ## 3.8.3 (2020-12-08)
 * Fixed event binding to only rebind handler on changes to the specific property instead of any property.
 * Updated TinyMCE types to 5.6 release.
