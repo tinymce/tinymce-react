@@ -88,19 +88,19 @@ export const EditorPropTypes: IEditorPropTypes = {
   init: PropTypes.object,
   initialValue: PropTypes.string,
   onEditorChange: PropTypes.func,
-  outputFormat: PropTypes.oneOf(['html', 'text']),
+  outputFormat: PropTypes.oneOf([ 'html', 'text' ]),
   value: PropTypes.string,
   tagName: PropTypes.string,
   cloudChannel: PropTypes.string,
-  plugins: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  toolbar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  plugins: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
+  toolbar: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
   disabled: PropTypes.bool,
   textareaName: PropTypes.string,
   tinymceScriptSrc: PropTypes.string,
   scriptLoading: PropTypes.shape({
-    'async': PropTypes.bool,
-    'defer': PropTypes.bool,
-    'delay': PropTypes.number
+    async: PropTypes.bool,
+    defer: PropTypes.bool,
+    delay: PropTypes.number
   }),
   ...eventPropTypes
 };

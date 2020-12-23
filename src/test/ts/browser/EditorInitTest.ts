@@ -6,11 +6,9 @@ import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader'
 import { cAssertContent } from '../alien/TestHelpers';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {
-  const cAssertProperty = (propName: string, expected: string) => {
-    return Chain.op((el: HTMLElement) => {
-      Assertions.assertEq(propName + ' should be ' + expected, expected, (el as unknown as Record<string, unknown>)[propName]);
-    });
-  };
+  const cAssertProperty = (propName: string, expected: string) => Chain.op((el: HTMLElement) => {
+    Assertions.assertEq(propName + ' should be ' + expected, expected, (el as unknown as Record<string, unknown>)[propName]);
+  });
 
   const sTestVersion = (version: '4' | '5') => VersionLoader.sWithVersion(
     version,

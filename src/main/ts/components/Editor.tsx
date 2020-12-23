@@ -14,7 +14,6 @@ import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Uti
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from 'tinymce';
 
-
 export interface IProps {
   apiKey: string;
   id: string;
@@ -22,7 +21,7 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: RawEditorSettings & { selector?: undefined, target?: undefined };
+  init: RawEditorSettings & { selector?: undefined; target?: undefined };
   outputFormat: 'html' | 'text';
   tagName: string;
   cloudChannel: string;
@@ -54,7 +53,7 @@ export class Editor extends React.Component<IAllProps> {
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
 
-  constructor(props: Partial<IAllProps>) {
+  public constructor(props: Partial<IAllProps>) {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
     this.elementRef = React.createRef<HTMLElement>();
@@ -150,7 +149,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  private handleEditorChange = (evt: EditorEvent<unknown>) => {
+  private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
     if (editor) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
@@ -162,7 +161,7 @@ export class Editor extends React.Component<IAllProps> {
         }
       }
     }
-  }
+  };
 
   private handleInit = (initEvent: EditorEvent<Events.EditorEventMap['init']>) => {
     const editor = this.editor;
@@ -182,7 +181,7 @@ export class Editor extends React.Component<IAllProps> {
 
       bindHandlers(editor, {}, this.props, this.boundHandlers);
     }
-  }
+  };
 
   private initialise = () => {
     const target = this.elementRef.current;
@@ -198,7 +197,7 @@ export class Editor extends React.Component<IAllProps> {
     const finalInit: RawEditorSettings = {
       ...this.props.init,
       selector: undefined,
-      target: target,
+      target,
       readonly: this.props.disabled,
       inline: this.inline,
       plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
@@ -218,5 +217,5 @@ export class Editor extends React.Component<IAllProps> {
     }
 
     tinymce.init(finalInit);
-  }
+  };
 }
