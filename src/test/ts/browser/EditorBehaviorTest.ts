@@ -28,7 +28,6 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
   const eventStore = EventStore();
 
-
   const sTestVersion = (version: '4' | '5') => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([

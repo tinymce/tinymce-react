@@ -1,0 +1,18 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "extends": "plugin:@tinymce/standard",
+      "parserOptions": {
+        "project": "tsconfig.json",
+        "sourceType": "module"
+      },
+      "rules": {
+        "@tinymce/prefer-fun": "off"
+      }
+    }
+  ]
+}

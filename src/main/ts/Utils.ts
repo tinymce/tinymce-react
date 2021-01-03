@@ -12,34 +12,29 @@ import { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 
-const isEventProp = (name: string): name is keyof IEventPropTypes => {
-  return name in eventPropTypes;
-};
+const isEventProp = (name: string): name is keyof IEventPropTypes => name in eventPropTypes;
 
-const eventAttrToEventName = <T extends string>(attrName: `on${T}`): T => {
-  return attrName.substr(2) as T;
-}
+const eventAttrToEventName = <T extends string>(attrName: `on${T}`): T => attrName.substr(2) as T;
 
-export const bindHandlers = (editor: TinyMCEEditor, prevProps: Partial<IAllProps>, props: Partial<IAllProps>, boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>): void => {
-  return bindHandlers2(editor.on.bind(editor), editor.off.bind(editor), (handler) => (e) => handler(e, editor), prevProps, props, boundHandlers);
-};
+// eslint-disable-next-line max-len
+export const bindHandlers = (editor: TinyMCEEditor, prevProps: Partial<IAllProps>, props: Partial<IAllProps>, boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>): void => bindHandlers2(editor.on.bind(editor), editor.off.bind(editor), (handler) => (e) => handler(e, editor), prevProps, props, boundHandlers);
 
 export const bindHandlers2 = <H> (
-    on: (name: string, handler: H) => void,
-    off: (name: string, handler: H) => void,
-    adapter: (handler: (event: EditorEvent<unknown>, editor: TinyMCEEditor) => unknown) => H,
-    prevProps: Partial<IAllProps>,
-    props: Partial<IAllProps>,
-    boundHandlers: Record<string, H>
-  ): void => {
+  on: (name: string, handler: H) => void,
+  off: (name: string, handler: H) => void,
+  adapter: (handler: (event: EditorEvent<unknown>, editor: TinyMCEEditor) => unknown) => H,
+  prevProps: Partial<IAllProps>,
+  props: Partial<IAllProps>,
+  boundHandlers: Record<string, H>
+): void => {
   const prevEventKeys = Object.keys(prevProps).filter(isEventProp);
   const currEventKeys = Object.keys(props).filter(isEventProp);
 
   const removedKeys = prevEventKeys.filter((key) => props[key] === undefined);
-  const changedKeys = currEventKeys.filter((key) => prevProps[key] !== undefined && prevProps[key] != props[key]);
+  const changedKeys = currEventKeys.filter((key) => prevProps[key] !== undefined && prevProps[key] !== props[key]);
   const addedKeys = currEventKeys.filter((key) => prevProps[key] === undefined);
 
-  [...removedKeys, ...changedKeys].forEach((key) => {
+  [ ...removedKeys, ...changedKeys ].forEach((key) => {
     // remove event handler
     const eventName = eventAttrToEventName(key);
     const wrappedHandler = boundHandlers[eventName];
@@ -47,7 +42,7 @@ export const bindHandlers2 = <H> (
     delete boundHandlers[eventName];
   });
 
-  [...changedKeys, ...addedKeys].forEach((key) => {
+  [ ...changedKeys, ...addedKeys ].forEach((key) => {
     // add event handler
     const handler = props[key];
     if (handler !== undefined) {
@@ -70,9 +65,7 @@ export const uuid = (prefix: string): string => {
   return prefix + '_' + random + unique + String(time);
 };
 
-export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => {
-  return element !== null && element.tagName.toLowerCase() === 'textarea';
-};
+export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => element !== null && element.tagName.toLowerCase() === 'textarea';
 
 const normalizePluginArray = (plugins?: string | string[]): string[] => {
   if (typeof plugins === 'undefined' || plugins === '') {
@@ -82,6 +75,5 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
   return Array.isArray(plugins) ? plugins : plugins.split(' ');
 };
 
-export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => {
-  return normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
-};
+// eslint-disable-next-line max-len
+export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
