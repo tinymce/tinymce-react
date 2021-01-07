@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
@@ -7,10 +8,12 @@ import { Editor } from '../src/main/ts';
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
 const sampleContent = `
 <h2 style="text-align: center;">
-  TinyMCE provides a <span style="text-decoration: underline;">full-featured</span> rich text editing experience, and a featherweight download.
+  TinyMCE provides a <span style="text-decoration: underline;"
+  >full-featured</span> rich text editing experience, and a featherweight download.
 </h2>
 <p style="text-align: center;">
-  <strong><span style="font-size: 14pt;"><span style="color: #7e8c8d; font-weight: 600;">No matter what you're building, TinyMCE has got you covered.</span></span></strong>
+  <strong><span style="font-size: 14pt;"><span style="color: #7e8c8d; font-weight: 600;"
+  >No matter what you're building, TinyMCE has got you covered.</span></span></strong>
 </p>`;
 
 setDefaults({
@@ -21,7 +24,7 @@ setDefaults({
 });
 
 class ControlledInput extends React.Component<unknown, { data: string }> {
-  constructor(props) {
+  public constructor(props: unknown) {
     super(props);
     this.state = {
       data: sampleContent
@@ -52,9 +55,8 @@ class ControlledInput extends React.Component<unknown, { data: string }> {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class Disable extends React.Component<unknown, { disabled: boolean }> {
-  constructor(props) {
+  public constructor(props: unknown) {
     super(props);
     this.state = { disabled: true };
   }
@@ -64,7 +66,7 @@ class Disable extends React.Component<unknown, { disabled: boolean }> {
   }
 
   public render() {
-    // tslint:disable-next-line:no-console
+    // eslint-disable-next-line no-console
     console.log(this.state.disabled);
     return (
       <div>
