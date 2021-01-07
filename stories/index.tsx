@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
@@ -23,66 +22,42 @@ setDefaults({
   header: false
 });
 
-class ControlledInput extends React.Component<unknown, { data: string }> {
-  public constructor(props: unknown) {
-    super(props);
-    this.state = {
-      data: sampleContent
-    };
-  }
+const ControlledInput = () => {
+  const [ data, setData ] = React.useState(sampleContent);
+  return (
+    <div>
+      <Editor
+        apiKey={apiKey}
+        init={{ height: 300 }}
+        value={data}
+        onEditorChange={(e) => setData(e)}
+      />
+      <textarea
+        style={{ width: '100%', height: '200px' }}
+        value={data}
+        onChange={(e) => setData(e.target.value)}
+      />
+    </div>
+  );
+};
 
-  public handleChange(data: string) {
-    this.setState({ data });
-  }
-
-  public render() {
-    const textareaStyle = { width: '100%', height: '200px' };
-    return (
-      <div>
-        <Editor
-          apiKey={apiKey}
-          init={{ height: 300 }}
-          value={this.state.data}
-          onEditorChange={(e) => this.handleChange(e)}
-        />
-        <textarea
-          style={textareaStyle}
-          value={this.state.data}
-          onChange={(e) => this.handleChange(e.target.value)}
-        />
-      </div>
-    );
-  }
-}
-
-class Disable extends React.Component<unknown, { disabled: boolean }> {
-  public constructor(props: unknown) {
-    super(props);
-    this.state = { disabled: true };
-  }
-
-  public toggleDisabled() {
-    this.setState({ disabled: !this.state.disabled });
-  }
-
-  public render() {
-    // eslint-disable-next-line no-console
-    console.log(this.state.disabled);
-    return (
-      <div>
-        <button onClick={this.toggleDisabled.bind(this)}>
-          {this.state.disabled ? 'enable' : 'disable'}
-        </button>
-        <Editor
-          apiKey={apiKey}
-          init={{ height: 300 }}
-          initialValue={sampleContent}
-          disabled={this.state.disabled}
-        />
-      </div>
-    );
-  }
-}
+const Disable = () => {
+  const [ disabled, setDisabled ] = React.useState(true);
+  const toggleDisabled = () => setDisabled((prev) => !prev);
+  return (
+    <div>
+      <button onClick={toggleDisabled}>
+        {disabled ? 'enable' : 'disable'}
+      </button>
+      <Editor
+        apiKey={apiKey}
+        init={{ height: 300 }}
+        initialValue={sampleContent}
+        disabled={disabled}
+      />
+    </div>
+  );
+};
 
 storiesOf('tinymce-react', module)
   .add(
