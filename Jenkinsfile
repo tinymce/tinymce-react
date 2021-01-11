@@ -3,6 +3,15 @@
 
 standardProperties()
 
+def shJson(String script) {
+  def s = sh(script: script, returnStdout: true);
+  return readJSON(text: s);
+}
+
+def beehiveFlowStatus() {
+  return shJson("yarn run --silent beehive-flow status");
+}
+
 node("primary") {
   echo "Clean workspace"
   cleanWs()
@@ -58,6 +67,17 @@ node("primary") {
     }
 
     parallel processes
+  }
+
+  stage("update storybook") {
+    def status = beehiveFlowStatus();
+    if (status.branchState == 'releaseReady' && status.isLatestReleaseBranch) {
+      sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
+        sh 'yarn storybook-to-ghpages'
+      }
+    } else {
+      echo "Skipping as is not latest release"
+    }
   }
 
   stage("publish") {
