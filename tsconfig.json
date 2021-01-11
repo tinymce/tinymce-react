@@ -13,6 +13,7 @@
     "outDir": "./lib",
     "preserveConstEnums": true,
     "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es5",
     "types": [
       "node",
