@@ -13,19 +13,21 @@
     "outDir": "./lib",
     "preserveConstEnums": true,
     "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es5",
     "types": [
       "node",
       "prop-types",
       "react", 
       "react-dom"
-    ]
+    ],
+    "rootDir": "."
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "stories/**/*.ts",
+    "stories/**/*.tsx"
   ],
-  "exclude": [
-    "**/*.test.tsx",
-    "node_modules"
-  ]
+  "exclude": []
 }
