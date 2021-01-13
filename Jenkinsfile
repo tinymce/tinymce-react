@@ -36,15 +36,13 @@ node("primary") {
     sh "yarn lint"
   }
 
-  stage("test") {
-    def permutations = [
-      [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
-      [ name: "win10FF", os: "windows-10", browser: "firefox" ],
-      [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
-      [ name: "win10IE", os: "windows-10", browser: "ie" ]
-    ]
-    bedrockBrowsers(permutations: permutations)()
-  }
+  def platforms = [
+    [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
+    [ name: "win10FF", os: "windows-10", browser: "firefox" ],
+    [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
+    [ name: "win10IE", os: "windows-10", browser: "ie" ]
+  ]
+  bedrockBrowsers(platforms: platforms)
 
   stage("update storybook") {
     def status = beehiveFlowStatus();
