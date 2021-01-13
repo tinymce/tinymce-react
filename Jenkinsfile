@@ -1,5 +1,5 @@
 #!groovy
-@Library('waluigi@v3.2.0') _
+@Library('waluigi@feature/INT-2305') _
 
 standardProperties()
 
@@ -43,30 +43,7 @@ node("primary") {
       [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
       [ name: "win10IE", os: "windows-10", browser: "ie" ]
     ]
-
-    def processes = [:]
-
-    for (int i = 0; i < permutations.size(); i++) {
-      def permutation = permutations.get(i);
-      def name = permutation.name;
-      processes[name] = {
-        node("bedrock-" + permutation.os) {
-          echo "Clean workspace"
-          cleanWs()
-
-          echo "Checkout"
-          checkout scm
-
-          echo "Installing tools"
-          yarnInstall()
-
-          echo "Platform: browser tests for " + permutation.name
-          bedrockTests(permutation.name, permutation.browser, "src/test/ts/browser")
-        }
-      }
-    }
-
-    parallel processes
+    bedrockBrowsers(permutations: permutations)
   }
 
   stage("update storybook") {
