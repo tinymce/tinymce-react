@@ -43,7 +43,7 @@ node("primary") {
       [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
       [ name: "win10IE", os: "windows-10", browser: "ie" ]
     ]
-    bedrockBrowsers(permutations: permutations)
+    bedrockBrowsers(permutations: permutations)()
   }
 
   stage("update storybook") {
