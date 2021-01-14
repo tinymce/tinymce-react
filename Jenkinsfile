@@ -42,7 +42,7 @@ node("primary") {
     [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
     [ name: "win10IE", os: "windows-10", browser: "ie" ]
   ]
-  bedrockBrowsers platforms: platforms
+  bedrockBrowsers platforms: platforms, testDirs: [ "src/test/ts/browser" ]
 
   stage("update storybook") {
     def status = beehiveFlowStatus();
