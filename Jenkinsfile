@@ -40,7 +40,7 @@ node("primary") {
     [ name: "win10Chrome", os: "windows-10", browser: "chrome" ],
     [ name: "win10FF", os: "windows-10", browser: "firefox" ],
     [ name: "win10Edge", os: "windows-10", browser: "MicrosoftEdge" ],
-    [ name: "win10IE", os: "windows-10", browser: "ie" ]
+    [ name: "win10IE", os: "windows-10", browser: "ie", buckets: 2 ]
   ]
   bedrockBrowsers platforms: platforms, testDirs: [ "src/test/ts/browser" ]
 
