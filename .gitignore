@@ -4,3 +4,4 @@ lib
 storybook-static
 *.tgz
 scratch
+/.idea
