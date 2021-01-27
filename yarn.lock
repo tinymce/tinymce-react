@@ -2158,10 +2158,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@tinymce/beehive-flow@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/beehive-flow/-/beehive-flow-0.11.0.tgz#f2e6f9c6c9e8c1ed0452a1c0464f2be139e48bad"
-  integrity sha512-p/RsvLl0iBg4G7ucuCGFOHRF1eQxLQdD8J0KrFLP486sk5bjSlJ0FiHCSXX0N+kpYui812HH3u76Iu78/JdHoQ==
+"@tinymce/beehive-flow@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/beehive-flow/-/beehive-flow-0.12.0.tgz#f50927771b18a7c02e08de9a2545c4cfa3817f2d"
+  integrity sha512-zxdAlsevxiXTbJixiUTNi/zw3Of3zqLHHx80oA7STosNu4o1DtyUrQ9J8hKIgZaw58IlKSkDjkhglUG7aZaHWw==
   dependencies:
     cross-spawn-promise "^0.10.2"
     fp-ts "^2.9.3"
@@ -12628,8 +12628,10 @@ watchpack@^1.7.4:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
