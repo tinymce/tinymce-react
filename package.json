@@ -35,8 +35,8 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@ephox/agar": "^5.1.1",
-    "@ephox/bedrock-client": "^10.0.0",
-    "@ephox/bedrock-server": "^10.0.1",
+    "@ephox/bedrock-client": "^11.0.0",
+    "@ephox/bedrock-server": "^11.0.2",
     "@ephox/mcagar": "^5.1.1",
     "@ephox/sand": "^4.0.3",
     "@ephox/sugar": "^7.0.3",
