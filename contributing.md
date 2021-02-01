@@ -1,6 +1,6 @@
 # Contributing
 
-This project follows the [beehive-flow](https://github.com/tinymce/beehive-flow/) branching process. 
+This project follows the [beehive-flow](https://github.com/tinymce/beehive-flow/) branching process ("Basic process - release from main branch").
 Please read the [beehive-flow readme](https://github.com/tinymce/beehive-flow/blob/main/README.md) for more information.
 This mainly affects branching and merging for Tiny staff. 
 
