@@ -10,7 +10,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { bindHandlers, isFunction, isTextarea, mergePlugins, uuid } from '../Utils';
+import { isFunction, isTextarea, mergePlugins, uuid, configHandlers } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from 'tinymce';
 
@@ -63,8 +63,7 @@ export class Editor extends React.Component<IAllProps> {
 
   public componentDidUpdate(prevProps: Partial<IAllProps>) {
     if (this.editor && this.editor.initialized) {
-      bindHandlers(this.editor, prevProps, this.props, this.boundHandlers);
-
+      this.bindHandlers(prevProps);
       this.currentContent = this.currentContent ?? this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
@@ -149,6 +148,13 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
+  private bindHandlers(prevProps: Partial<IAllProps>) {
+    if (this.editor !== undefined) {
+      // typescript chokes trying to understand the type of the lookup function
+      configHandlers(this.editor, prevProps, this.props, this.boundHandlers, (key) => this.props[key] as any);
+    }
+  }
+
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
     if (editor) {
@@ -179,7 +185,7 @@ export class Editor extends React.Component<IAllProps> {
         this.props.onInit(initEvent, editor);
       }
 
-      bindHandlers(editor, {}, this.props, this.boundHandlers);
+      this.bindHandlers({});
     }
   };
 
