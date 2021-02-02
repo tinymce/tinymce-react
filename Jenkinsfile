@@ -17,11 +17,11 @@ node("primary") {
   cleanWs()
 
   stage("checkout") {
-    checkout scm
+    checkout localBranch(scm)
   }
 
   stage("dependencies") {
-    sh "yarn install"
+    yarnInstall()
   }
 
   stage("stamp") {
