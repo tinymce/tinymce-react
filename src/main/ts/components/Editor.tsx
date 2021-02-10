@@ -13,6 +13,7 @@ import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextarea, mergePlugins, uuid, configHandlers } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from 'tinymce';
+import { textToHtml } from '../TextToHtml';
 
 export interface IProps {
   apiKey: string;
@@ -68,7 +69,8 @@ export class Editor extends React.Component<IAllProps> {
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
         const localEditor = this.editor;
-        localEditor.undoManager.transact(() => localEditor.setContent(this.props.value as string));
+        const value = this.props.outputFormat === 'text' ? textToHtml(this.props.value) : this.props.value;
+        localEditor.undoManager.transact(() => localEditor.setContent(value));
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -172,7 +174,8 @@ export class Editor extends React.Component<IAllProps> {
   private handleInit = (initEvent: EditorEvent<Events.EditorEventMap['init']>) => {
     const editor = this.editor;
     if (editor) {
-      editor.setContent(this.getInitialValue());
+      const initialValue = this.getInitialValue();
+      editor.setContent(this.props.outputFormat === 'text' ? textToHtml(initialValue) : initialValue );
       editor.undoManager.clear();
       editor.undoManager.add();
       editor.setDirty(false);

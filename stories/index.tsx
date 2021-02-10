@@ -59,6 +59,26 @@ const Disable = () => {
   );
 };
 
+const TextEditor = () => {
+  const [ data, setData ] = React.useState('Hello world\n\nThe quick brown fox jumps over\nthe lazy dog');
+  return (
+    <div>
+      <Editor
+        apiKey={apiKey}
+        init={{ height: 300 }}
+        value={data}
+        outputFormat="text"
+        onEditorChange={(e) => setData(e)}
+      />
+      <textarea
+        style={{ width: '100%', height: '200px' }}
+        value={data}
+        onChange={(e) => setData(e.target.value)}
+      />
+    </div>
+  );
+};
+
 storiesOf('tinymce-react', module)
   .add(
     'Iframe editor',
@@ -97,6 +117,12 @@ storiesOf('tinymce-react', module)
     withInfo({
       text: `Example with setting the editor into readonly mode using the disabled prop.`
     })(() => <Disable />)
+  )
+  .add(
+    'Output format text',
+    withInfo({
+      text: `Example with setting the editor into readonly mode using the disabled prop.`
+    })(() => <TextEditor />)
   )
   .add(
     'cloudChannel set to 5-dev',
