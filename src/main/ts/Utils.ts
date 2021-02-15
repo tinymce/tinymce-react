@@ -77,7 +77,8 @@ export const uuid = (prefix: string): string => {
   return prefix + '_' + random + unique + String(time);
 };
 
-export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => element !== null && element.tagName.toLowerCase() === 'textarea';
+export const isTextareaOrInput = (element: Element | null): element is (HTMLTextAreaElement | HTMLInputElement) =>
+  element !== null && (element.tagName.toLowerCase() === 'textarea' || element.tagName.toLowerCase() === 'input');
 
 const normalizePluginArray = (plugins?: string | string[]): string[] => {
   if (typeof plugins === 'undefined' || plugins === '') {

@@ -10,9 +10,9 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextarea, mergePlugins, uuid, configHandlers } from '../Utils';
+import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Editor as TinyMCEEditor, EditorEvent, Events, RawEditorSettings } from 'tinymce';
+import { Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
 export interface IProps {
   apiKey: string;
@@ -46,9 +46,10 @@ export class Editor extends React.Component<IAllProps> {
     cloudChannel: '5'
   };
 
+  public editor?: TinyMCEEditor;
+
   private id: string;
   private elementRef: React.RefObject<HTMLElement>;
-  private editor?: TinyMCEEditor;
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
@@ -94,15 +95,13 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off('init', this.handleInit);
-      if (editor.initialized) {
-        editor.off('change keyup setcontent', this.handleEditorChange);
-        Object.keys(this.boundHandlers).forEach((eventName) => {
-          editor.off(eventName, this.boundHandlers[eventName]);
-        });
-        this.boundHandlers = {};
-      }
+      editor.off('change keyup setcontent', this.handleEditorChange);
+      Object.keys(this.boundHandlers).forEach((eventName) => {
+        editor.off(eventName, this.boundHandlers[eventName]);
+      });
+      this.boundHandlers = {};
       editor.remove();
+      this.editor = undefined;
     }
   }
 
@@ -152,12 +151,23 @@ export class Editor extends React.Component<IAllProps> {
     if (this.editor !== undefined) {
       // typescript chokes trying to understand the type of the lookup function
       configHandlers(this.editor, prevProps, this.props, this.boundHandlers, (key) => this.props[key] as any);
+      if (prevProps.onEditorChange === undefined) {
+        if (this.props.onEditorChange !== undefined) {
+          // added onEditorChange
+          this.editor.on('change keyup setcontent', this.handleEditorChange);
+        }
+      } else {
+        if (this.props.onEditorChange === undefined) {
+          // removed onEditorChange
+          this.editor.off('change keyup setcontent', this.handleEditorChange);
+        }
+      }
     }
   }
 
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
-    if (editor) {
+    if (editor && editor.initialized) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
 
       if (newContent !== this.currentContent) {
@@ -166,26 +176,6 @@ export class Editor extends React.Component<IAllProps> {
           this.props.onEditorChange(this.currentContent ?? '', editor);
         }
       }
-    }
-  };
-
-  private handleInit = (initEvent: EditorEvent<Events.EditorEventMap['init']>) => {
-    const editor = this.editor;
-    if (editor) {
-      editor.setContent(this.getInitialValue());
-      editor.undoManager.clear();
-      editor.undoManager.add();
-      editor.setDirty(false);
-
-      if (isFunction(this.props.onEditorChange)) {
-        editor.on('change keyup setcontent', this.handleEditorChange);
-      }
-
-      if (isFunction(this.props.onInit)) {
-        this.props.onInit(initEvent, editor);
-      }
-
-      this.bindHandlers({});
     }
   };
 
@@ -210,16 +200,20 @@ export class Editor extends React.Component<IAllProps> {
       toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
       setup: (editor) => {
         this.editor = editor;
-        editor.on('init', this.handleInit);
+        this.bindHandlers({});
 
         if (this.props.init && isFunction(this.props.init.setup)) {
           this.props.init.setup(editor);
         }
       }
     };
-
-    if (isTextarea(this.elementRef.current)) {
-      this.elementRef.current.style.visibility = '';
+    if (!this.inline) {
+      target.style.visibility = '';
+    }
+    if (isTextareaOrInput(target)) {
+      target.value = this.getInitialValue();
+    } else {
+      target.innerHTML = this.getInitialValue();
     }
 
     tinymce.init(finalInit);
