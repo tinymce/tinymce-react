@@ -151,16 +151,14 @@ export class Editor extends React.Component<IAllProps> {
     if (this.editor !== undefined) {
       // typescript chokes trying to understand the type of the lookup function
       configHandlers(this.editor, prevProps, this.props, this.boundHandlers, (key) => this.props[key] as any);
-      if (prevProps.onEditorChange === undefined) {
-        if (this.props.onEditorChange !== undefined) {
-          // added onEditorChange
-          this.editor.on('change keyup setcontent', this.handleEditorChange);
-        }
-      } else {
-        if (this.props.onEditorChange === undefined) {
-          // removed onEditorChange
-          this.editor.off('change keyup setcontent', this.handleEditorChange);
-        }
+      // check if we should monitor editor changes
+      const isValueControlled = (p: Partial<IAllProps>) => p.onEditorChange !== undefined || p.value !== undefined;
+      const wasControlled = isValueControlled(prevProps);
+      const nowControlled = isValueControlled(this.props);
+      if (!wasControlled && nowControlled) {
+        this.editor.on('change keyup setcontent', this.handleEditorChange);
+      } else if (wasControlled && !nowControlled) {
+        this.editor.off('change keyup setcontent', this.handleEditorChange);
       }
     }
   }
