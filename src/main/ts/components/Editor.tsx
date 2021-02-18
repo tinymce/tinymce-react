@@ -202,6 +202,18 @@ export class Editor extends React.Component<IAllProps> {
         this.editor = editor;
         this.bindHandlers({});
 
+        // When running in inline mode the editor gets the initial value
+        // from the innerHTML of the element it is initialized on.
+        // However we don't want to take on the responsibility of sanitizing
+        // to remove XSS in the react integration so we have a chicken and egg
+        // problem... We avoid it by sneaking in a set content before the first
+        // "official" setContent and using TinyMCE to do the sanitization.
+        if (this.inline && !isTextareaOrInput(target)) {
+          editor.once('PostRender', (_evt) => {
+            editor.setContent(this.getInitialValue(), { no_events: true });
+          });
+        }
+
         if (this.props.init && isFunction(this.props.init.setup)) {
           this.props.init.setup(editor);
         }
@@ -212,8 +224,6 @@ export class Editor extends React.Component<IAllProps> {
     }
     if (isTextareaOrInput(target)) {
       target.value = this.getInitialValue();
-    } else {
-      target.innerHTML = this.getInitialValue();
     }
 
     tinymce.init(finalInit);
