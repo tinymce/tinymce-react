@@ -37,10 +37,20 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
           onSetContent: eventStore.createHandler('onSetContent')
         }),
 
+        // tinymce native event
+        // initial content is empty as editor does not have a value or initialValue
+        eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
+          Assertions.assertEq('First arg should be event from Tiny', '', events[0].editorEvent.content);
+          Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
+        }),
+
+        eventStore.cClearState,
+
         cEditor(cSetContent('<p>Initial Content</p>')),
 
         // tinymce native event
         eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
+          Assertions.assertEq('onSetContent should have been fired once', 1, events.length);
           Assertions.assertEq('First arg should be event from Tiny', '<p>Initial Content</p>', events[0].editorEvent.content);
           Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
         }),
@@ -88,6 +98,10 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
       Logger.t('Providing a new event handler and re-rendering should unbind old handler and bind new handler', Chain.asStep({}, [
         cRender({ onSetContent: eventStore.createHandler('InitialHandler') }),
+        eventStore.cEach<SetContentEvent>('InitialHandler', (events) => {
+          Assertions.assertEq('Initial content is empty as editor does not have a value or initialValue', '', events[0].editorEvent.content);
+        }),
+        eventStore.cClearState,
         cEditor(cSetContent('<p>Initial Content</p>')),
 
         cReRender({ onSetContent: eventStore.createHandler('NewHandler') }),
