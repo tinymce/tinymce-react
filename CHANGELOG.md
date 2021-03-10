@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.10.4] - 2021-03-10
 ### Fixed
 - Check for editor changes on `"compositionend"` event to more accurately trigger `onEditorChange`. INT-2348
+- Updated dependencies to latest available
 
 ## [3.10.3] - 2021-03-04
 ### Fixed
