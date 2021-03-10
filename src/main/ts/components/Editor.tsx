@@ -95,7 +95,7 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off('change keyup setcontent', this.handleEditorChange);
+      editor.off('change keyup compositionend setcontent', this.handleEditorChange);
       Object.keys(this.boundHandlers).forEach((eventName) => {
         editor.off(eventName, this.boundHandlers[eventName]);
       });
@@ -156,9 +156,9 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on('change keyup setcontent', this.handleEditorChange);
+        this.editor.on('change keyup compositionend setcontent', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off('change keyup setcontent', this.handleEditorChange);
+        this.editor.off('change keyup compositionend setcontent', this.handleEditorChange);
       }
     }
   }
