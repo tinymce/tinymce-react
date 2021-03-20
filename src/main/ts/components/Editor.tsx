@@ -215,6 +215,18 @@ export class Editor extends React.Component<IAllProps> {
         if (this.props.init && isFunction(this.props.init.setup)) {
           this.props.init.setup(editor);
         }
+      },
+      init_instance_callback: (editor) => {
+        // propagate async value props when editor init finished
+        const value = this.getInitialValue();
+        if (!this.currentContent && this.currentContent !== value) {
+          this.currentContent = value;
+          editor.setContent(value as string);
+        }
+        
+        if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
+          this.props.init.init_instance_callback();
+        }
       }
     };
     if (!this.inline) {
