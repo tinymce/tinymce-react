@@ -4,9 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Changed
+- Updates to `initialValue` after editor initialization will now be detected and applied and will result in a complete reset of undo state.
+- During `componentDidUpdate` the `value` prop will be applied if it is different to the current editor content even when it is not different to the previous value of the `value` prop.
+
+### Fixed
+- Apply changes to `initialValue`, `value` and `disabled` which occur between editor setup and initialization that were previously ignored.
+- An attempt will be made to retain the cursor position when the `value` prop forces an update to the editor content. If the cursor position can not be found it will return to the start of the document as before.
+- Internal tracking of the current content is now always done in HTML so `outputFormat` should not cause any unexpected behavior.
+
+### Deprecated
+- The `outputFormat` prop will be removed in a future release. If text output is required call `editor.getContent({ format: 'text' })` in any of the event callbacks.
+
 ## [3.10.4] - 2021-03-10
 ### Fixed
-- Check for editor changes on `"compositionend"` event to more accurately trigger `onEditorChange`. INT-2348
+- Check for editor changes on `"compositionend"` event to more accurately trigger `onEditorChange`. #INT-2348
 - Updated dependencies to latest available
 
 ## [3.10.3] - 2021-03-04
