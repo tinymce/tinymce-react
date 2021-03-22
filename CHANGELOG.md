@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Changed
-- Updates to `initialValue` after editor initialization will now be detected and applied and will result in a complete reset of undo state.
+- Updates to `initialValue` after editor initialization will now be detected and applied and will result in a complete reset of undo state. #INT-2367
 - During `componentDidUpdate` the `value` prop will be applied if it is different to the current editor content even when it is not different to the previous value of the `value` prop. #INT-2372
 
 ### Fixed
