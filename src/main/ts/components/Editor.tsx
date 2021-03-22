@@ -235,12 +235,12 @@ export class Editor extends React.Component<IAllProps> {
       },
       init_instance_callback: (editor) => {
         // check for changes that happened since tinymce.init() was called
-        const value = this.getInitialValue();
+        const initialValue = this.getInitialValue();
         this.currentContent = this.currentContent ?? editor.getContent();
-        if (!this.currentContent && this.currentContent !== value) {
-          this.currentContent = value;
+        if (this.currentContent !== initialValue) {
+          this.currentContent = initialValue;
           // same as resetContent in TinyMCE 5
-          editor.setContent(value);
+          editor.setContent(initialValue);
           editor.undoManager.clear();
           editor.undoManager.add();
           editor.setDirty(false);
