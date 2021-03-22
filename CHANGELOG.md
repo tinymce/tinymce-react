@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - During `componentDidUpdate` the `value` prop will be applied if it is different to the current editor content even when it is not different to the previous value of the `value` prop.
 
 ### Fixed
-- Apply changes to `initialValue`, `value` and `disabled` which occur between editor setup and initialization that were previously ignored.
+- Apply changes to `initialValue`, `value` and `disabled` which occur between editor setup and initialization that were previously ignored. #INT-2371
 - An attempt will be made to retain the cursor position when the `value` prop forces an update to the editor content. If the cursor position can not be found it will return to the start of the document as before. #INT-2370
 - Internal tracking of the current content is now always done in HTML so `outputFormat` should not cause any unexpected behavior. #INT-2369
 
