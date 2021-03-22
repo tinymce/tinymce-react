@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Internal tracking of the current content is now always done in HTML so `outputFormat` should not cause any unexpected behavior.
 
 ### Deprecated
-- The `outputFormat` prop will be removed in a future release. If text output is required call `editor.getContent({ format: 'text' })` in any of the event callbacks.
+- The `outputFormat` prop will be removed in a future release. If text output is required call `editor.getContent({ format: 'text' })` in any of the event callbacks. #INT-2368
 
 ## [3.10.4] - 2021-03-10
 ### Fixed
