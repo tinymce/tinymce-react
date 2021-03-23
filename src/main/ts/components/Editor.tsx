@@ -22,6 +22,7 @@ export interface IProps {
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
   init: RawEditorSettings & { selector?: undefined; target?: undefined };
+  /** @deprecated use `editor.getContent({format: 'text' })` in `onEditorChange` prop instead */
   outputFormat: 'html' | 'text';
   tagName: string;
   cloudChannel: string;
@@ -63,16 +64,30 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidUpdate(prevProps: Partial<IAllProps>) {
-    if (this.editor && this.editor.initialized) {
+    if (this.editor) {
       this.bindHandlers(prevProps);
-      this.currentContent = this.currentContent ?? this.editor.getContent({ format: this.props.outputFormat });
-
-      if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        const localEditor = this.editor;
-        localEditor.undoManager.transact(() => localEditor.setContent(this.props.value as string));
-      }
-      if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
-        this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
+      if (this.editor.initialized) {
+        this.currentContent = this.currentContent ?? this.editor.getContent();
+        if (typeof this.props.initialValue === 'string' && this.props.initialValue !== prevProps.initialValue) {
+          // same as resetContent in TinyMCE 5
+          this.editor.setContent(this.props.initialValue);
+          this.editor.undoManager.clear();
+          this.editor.undoManager.add();
+          this.editor.setDirty(false);
+        } else if (typeof this.props.value === 'string' && this.props.value !== this.currentContent) {
+          const localEditor = this.editor;
+          localEditor.undoManager.transact(() => {
+            const bookmark = localEditor.selection.getBookmark(3);
+            localEditor.setContent(this.props.value as string);
+            try {
+              localEditor.selection.moveToBookmark(bookmark);
+            } catch (e) { /* ignore */ }
+          });
+        }
+        if (this.props.disabled !== prevProps.disabled) {
+          const disabled = this.props.disabled ?? false;
+          this.editor.setMode(disabled ? 'readonly' : 'design');
+        }
       }
     }
   }
@@ -138,10 +153,10 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private getInitialValue() {
-    if (typeof this.props.value === 'string') {
-      return this.props.value;
-    } else if (typeof this.props.initialValue === 'string') {
+    if (typeof this.props.initialValue === 'string') {
       return this.props.initialValue;
+    } else if (typeof this.props.value === 'string') {
+      return this.props.value;
     } else {
       return '';
     }
@@ -166,12 +181,14 @@ export class Editor extends React.Component<IAllProps> {
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
     if (editor && editor.initialized) {
-      const newContent = editor.getContent({ format: this.props.outputFormat });
+      const newContent = editor.getContent();
 
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
         if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(this.currentContent ?? '', editor);
+          const format = this.props.outputFormat;
+          const out = format === 'html' ? newContent : editor.getContent({ format });
+          this.props.onEditorChange(out, editor);
         }
       }
     }
@@ -217,15 +234,22 @@ export class Editor extends React.Component<IAllProps> {
         }
       },
       init_instance_callback: (editor) => {
-        // propagate async value props when editor init finished
-        const value = this.getInitialValue();
-        if (!this.currentContent && this.currentContent !== value) {
-          this.currentContent = value;
-          editor.setContent(value as string);
+        // check for changes that happened since tinymce.init() was called
+        const initialValue = this.getInitialValue();
+        this.currentContent = this.currentContent ?? editor.getContent();
+        if (this.currentContent !== initialValue) {
+          this.currentContent = initialValue;
+          // same as resetContent in TinyMCE 5
+          editor.setContent(initialValue);
+          editor.undoManager.clear();
+          editor.undoManager.add();
+          editor.setDirty(false);
         }
-        
+        const disabled = this.props.disabled ?? false;
+        editor.setMode(disabled ? 'readonly' : 'design');
+        // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
-          this.props.init.init_instance_callback();
+          this.props.init.init_instance_callback(editor);
         }
       }
     };
