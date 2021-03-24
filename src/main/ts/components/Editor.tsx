@@ -12,7 +12,7 @@ import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
+import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
 export interface IProps {
   apiKey: string;
@@ -77,11 +77,22 @@ export class Editor extends React.Component<IAllProps> {
         } else if (typeof this.props.value === 'string' && this.props.value !== this.currentContent) {
           const localEditor = this.editor;
           localEditor.undoManager.transact(() => {
-            const bookmark = localEditor.selection.getBookmark(3);
+            // inline editors grab focus when restoring selection
+            // so we don't try to keep their selection unless they are currently focused
+            let bookmark: Bookmark | undefined;
+            if (!this.inline || localEditor.hasFocus()) {
+              try {
+                // getBookmark throws exceptions when the editor has not been focused
+                // possibly only in inline mode but I'm not taking chances
+                bookmark = localEditor.selection.getBookmark(3);
+              } catch (e) { /* ignore */ }
+            }
             localEditor.setContent(this.props.value as string);
-            try {
-              localEditor.selection.moveToBookmark(bookmark);
-            } catch (e) { /* ignore */ }
+            if (bookmark) {
+              try {
+                localEditor.selection.moveToBookmark(bookmark);
+              } catch (e) { /* ignore */ }
+            }
           });
         }
         if (this.props.disabled !== prevProps.disabled) {
