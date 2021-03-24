@@ -54,6 +54,8 @@ export class Editor extends React.Component<IAllProps> {
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
+  private rollbackTimer: number | undefined = undefined;
+  private valueCursor: Bookmark | undefined = undefined;
 
   public constructor(props: Partial<IAllProps>) {
     super(props);
@@ -64,6 +66,10 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidUpdate(prevProps: Partial<IAllProps>) {
+    if (this.rollbackTimer) {
+      clearTimeout(this.rollbackTimer);
+      this.rollbackTimer = undefined;
+    }
     if (this.editor) {
       this.bindHandlers(prevProps);
       if (this.editor.initialized) {
@@ -121,7 +127,8 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off('change keyup compositionend setcontent', this.handleEditorChange);
+      editor.off('change input compositionend setcontent', this.handleEditorChange);
+      editor.off('SelectionChange', this.handleBeforeInput);
       Object.keys(this.boundHandlers).forEach((eventName) => {
         editor.off(eventName, this.boundHandlers[eventName]);
       });
@@ -182,17 +189,48 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on('change keyup compositionend setcontent', this.handleEditorChange);
+        this.editor.on('change input compositionend setcontent', this.handleEditorChange);
+        this.editor.on('SelectionChange', this.handleBeforeInput);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off('change keyup compositionend setcontent', this.handleEditorChange);
+        this.editor.off('change input compositionend setcontent', this.handleEditorChange);
+        this.editor.off('SelectionChange', this.handleBeforeInput);
       }
     }
   }
+
+  private rollbackChange = () => {
+    const editor = this.editor;
+    const value = this.props.value;
+    if (editor && value && value !== this.currentContent) {
+      editor.undoManager.ignore(() => {
+        editor.setContent(value);
+        // only restore cursor on inline editors when they are focused
+        // as otherwise it will cause a focus grab
+        if (this.valueCursor && (!this.inline || editor.hasFocus())) {
+          try {
+            editor.selection.moveToBookmark(this.valueCursor);
+          } catch (e) { /* ignore */ }
+        }
+      });
+    }
+    this.rollbackTimer = undefined;
+  };
+
+  private handleBeforeInput = (_evt: EditorEvent<unknown>) => {
+    if (this.props.value !== undefined && this.props.value === this.currentContent && this.editor) {
+      this.valueCursor = this.editor?.selection.getBookmark(3);
+    }
+  };
 
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
     if (editor && editor.initialized) {
       const newContent = editor.getContent();
+      if (this.props.value !== undefined && this.props.value !== newContent) {
+        // start a timer and revert to the value if not applied in time
+        clearTimeout(this.rollbackTimer);
+        this.rollbackTimer = window.setTimeout(this.rollbackChange, 1);
+      }
 
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;

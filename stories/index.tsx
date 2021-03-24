@@ -41,6 +41,16 @@ const ControlledInput = () => {
   );
 };
 
+const ControlledInputFixed = () => (
+  <div>
+    <Editor
+      apiKey={apiKey}
+      init={{ height: 300 }}
+      value={'<p>The quick brown fox</p>'}
+    />
+  </div>
+);
+
 const Disable = () => {
   const [ disabled, setDisabled ] = React.useState(true);
   const toggleDisabled = () => setDisabled((prev) => !prev);
@@ -91,6 +101,12 @@ storiesOf('tinymce-react', module)
     withInfo({
       text: 'Example of usage as as a controlled component.'
     })(() => <ControlledInput />)
+  )
+  .add(
+    'Controlled input fixed',
+    withInfo({
+      text: 'Example of usage as as a controlled component with a fixed value.'
+    })(() => <ControlledInputFixed />)
   )
   .add(
     'Disable button',
