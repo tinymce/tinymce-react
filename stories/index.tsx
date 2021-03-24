@@ -1,6 +1,7 @@
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
+import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
 
 import { Editor } from '../src/main/ts';
 
@@ -50,6 +51,43 @@ const ControlledInputFixed = () => (
     />
   </div>
 );
+
+const ControlledInputLimitLength = () => {
+  const sizeLimit = 100;
+  const [ data, setData ] = React.useState('<p>Hello world</p>');
+  const [ len, setLen ] = React.useState(0);
+
+  const handleUpdate = (value: string, editor: TinyMCEEditor) => {
+    const length = editor.getContent({ format: 'text' }).length;
+    if (length <= sizeLimit) {
+      setData(value);
+      setLen(length);
+    }
+  };
+
+  const handleBeforeAddUndo = (evt: EditorEvent<Events.EditorEventMap['BeforeAddUndo']>, editor: TinyMCEEditor) => {
+    const length = editor.getContent({ format: 'text' }).length;
+    // note that this is the opposite test as in handleUpdate
+    // because we are determining when to deny adding an undo level
+    if (length > sizeLimit) {
+      evt.preventDefault();
+      editor.fire('change');
+    }
+  };
+
+  return (
+    <div>
+      <Editor
+        apiKey={apiKey}
+        init={{ height: 300 }}
+        value={data}
+        onEditorChange={handleUpdate}
+        onBeforeAddUndo={handleBeforeAddUndo}
+      />
+      <p>Remaining: {sizeLimit - len}</p>
+    </div>
+  );
+};
 
 const Disable = () => {
   const [ disabled, setDisabled ] = React.useState(true);
@@ -107,6 +145,12 @@ storiesOf('tinymce-react', module)
     withInfo({
       text: 'Example of usage as as a controlled component with a fixed value.'
     })(() => <ControlledInputFixed />)
+  )
+  .add(
+    'Controlled input limited length',
+    withInfo({
+      text: 'Example of usage as as a controlled component with a limited length.'
+    })(() => <ControlledInputLimitLength />)
   )
   .add(
     'Disable button',
