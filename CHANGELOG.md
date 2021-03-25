@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Storybook demo for a controlled component with a fixed value. INT-2352
+- Storybook demo for a controlled component with a maximum length. INT-2462
+
+### Changed
+- When used as a controlled component the editor will rollback a change if it is not set via the `value` prop within a millisecond. INT-2352
+
 ## 3.11.1 - 2021-03-24
 ### Fixed
 - Stopped inline editor grabbing focus when the value is set

@@ -237,8 +237,6 @@ export class Editor extends React.Component<IAllProps> {
 
   private handleBeforeInput = (_evt: EditorEvent<unknown>) => {
     if (this.props.value !== undefined && this.props.value === this.currentContent && this.editor) {
-      // eslint-disable-next-line no-console
-      console.log('Update bookmark', _evt.type);
       this.valueCursor = this.editor?.selection.getBookmark(3);
     }
   };
@@ -250,8 +248,6 @@ export class Editor extends React.Component<IAllProps> {
   };
 
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
-    // eslint-disable-next-line no-console
-    console.log('Handle change', _evt.type);
     const editor = this.editor;
     if (editor && editor.initialized) {
       const newContent = editor.getContent();
