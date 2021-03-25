@@ -40,7 +40,7 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
-const changeEvents = () => getTinymce()?.Env.browser.isIE() ? 'change keyup compositionend setcontent' : 'input compositionend setcontent';
+const changeEvents = () => getTinymce()?.Env?.browser?.isIE() ? 'change keyup compositionend setcontent' : 'input compositionend setcontent';
 const beforeInputEvent = isBeforeInputEventAvailable() ? 'beforeinput' : 'SelectionChange';
 
 export class Editor extends React.Component<IAllProps> {
