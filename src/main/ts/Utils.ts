@@ -90,3 +90,6 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
 
 // eslint-disable-next-line max-len
 export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
+
+export const isBeforeInputEventAvailable = () => window.InputEvent && typeof (InputEvent.prototype as any).getTargetRanges === 'function';
+

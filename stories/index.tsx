@@ -53,9 +53,13 @@ const ControlledInputFixed = () => (
 );
 
 const ControlledInputLimitLength = () => {
-  const sizeLimit = 100;
+  const sizeLimit = 20;
   const [ data, setData ] = React.useState('<p>Hello world</p>');
   const [ len, setLen ] = React.useState(0);
+
+  const handleInit = (evt: unknown, editor: TinyMCEEditor) => {
+    setLen(editor.getContent({ format: 'text' }).length);
+  };
 
   const handleUpdate = (value: string, editor: TinyMCEEditor) => {
     const length = editor.getContent({ format: 'text' }).length;
@@ -71,7 +75,6 @@ const ControlledInputLimitLength = () => {
     // because we are determining when to deny adding an undo level
     if (length > sizeLimit) {
       evt.preventDefault();
-      editor.fire('change');
     }
   };
 
@@ -83,6 +86,7 @@ const ControlledInputLimitLength = () => {
         value={data}
         onEditorChange={handleUpdate}
         onBeforeAddUndo={handleBeforeAddUndo}
+        onInit={handleInit}
       />
       <p>Remaining: {sizeLimit - len}</p>
     </div>
