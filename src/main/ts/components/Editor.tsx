@@ -10,7 +10,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers } from '../Utils';
+import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
@@ -40,6 +40,9 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
+const changeEvents = () => getTinymce()?.Env?.browser?.isIE() ? 'change keyup compositionend setcontent' : 'input compositionend setcontent';
+const beforeInputEvent = isBeforeInputEventAvailable() ? 'beforeinput' : 'SelectionChange';
+
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
@@ -54,6 +57,8 @@ export class Editor extends React.Component<IAllProps> {
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
+  private rollbackTimer: number | undefined = undefined;
+  private valueCursor: Bookmark | undefined = undefined;
 
   public constructor(props: Partial<IAllProps>) {
     super(props);
@@ -64,6 +69,10 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidUpdate(prevProps: Partial<IAllProps>) {
+    if (this.rollbackTimer) {
+      clearTimeout(this.rollbackTimer);
+      this.rollbackTimer = undefined;
+    }
     if (this.editor) {
       this.bindHandlers(prevProps);
       if (this.editor.initialized) {
@@ -79,19 +88,26 @@ export class Editor extends React.Component<IAllProps> {
           localEditor.undoManager.transact(() => {
             // inline editors grab focus when restoring selection
             // so we don't try to keep their selection unless they are currently focused
-            let bookmark: Bookmark | undefined;
+            let cursor: Bookmark | undefined;
             if (!this.inline || localEditor.hasFocus()) {
               try {
                 // getBookmark throws exceptions when the editor has not been focused
                 // possibly only in inline mode but I'm not taking chances
-                bookmark = localEditor.selection.getBookmark(3);
+                cursor = localEditor.selection.getBookmark(3);
               } catch (e) { /* ignore */ }
             }
+            const valueCursor = this.valueCursor;
             localEditor.setContent(this.props.value as string);
-            if (bookmark) {
-              try {
-                localEditor.selection.moveToBookmark(bookmark);
-              } catch (e) { /* ignore */ }
+            if (!this.inline || localEditor.hasFocus()) {
+              for (const bookmark of [ cursor, valueCursor ]) {
+                if (bookmark) {
+                  try {
+                    localEditor.selection.moveToBookmark(bookmark);
+                    this.valueCursor = bookmark;
+                    break;
+                  } catch (e) { /* ignore */ }
+                }
+              }
             }
           });
         }
@@ -121,7 +137,11 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off('change keyup compositionend setcontent', this.handleEditorChange);
+      editor.off(changeEvents(), this.handleEditorChange);
+      editor.off(beforeInputEvent, this.handleBeforeInput);
+      editor.off('keypress', this.handleEditorChangeSpecial);
+      editor.off('keydown', this.handleBeforeInputSpecial);
+      editor.off('NewBlock', this.handleEditorChange);
       Object.keys(this.boundHandlers).forEach((eventName) => {
         editor.off(eventName, this.boundHandlers[eventName]);
       });
@@ -182,17 +202,60 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on('change keyup compositionend setcontent', this.handleEditorChange);
+        this.editor.on(changeEvents(), this.handleEditorChange);
+        this.editor.on(beforeInputEvent, this.handleBeforeInput);
+        this.editor.on('keydown', this.handleBeforeInputSpecial);
+        this.editor.on('keyup', this.handleEditorChangeSpecial);
+        this.editor.on('NewBlock', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off('change keyup compositionend setcontent', this.handleEditorChange);
+        this.editor.off(changeEvents(), this.handleEditorChange);
+        this.editor.off(beforeInputEvent, this.handleBeforeInput);
+        this.editor.off('keydown', this.handleBeforeInputSpecial);
+        this.editor.off('keyup', this.handleEditorChangeSpecial);
+        this.editor.off('NewBlock', this.handleEditorChange);
       }
     }
   }
+
+  private rollbackChange = () => {
+    const editor = this.editor;
+    const value = this.props.value;
+    if (editor && value && value !== this.currentContent) {
+      editor.undoManager.ignore(() => {
+        editor.setContent(value);
+        // only restore cursor on inline editors when they are focused
+        // as otherwise it will cause a focus grab
+        if (this.valueCursor && (!this.inline || editor.hasFocus())) {
+          try {
+            editor.selection.moveToBookmark(this.valueCursor);
+          } catch (e) { /* ignore */ }
+        }
+      });
+    }
+    this.rollbackTimer = undefined;
+  };
+
+  private handleBeforeInput = (_evt: EditorEvent<unknown>) => {
+    if (this.props.value !== undefined && this.props.value === this.currentContent && this.editor) {
+      this.valueCursor = this.editor?.selection.getBookmark(3);
+    }
+  };
+
+  private handleBeforeInputSpecial = (evt: EditorEvent<KeyboardEvent>) => {
+    if (evt.key === 'Enter' || evt.key === 'Backspace' || evt.key === 'Delete') {
+      this.handleBeforeInput(evt);
+    }
+  };
 
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
     const editor = this.editor;
     if (editor && editor.initialized) {
       const newContent = editor.getContent();
+      if (this.props.value !== undefined && this.props.value !== newContent) {
+        // start a timer and revert to the value if not applied in time
+        clearTimeout(this.rollbackTimer);
+        this.rollbackTimer = window.setTimeout(this.rollbackChange, 1);
+      }
 
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
@@ -202,6 +265,12 @@ export class Editor extends React.Component<IAllProps> {
           this.props.onEditorChange(out, editor);
         }
       }
+    }
+  };
+
+  private handleEditorChangeSpecial = (evt: EditorEvent<KeyboardEvent>) => {
+    if (evt.key === 'Backspace' || evt.key === 'Delete') {
+      this.handleEditorChange(evt);
     }
   };
 

@@ -1,6 +1,7 @@
 import { setDefaults, withInfo } from '@storybook/addon-info';
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
+import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
 
 import { Editor } from '../src/main/ts';
 
@@ -37,6 +38,57 @@ const ControlledInput = () => {
         value={data}
         onChange={(e) => setData(e.target.value)}
       />
+    </div>
+  );
+};
+
+const ControlledInputFixed = () => (
+  <div>
+    <Editor
+      apiKey={apiKey}
+      init={{ height: 300 }}
+      value={'<p>The quick brown fox</p>'}
+    />
+  </div>
+);
+
+const ControlledInputLimitLength = () => {
+  const sizeLimit = 20;
+  const [ data, setData ] = React.useState('<p>Hello world</p>');
+  const [ len, setLen ] = React.useState(0);
+
+  const handleInit = (evt: unknown, editor: TinyMCEEditor) => {
+    setLen(editor.getContent({ format: 'text' }).length);
+  };
+
+  const handleUpdate = (value: string, editor: TinyMCEEditor) => {
+    const length = editor.getContent({ format: 'text' }).length;
+    if (length <= sizeLimit) {
+      setData(value);
+      setLen(length);
+    }
+  };
+
+  const handleBeforeAddUndo = (evt: EditorEvent<Events.EditorEventMap['BeforeAddUndo']>, editor: TinyMCEEditor) => {
+    const length = editor.getContent({ format: 'text' }).length;
+    // note that this is the opposite test as in handleUpdate
+    // because we are determining when to deny adding an undo level
+    if (length > sizeLimit) {
+      evt.preventDefault();
+    }
+  };
+
+  return (
+    <div>
+      <Editor
+        apiKey={apiKey}
+        init={{ height: 300 }}
+        value={data}
+        onEditorChange={handleUpdate}
+        onBeforeAddUndo={handleBeforeAddUndo}
+        onInit={handleInit}
+      />
+      <p>Remaining: {sizeLimit - len}</p>
     </div>
   );
 };
@@ -91,6 +143,18 @@ storiesOf('tinymce-react', module)
     withInfo({
       text: 'Example of usage as as a controlled component.'
     })(() => <ControlledInput />)
+  )
+  .add(
+    'Controlled input fixed',
+    withInfo({
+      text: 'Example of usage as as a controlled component with a fixed value.'
+    })(() => <ControlledInputFixed />)
+  )
+  .add(
+    'Controlled input limited length',
+    withInfo({
+      text: 'Example of usage as as a controlled component with a limited length.'
+    })(() => <ControlledInputLimitLength />)
   )
   .add(
     'Disable button',
