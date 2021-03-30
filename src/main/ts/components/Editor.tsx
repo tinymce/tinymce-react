@@ -40,8 +40,8 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
-const beforeInputEvent = isBeforeInputEventAvailable() ? 'beforeinput' : 'SelectionChange';
 const changeEvents = () => getTinymce()?.Env?.browser?.isIE() ? 'change keyup compositionend setcontent' : 'change input compositionend setcontent';
+const beforeInputEvent = () => isBeforeInputEventAvailable() ? 'beforeinput' : 'SelectionChange';
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -138,7 +138,7 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor) {
       editor.off(changeEvents(), this.handleEditorChange);
-      editor.off(beforeInputEvent, this.handleBeforeInput);
+      editor.off(beforeInputEvent(), this.handleBeforeInput);
       editor.off('keypress', this.handleEditorChangeSpecial);
       editor.off('keydown', this.handleBeforeInputSpecial);
       editor.off('NewBlock', this.handleEditorChange);
@@ -203,13 +203,13 @@ export class Editor extends React.Component<IAllProps> {
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
         this.editor.on(changeEvents(), this.handleEditorChange);
-        this.editor.on(beforeInputEvent, this.handleBeforeInput);
+        this.editor.on(beforeInputEvent(), this.handleBeforeInput);
         this.editor.on('keydown', this.handleBeforeInputSpecial);
         this.editor.on('keyup', this.handleEditorChangeSpecial);
         this.editor.on('NewBlock', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
         this.editor.off(changeEvents(), this.handleEditorChange);
-        this.editor.off(beforeInputEvent, this.handleBeforeInput);
+        this.editor.off(beforeInputEvent(), this.handleBeforeInput);
         this.editor.off('keydown', this.handleBeforeInputSpecial);
         this.editor.off('keyup', this.handleEditorChangeSpecial);
         this.editor.off('NewBlock', this.handleEditorChange);

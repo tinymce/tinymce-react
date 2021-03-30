@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 3.12.1 - 2021-03-30
 ### Fixed
 - Re-added change event as a trigger of `onEditorChange` so toggling formatting will be detected. #INT-2473
+- Defer evaluating browser capabilities until after the component has mounted to allow server side rendering. #INT-2472
 
 ## 3.12.0 - 2021-03-26
 ### Added
