@@ -22,6 +22,9 @@ export const IframeEditor: Story = () => (
     initialValue={sampleContent}
   />
 );
+IframeEditor.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 export const InlineEditor: Story = () => (
   <div style={{ paddingTop: '100px' }}>
@@ -32,6 +35,9 @@ export const InlineEditor: Story = () => (
     />
   </div>
 );
+InlineEditor.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 export const ControlledInput: Story = () => {
   const [ data, setData ] = React.useState(sampleContent);
@@ -50,6 +56,9 @@ export const ControlledInput: Story = () => {
     </div>
   );
 };
+ControlledInput.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 // The editor will enforce a value that is given to it.
 // Note that the value must be valid HTML or it will forever correcting it and then rolling back the change.
@@ -61,6 +70,9 @@ export const ControlledInputFixed: Story = () => (
     />
   </div>
 );
+ControlledInputFixed.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 export const ControlledInputLimitLength: Story = () => {
   const sizeLimit = 50;
@@ -101,6 +113,9 @@ export const ControlledInputLimitLength: Story = () => {
     </div>
   );
 };
+ControlledInputLimitLength.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 export const ToggleDisabledProp: Story = () => {
   const [ disabled, setDisabled ] = React.useState(true);
@@ -118,6 +133,9 @@ export const ToggleDisabledProp: Story = () => {
     </div>
   );
 };
+ToggleDisabledProp.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
 
 export const CloudChannelSetTo5Dev: Story = () => (
   <div>
@@ -130,3 +148,6 @@ export const CloudChannelSetTo5Dev: Story = () => (
   </div>
 );
 CloudChannelSetTo5Dev.storyName = 'Cloud Channel Set To "5-dev"';
+CloudChannelSetTo5Dev.parameters = {
+  controls: { hideNoControlsWarning: true },
+};
