@@ -17,7 +17,9 @@
     "test": "bedrock-auto -b chrome-headless -f src/test/ts/**/*Test.ts",
     "test-manual": "bedrock -f src/test/ts/**/*Test.ts",
     "build": "yarn run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
-    "watch": "tsc -w -p ./tsconfig.es2015.json"
+    "watch": "tsc -w -p ./tsconfig.es2015.json",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "keywords": [],
   "author": "Tiny Technologies",
@@ -39,6 +41,11 @@
     "@ephox/mcagar": "^6.0.1",
     "@ephox/sand": "^4.0.5",
     "@ephox/sugar": "^7.1.1",
+    "@storybook/addon-actions": "^6.2.1",
+    "@storybook/addon-essentials": "^6.2.1",
+    "@storybook/addon-links": "^6.2.1",
+    "@storybook/react": "^6.2.1",
+    "@storybook/storybook-deployer": "^2.8.7",
     "@tinymce/beehive-flow": "^0.14.0",
     "@tinymce/eslint-plugin": "^1.7.2",
     "@tinymce/miniature": "^3.1.1",
