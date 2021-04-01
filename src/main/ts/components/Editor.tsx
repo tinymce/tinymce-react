@@ -41,7 +41,7 @@ export interface IProps {
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
 const changeEvents = () => getTinymce()?.Env?.browser?.isIE() ? 'change keyup compositionend setcontent' : 'change input compositionend setcontent';
-const beforeInputEvent = () => isBeforeInputEventAvailable() ? 'beforeinput' : 'SelectionChange';
+const beforeInputEvent = () => isBeforeInputEventAvailable() ? 'beforeinput SelectionChange' : 'SelectionChange';
 
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
@@ -253,8 +253,9 @@ export class Editor extends React.Component<IAllProps> {
       const newContent = editor.getContent();
       if (this.props.value !== undefined && this.props.value !== newContent) {
         // start a timer and revert to the value if not applied in time
-        clearTimeout(this.rollbackTimer);
-        this.rollbackTimer = window.setTimeout(this.rollbackChange, 1);
+        if (!this.rollbackTimer) {
+          this.rollbackTimer = window.setTimeout(this.rollbackChange, 200);
+        }
       }
 
       if (newContent !== this.currentContent) {

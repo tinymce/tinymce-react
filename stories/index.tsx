@@ -42,19 +42,21 @@ const ControlledInput = () => {
   );
 };
 
+// The editor will enforce a value that is given to it.
+// Note that the value must be valid HTML or it will forever correcting it and then rolling back the change.
 const ControlledInputFixed = () => (
   <div>
     <Editor
       apiKey={apiKey}
       init={{ height: 300 }}
-      value={'<p>The quick brown fox</p>'}
+      value={'<p>This value is <strong>fixed</strong> and can not be <em>changed</em>.</p>'}
     />
   </div>
 );
 
 const ControlledInputLimitLength = () => {
-  const sizeLimit = 20;
-  const [ data, setData ] = React.useState('<p>Hello world</p>');
+  const sizeLimit = 50;
+  const [ data, setData ] = React.useState('<p>This field can only take 50 characters.</p>');
   const [ len, setLen ] = React.useState(0);
 
   const handleInit = (evt: unknown, editor: TinyMCEEditor) => {

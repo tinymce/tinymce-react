@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 3.12.2 - 2021-04-01
 ### Fixed
-- Updated dependencies to latest available
+- Slowed down the change rollback to 200 milliseconds to allow async frameworks a chance to set the value. #INT-2475
+- Fixed cursor position recording for rolling back formatting-only changes.
+- Updated dependencies
 
 ## 3.12.1 - 2021-03-30
 ### Fixed
