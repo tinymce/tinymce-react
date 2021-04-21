@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Recreated the storybook examples in the new recommend format as the format we were using broke on an upgrade
+- Updated dependencies
 
 ## 3.12.2 - 2021-04-01
 ### Fixed
