@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 3.12.3 - 2021-04-30
 ### Fixed
 - Avoid trying to get a bookmark for an unfocused inline editor
 - Recreated the storybook examples in the new recommend format as the format we were using broke on an upgrade
