@@ -243,8 +243,6 @@ export class Editor extends React.Component<IAllProps> {
           // possibly only in inline mode but I'm not taking chances
           this.valueCursor = this.editor.selection.getBookmark(3);
         } catch (e) { /* ignore */ }
-      } else {
-        this.valueCursor = undefined;
       }
     }
   };
