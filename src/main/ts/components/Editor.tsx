@@ -237,7 +237,15 @@ export class Editor extends React.Component<IAllProps> {
 
   private handleBeforeInput = (_evt: EditorEvent<unknown>) => {
     if (this.props.value !== undefined && this.props.value === this.currentContent && this.editor) {
-      this.valueCursor = this.editor?.selection.getBookmark(3);
+      if (!this.inline || this.editor.hasFocus) {
+        try {
+          // getBookmark throws exceptions when the editor has not been focused
+          // possibly only in inline mode but I'm not taking chances
+          this.valueCursor = this.editor.selection.getBookmark(3);
+        } catch (e) { /* ignore */ }
+      } else {
+        this.valueCursor = undefined;
+      }
     }
   };
 
