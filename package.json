@@ -29,8 +29,8 @@
     "tinymce": "^5.7.1"
   },
   "peerDependencies": {
-    "react": "^17.0.1 | ^16.7.0",
-    "react-dom": "^17.0.1 | ^16.7.0"
+    "react": "^17.0.1 || ^16.7.0",
+    "react-dom": "^17.0.1 || ^16.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
