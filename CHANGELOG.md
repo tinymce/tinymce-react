@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Allow use of react version "^16.7.0" as well as "^17.0.1" to correct the unintended breaking change introduced in release 3.9.
+- Updated dependencies
 
 ## 3.12.3 - 2021-04-30
 ### Fixed

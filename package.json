@@ -47,12 +47,12 @@
     "@storybook/react": "^6.2.9",
     "@storybook/storybook-deployer": "^2.8.7",
     "@tinymce/beehive-flow": "^0.15.0",
-    "@tinymce/eslint-plugin": "^1.7.2",
+    "@tinymce/eslint-plugin": "^1.7.4",
     "@tinymce/miniature": "^3.1.1",
     "@types/node": "^15.0.1",
     "@types/prop-types": "^15.5.8",
     "@types/react": "^17.0.4",
-    "@types/react-dom": "^17.0.3",
+    "@types/react-dom": "^17.0.4",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.2.2",
     "core-js": "^3.11.1",
@@ -64,7 +64,7 @@
     "tinymce-5": "npm:tinymce@^5",
     "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
-    "webpack": "^5.36.1"
+    "webpack": "^5.37.0"
   },
   "version": "3.12.4-rc",
   "name": "@tinymce/tinymce-react"
