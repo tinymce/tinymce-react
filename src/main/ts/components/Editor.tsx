@@ -298,8 +298,8 @@ export class Editor extends React.Component<IAllProps> {
       target,
       readonly: this.props.disabled,
       inline: this.inline,
-      plugins: mergePlugins(this.props.init && this.props.init.plugins, this.props.plugins),
-      toolbar: this.props.toolbar || (this.props.init && this.props.init.toolbar),
+      plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
+      toolbar: this.props.toolbar ?? this.props.init?.toolbar,
       setup: (editor) => {
         this.editor = editor;
         this.bindHandlers({});

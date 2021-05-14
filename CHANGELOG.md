@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Fixed
+- Fixed ignoring the `toolbar` prop when it contains a falsy value when it should only be ignored if it is undefined or null.
+
 ## 3.12.4 - 2021-05-12
 ### Fixed
 - Allow use of react version "^16.7.0" as well as "^17.0.1" to correct the unintended breaking change introduced in release 3.9.
