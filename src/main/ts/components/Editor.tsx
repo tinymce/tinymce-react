@@ -10,7 +10,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable } from '../Utils';
+import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
@@ -281,10 +281,18 @@ export class Editor extends React.Component<IAllProps> {
     }
   };
 
-  private initialise = () => {
+  private initialise = (attempts = 0) => {
     const target = this.elementRef.current;
     if (!target) {
       return; // Editor has been unmounted
+    }
+    if (!isInDoc(target)) {
+      if (attempts < 5) {
+        setTimeout(() => this.initialise(attempts + 1), 200);
+      } else {
+        throw new Error('tinymce can only be initialised when in a document');
+      }
+      return;
     }
 
     const tinymce = getTinymce();
