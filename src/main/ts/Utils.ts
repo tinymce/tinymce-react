@@ -93,3 +93,12 @@ export const mergePlugins = (initPlugins: string | string[] | undefined, inputPl
 
 export const isBeforeInputEventAvailable = () => window.InputEvent && typeof (InputEvent.prototype as any).getTargetRanges === 'function';
 
+export const isInDoc = (elem: Node) => {
+  let current = elem;
+  let parent = elem.parentNode;
+  while (parent != null) {
+    current = parent;
+    parent = current.parentNode;
+  }
+  return current === elem.ownerDocument;
+};

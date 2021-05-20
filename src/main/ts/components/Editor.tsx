@@ -10,7 +10,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable } from '../Utils';
+import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
@@ -281,10 +281,26 @@ export class Editor extends React.Component<IAllProps> {
     }
   };
 
-  private initialise = () => {
+  private initialise = (attempts = 0) => {
     const target = this.elementRef.current;
     if (!target) {
       return; // Editor has been unmounted
+    }
+    if (!isInDoc(target)) {
+      // this is probably someone trying to help by rendering us offscreen
+      // but we can't do that because the editor iframe must be in the document
+      // in order to have state
+      if (attempts === 0) {
+        // we probably just need to wait for the current events to be processed
+        setTimeout(() => this.initialise(1), 1);
+      } else if (attempts < 11) {
+        // wait for a second, polling every tenth of a second
+        setTimeout(() => this.initialise(attempts + 1), 100);
+      } else {
+        // give up, at this point it seems that more polling is unlikely to help
+        throw new Error('tinymce can only be initialised when in a document');
+      }
+      return;
     }
 
     const tinymce = getTinymce();

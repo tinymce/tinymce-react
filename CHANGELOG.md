@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Fixed ignoring the `toolbar` prop when it contains a falsy value when it should only be ignored if it is undefined or null.
+- Ensure that the editor is initialized attached to a document.
 
 ## 3.12.4 - 2021-05-12
 ### Fixed
