@@ -26,7 +26,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "tinymce": "^5.8.1"
+    "tinymce": "^5.5.1"
   },
   "peerDependencies": {
     "react": "^17.0.1 || ^16.7.0",

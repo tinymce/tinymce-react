@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.12.6 - 2021-05-20
+### Fixed
+- As the tinymce dependency is only used for types allow all versions after than 5.5.1 when types were first added, but prefer the latest when unspecified.
+
 ## 3.12.5 - 2021-05-20
 ### Fixed
 - Fixed ignoring the `toolbar` prop when it contains a falsy value when it should only be ignored if it is undefined or null.
