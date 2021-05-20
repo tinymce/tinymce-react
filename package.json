@@ -26,14 +26,14 @@
   "license": "Apache-2.0",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "tinymce": "^5.7.1"
+    "tinymce": "^5.8.1"
   },
   "peerDependencies": {
     "react": "^17.0.1 || ^16.7.0",
     "react-dom": "^17.0.1 || ^16.7.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.0",
+    "@babel/core": "^7.14.3",
     "@ephox/agar": "^5.2.1",
     "@ephox/bedrock-client": "^11.1.1",
     "@ephox/bedrock-server": "^11.2.0",
@@ -45,14 +45,14 @@
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
     "@storybook/react": "^6.2.9",
-    "@storybook/storybook-deployer": "^2.8.7",
+    "@storybook/storybook-deployer": "^2.8.8",
     "@tinymce/beehive-flow": "^0.15.0",
     "@tinymce/eslint-plugin": "^1.7.4",
     "@tinymce/miniature": "^3.1.1",
-    "@types/node": "^15.0.1",
+    "@types/node": "^15.3.1",
     "@types/prop-types": "^15.5.8",
-    "@types/react": "^17.0.4",
-    "@types/react-dom": "^17.0.4",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.2.2",
     "core-js": "^3.11.1",
@@ -62,9 +62,9 @@
     "rimraf": "^3.0.2",
     "tinymce-4": "npm:tinymce@^4",
     "tinymce-5": "npm:tinymce@^5",
-    "ts-loader": "^9.1.1",
+    "ts-loader": "^9.2.1",
     "typescript": "^4.2.4",
-    "webpack": "^5.37.0"
+    "webpack": "^5.37.1"
   },
   "version": "3.12.5-rc",
   "name": "@tinymce/tinymce-react"
