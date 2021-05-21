@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 3.12.6 - 2021-05-20
 ### Fixed
-- As the tinymce dependency is only used for types allow all versions after than 5.5.1 when types were first added, but prefer the latest when unspecified.
+- As the tinymce dependency is only used for types allow all versions after 5.5.1 when types were first added, but prefer the latest when unspecified.
 
 ## 3.12.5 - 2021-05-20
 ### Fixed
