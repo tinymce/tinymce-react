@@ -36,6 +36,7 @@ export interface IProps {
     defer?: boolean;
     delay?: number;
   };
+  ref: React.MutableRefObject<TinyMCEEditor | undefined>;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
@@ -73,9 +74,15 @@ export class Editor extends React.Component<IAllProps> {
       clearTimeout(this.rollbackTimer);
       this.rollbackTimer = undefined;
     }
+    if (prevProps.ref && this.props.ref !== prevProps.ref) {
+      prevProps.ref.current = undefined;
+    }
     if (this.editor) {
       this.bindHandlers(prevProps);
       if (this.editor.initialized) {
+        if (this.props.ref) {
+          this.props.ref.current = this.editor;
+        }
         this.currentContent = this.currentContent ?? this.editor.getContent();
         if (typeof this.props.initialValue === 'string' && this.props.initialValue !== prevProps.initialValue) {
           // same as resetContent in TinyMCE 5
@@ -146,6 +153,9 @@ export class Editor extends React.Component<IAllProps> {
         editor.off(eventName, this.boundHandlers[eventName]);
       });
       this.boundHandlers = {};
+      if (this.props.ref) {
+        this.props.ref.current = undefined;
+      }
       editor.remove();
       this.editor = undefined;
     }
@@ -350,6 +360,9 @@ export class Editor extends React.Component<IAllProps> {
         }
         const disabled = this.props.disabled ?? false;
         editor.setMode(disabled ? 'readonly' : 'design');
+        if (this.props.ref) {
+          this.props.ref.current = editor;
+        }
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);
