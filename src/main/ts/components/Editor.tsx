@@ -293,7 +293,7 @@ export class Editor extends React.Component<IAllProps> {
       if (attempts === 0) {
         // we probably just need to wait for the current events to be processed
         setTimeout(() => this.initialise(1), 1);
-      } else if (attempts < 11) {
+      } else if (attempts < 100) {
         // wait for a second, polling every tenth of a second
         setTimeout(() => this.initialise(attempts + 1), 100);
       } else {
