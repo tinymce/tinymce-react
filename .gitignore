@@ -1,4 +1,5 @@
 node_modules
+lib
 .DS_Store
 storybook-static
 *.tgz
