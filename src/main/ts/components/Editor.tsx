@@ -31,6 +31,7 @@ export interface IProps {
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string;
+  rollback: number | false;
   scriptLoading: {
     async?: boolean;
     defer?: boolean;
@@ -257,10 +258,13 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor && editor.initialized) {
       const newContent = editor.getContent();
-      if (this.props.value !== undefined && this.props.value !== newContent) {
+      if (this.props.value !== undefined && this.props.value !== newContent && this.props.rollback !== false) {
         // start a timer and revert to the value if not applied in time
         if (!this.rollbackTimer) {
-          this.rollbackTimer = window.setTimeout(this.rollbackChange, 200);
+          this.rollbackTimer = window.setTimeout(
+            this.rollbackChange,
+            typeof this.props.rollback === 'number' ? this.props.rollback : 200
+          );
         }
       }
 
