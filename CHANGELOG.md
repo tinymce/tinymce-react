@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 3.12.7 - 2021-10-05
 ### Fixed
+- The integration will now initialize in a shadow dom. 
 - Updated dependencies
 
 ## 3.12.6 - 2021-05-20
