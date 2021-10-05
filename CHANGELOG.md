@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
-- Added new `rollback` prop for changing the delay after which rollback is performed (when value and editor content don't match) or disabling it completely.
+- Added new `rollback` prop for changing the delay after which a rollback is performed (when value and editor content don't match) or disabling it completely.
 
 ## 3.12.7 - 2021-10-05
 ### Fixed
