@@ -94,11 +94,16 @@ export const mergePlugins = (initPlugins: string | string[] | undefined, inputPl
 export const isBeforeInputEventAvailable = () => window.InputEvent && typeof (InputEvent.prototype as any).getTargetRanges === 'function';
 
 export const isInDoc = (elem: Node) => {
-  let current = elem;
-  let parent = elem.parentNode;
-  while (parent != null) {
-    current = parent;
-    parent = current.parentNode;
+  if (!('isConnected' in Node.prototype)) {
+    // Fallback for IE and old Edge
+    let current = elem;
+    let parent = elem.parentNode;
+    while (parent != null) {
+      current = parent;
+      parent = current.parentNode;
+    }
+    return current === elem.ownerDocument;
   }
-  return current === elem.ownerDocument;
+
+  return elem.isConnected;
 };
