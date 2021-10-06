@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added new `rollback` prop for changing the delay after which a rollback is performed (when value and editor content don't match) or disabling it completely.
 
+## 3.12.8 - 2021-10-06
+### Changed
+- Wait 10 seconds (increased from 1) for the target element to be in the DOM before giving up.
+
+### Fixed
+- Updated dependencies.
+
 ## 3.12.7 - 2021-10-05
 ### Fixed
 - The integration will now initialize in a shadow dom. 

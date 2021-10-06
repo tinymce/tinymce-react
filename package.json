@@ -49,13 +49,13 @@
     "@tinymce/beehive-flow": "^0.17.0",
     "@tinymce/eslint-plugin": "^1.9.2",
     "@tinymce/miniature": "^4.0.0",
-    "@types/node": "^16.10.2",
+    "@types/node": "^16.10.3",
     "@types/prop-types": "^15.7.4",
     "@types/react": "^17.0.27",
     "@types/react-dom": "^17.0.9",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.2.2",
-    "core-js": "^3.18.1",
+    "core-js": "^3.18.2",
     "raf": "^3.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -64,7 +64,7 @@
     "tinymce-5": "npm:tinymce@^5",
     "ts-loader": "^9.2.6",
     "typescript": "~4.4.3",
-    "webpack": "^5.56.1"
+    "webpack": "^5.57.1"
   },
   "version": "3.13.0-rc",
   "name": "@tinymce/tinymce-react"
