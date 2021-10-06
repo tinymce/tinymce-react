@@ -97,6 +97,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   disabled: PropTypes.bool,
   textareaName: PropTypes.string,
   tinymceScriptSrc: PropTypes.string,
+  rollback: PropTypes.oneOfType([ PropTypes.number, PropTypes.oneOf([ false ]) ]),
   scriptLoading: PropTypes.shape({
     async: PropTypes.bool,
     defer: PropTypes.bool,
