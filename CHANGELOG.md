@@ -5,14 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## 3.13.1 - 2022-01-20
 ### Fixed
 - Updated dependencies
-- Use `editor.mode.set(...)` instead of the deprecated `editor.setMode(..)` which will be removed in TinyMCE 6.
+- Use `editor.mode.set(...)` when available instead of the deprecated `editor.setMode(..)` which will be removed in TinyMCE 6.
 - Addressed lint errors
-
-## 3.13.0 - 2022-01-20
-### Fixed
-- Updated dependencies
 
 ## 3.13.0 - 2021-10-06
 ### Added

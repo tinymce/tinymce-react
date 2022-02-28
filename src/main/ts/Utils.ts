@@ -108,3 +108,13 @@ export const isInDoc = (elem: Node) => {
 
   return elem.isConnected;
 };
+
+export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'design') => {
+  if (editor !== undefined) {
+    if (editor.mode != null && typeof editor.mode === 'object' && typeof editor.mode.set === 'function') {
+      editor.mode.set(mode);
+    } else { // support TinyMCE 4
+      editor.setMode(mode);
+    }
+  }
+};

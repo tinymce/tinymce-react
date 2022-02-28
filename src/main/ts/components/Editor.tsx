@@ -10,7 +10,7 @@ import * as React from 'react';
 import { IEvents } from '../Events';
 import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc } from '../Utils';
+import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
 
@@ -114,7 +114,7 @@ export class Editor extends React.Component<IAllProps> {
         }
         if (this.props.disabled !== prevProps.disabled) {
           const disabled = this.props.disabled ?? false;
-          this.editor.mode.set(disabled ? 'readonly' : 'design');
+          setMode(this.editor, disabled ? 'readonly' : 'design');
         }
       }
     }
@@ -353,7 +353,7 @@ export class Editor extends React.Component<IAllProps> {
           editor.setDirty(false);
         }
         const disabled = this.props.disabled ?? false;
-        editor.mode.set(disabled ? 'readonly' : 'design');
+        setMode(this.editor, disabled ? 'readonly' : 'design');
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);
