@@ -141,13 +141,13 @@ export const CloudChannelSetTo5Dev: Story = () => (
   <div>
     <Editor
       apiKey={apiKey}
-      cloudChannel='5-dev'
+      cloudChannel='6-dev'
       initialValue={sampleContent}
     />
-    <p>Refresh the page to ensure a load from the "5-dev" channel</p>
+    <p>Refresh the page to ensure a load from the "6-dev" channel</p>
   </div>
 );
-CloudChannelSetTo5Dev.storyName = 'Cloud Channel Set To "5-dev"';
+CloudChannelSetTo5Dev.storyName = 'Cloud Channel Set To "6-dev"';
 CloudChannelSetTo5Dev.parameters = {
   controls: { hideNoControlsWarning: true },
 };

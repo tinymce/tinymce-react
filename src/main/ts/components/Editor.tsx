@@ -114,7 +114,7 @@ export class Editor extends React.Component<IAllProps> {
         }
         if (this.props.disabled !== prevProps.disabled) {
           const disabled = this.props.disabled ?? false;
-          this.editor.setMode(disabled ? 'readonly' : 'design');
+          this.editor.mode.set(disabled ? 'readonly' : 'design');
         }
       }
     }
@@ -353,7 +353,7 @@ export class Editor extends React.Component<IAllProps> {
           editor.setDirty(false);
         }
         const disabled = this.props.disabled ?? false;
-        editor.setMode(disabled ? 'readonly' : 'design');
+        editor.mode.set(disabled ? 'readonly' : 'design');
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);
