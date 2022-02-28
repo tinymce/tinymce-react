@@ -60,6 +60,7 @@ export const configHandlers = (
     lookup,
     editor.on.bind(editor),
     editor.off.bind(editor),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     (handlerLookup, key) => (e) => handlerLookup(key)?.(e, editor),
     prevProps,
     props,

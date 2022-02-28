@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Updated dependencies
 - Use `editor.mode.set(...)` instead of the deprecated `editor.setMode(..)` which will be removed in TinyMCE 6.
+- Addressed lint errors
 
 ## 3.13.0 - 2022-01-20
 ### Fixed

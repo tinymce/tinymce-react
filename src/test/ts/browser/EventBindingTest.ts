@@ -43,6 +43,7 @@ UnitTest.test('Event binding test', () => {
   // check no handlers
   calls = [];
   boundHandlers = {};
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   configHandlers2(dummyLookupProp, on, off, adapter, {}, {}, boundHandlers);
   check({}, []);
 
@@ -50,6 +51,7 @@ UnitTest.test('Event binding test', () => {
   // nothing should be removed and the focus and blur handler should be added
   calls = [];
   boundHandlers = {};
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   configHandlers2(dummyLookupProp, on, off, adapter, {}, { onFocus: focusHandler, onBlur: blurHandler }, boundHandlers);
   check({ Focus: 'on', Blur: 'on' }, [ 'onFocus', 'onBlur' ]);
 
@@ -58,6 +60,7 @@ UnitTest.test('Event binding test', () => {
   calls = [];
   boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
   configHandlers2(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     dummyLookupProp,
     on,
     off,
@@ -72,6 +75,7 @@ UnitTest.test('Event binding test', () => {
   // the blur handler should be removed and the focus handler should remain afterwards
   calls = [];
   boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler, onBlur: blurHandler }, { onFocus: focusHandler }, boundHandlers);
   check({ Blur: 'off' }, [ 'onFocus' ]);
 
