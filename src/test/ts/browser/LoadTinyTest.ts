@@ -23,12 +23,17 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
     Arr.each(elements, Remove.remove);
   });
 
-  const cAssertTinymceVersion = (version: '4' | '5') => Chain.op(() => {
+  const cAssertTinymceVersion = (version: '4' | '5' | '6') => Chain.op(() => {
     Assertions.assertEq(`Loaded version of TinyMCE should be ${version}`, version, Global.tinymce.majorVersion);
   });
 
   Pipeline.async({}, [
     Log.chainsAsStep('Should be able to load local version of TinyMCE using the tinymceScriptSrc prop', '', [
+      cDeleteTinymce,
+
+      cRender({ tinymceScriptSrc: '/project/node_modules/tinymce-6/tinymce.min.js' }),
+      cAssertTinymceVersion('6'),
+      cRemove,
       cDeleteTinymce,
 
       cRender({ tinymceScriptSrc: '/project/node_modules/tinymce-5/tinymce.min.js' }),
@@ -42,12 +47,24 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
       cDeleteTinymce,
     ]),
     Log.chainsAsStep('Should be able to load TinyMCE from Cloud', '', [
-      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '5-dev' }),
+      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '6-testing' }),
+      cAssertTinymceVersion('6'),
+      Chain.op(() => {
+        Assertions.assertEq(
+          'TinyMCE should have been loaded from Cloud',
+          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/6-testing',
+          Global.tinymce.baseURI.source
+        );
+      }),
+      cRemove,
+      cDeleteTinymce,
+
+      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '5-stable' }),
       cAssertTinymceVersion('5'),
       Chain.op(() => {
         Assertions.assertEq(
           'TinyMCE should have been loaded from Cloud',
-          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/5-dev',
+          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/5-stable',
           Global.tinymce.baseURI.source
         );
       }),

@@ -23,24 +23,24 @@
   },
   "keywords": [],
   "author": "Tiny Technologies",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "tinymce": "^5.5.1"
+    "tinymce": "^6.0.0 || ^5.5.1"
   },
   "peerDependencies": {
     "react": "^17.0.1 || ^16.7.0",
     "react-dom": "^17.0.1 || ^16.7.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.5",
-    "@ephox/agar": "^6.0.3",
+    "@babel/core": "^7.17.7",
+    "@ephox/agar": "^7.0.1",
     "@ephox/bedrock-client": "^13.0.0",
     "@ephox/bedrock-server": "^13.1.0",
-    "@ephox/katamari": "^8.1.1",
-    "@ephox/mcagar": "^7.0.4",
-    "@ephox/sand": "^5.0.3",
-    "@ephox/sugar": "^8.1.1",
+    "@ephox/katamari": "^9.0.1",
+    "@ephox/mcagar": "^8.0.1",
+    "@ephox/sand": "^6.0.1",
+    "@ephox/sugar": "^9.0.1",
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-essentials": "^6.4.19",
     "@storybook/addon-links": "^6.4.19",
@@ -48,11 +48,11 @@
     "@storybook/storybook-deployer": "^2.8.10",
     "@tinymce/beehive-flow": "^0.17.0",
     "@tinymce/eslint-plugin": "^2.0.1",
-    "@tinymce/miniature": "^4.0.0",
+    "@tinymce/miniature": "^5.0.0",
     "@types/node": "^17.0.21",
     "@types/prop-types": "^15.7.4",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.11",
+    "@types/react": "^17.0.40",
+    "@types/react-dom": "^17.0.13",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.2.3",
     "core-js": "^3.21.1",
@@ -62,10 +62,11 @@
     "rimraf": "^3.0.2",
     "tinymce-4": "npm:tinymce@^4",
     "tinymce-5": "npm:tinymce@^5",
-    "ts-loader": "^9.2.6",
-    "typescript": "~4.5.5",
-    "webpack": "^5.69.1"
+    "tinymce-6": "npm:tinymce@^6",
+    "ts-loader": "^9.2.7",
+    "typescript": "~4.6.2",
+    "webpack": "^5.70.0"
   },
-  "version": "3.13.1",
+  "version": "4.0.0-rc",
   "name": "@tinymce/tinymce-react"
 }

@@ -114,7 +114,7 @@ export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'd
     if (editor.mode != null && typeof editor.mode === 'object' && typeof editor.mode.set === 'function') {
       editor.mode.set(mode);
     } else { // support TinyMCE 4
-      editor.setMode(mode);
+      (editor as any).setMode(mode);
     }
   }
 };

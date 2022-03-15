@@ -12,7 +12,7 @@ import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorSettings } from 'tinymce';
+import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorOptions } from 'tinymce';
 
 export interface IProps {
   apiKey: string;
@@ -21,13 +21,11 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: RawEditorSettings & { selector?: undefined; target?: undefined };
-  /** @deprecated use `editor.getContent({format: 'text' })` in `onEditorChange` prop instead */
-  outputFormat: 'html' | 'text';
+  init: RawEditorOptions & { selector?: undefined; target?: undefined };
   tagName: string;
   cloudChannel: string;
-  plugins: NonNullable<RawEditorSettings['plugins']>;
-  toolbar: NonNullable<RawEditorSettings['toolbar']>;
+  plugins: NonNullable<RawEditorOptions['plugins']>;
+  toolbar: NonNullable<RawEditorOptions['toolbar']>;
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string;
@@ -48,7 +46,7 @@ export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '5'
+    cloudChannel: '6'
   };
 
   public editor?: TinyMCEEditor;
@@ -271,9 +269,7 @@ export class Editor extends React.Component<IAllProps> {
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
         if (isFunction(this.props.onEditorChange)) {
-          const format = this.props.outputFormat;
-          const out = format === 'html' ? newContent : editor.getContent({ format });
-          this.props.onEditorChange(out, editor);
+          this.props.onEditorChange(newContent, editor);
         }
       }
     }
@@ -312,7 +308,7 @@ export class Editor extends React.Component<IAllProps> {
       throw new Error('tinymce should have been loaded into global scope');
     }
 
-    const finalInit: RawEditorSettings = {
+    const finalInit: RawEditorOptions = {
       ...this.props.init,
       selector: undefined,
       target,
