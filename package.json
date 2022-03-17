@@ -19,7 +19,8 @@
     "build": "yarn run clean && tsc -p ./tsconfig.es2015.json && tsc -p ./tsconfig.cjs.json",
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "deploy-storybook": "yarn storybook-to-ghpages --source-branch=main"
   },
   "keywords": [],
   "author": "Tiny Technologies",
