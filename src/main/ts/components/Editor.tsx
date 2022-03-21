@@ -12,7 +12,9 @@ import { ScriptLoader } from '../ScriptLoader';
 import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Bookmark, Editor as TinyMCEEditor, EditorEvent, RawEditorOptions } from 'tinymce';
+import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
+
+type EditorOptions = Parameters<TinyMCE['init']>[0];
 
 export interface IProps {
   apiKey: string;
@@ -21,11 +23,11 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: RawEditorOptions & { selector?: undefined; target?: undefined };
+  init: EditorOptions & { selector?: undefined; target?: undefined };
   tagName: string;
   cloudChannel: string;
-  plugins: NonNullable<RawEditorOptions['plugins']>;
-  toolbar: NonNullable<RawEditorOptions['toolbar']>;
+  plugins: NonNullable<EditorOptions['plugins']>;
+  toolbar: NonNullable<EditorOptions['toolbar']>;
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string;
@@ -308,7 +310,7 @@ export class Editor extends React.Component<IAllProps> {
       throw new Error('tinymce should have been loaded into global scope');
     }
 
-    const finalInit: RawEditorOptions = {
+    const finalInit: EditorOptions = {
       ...this.props.init,
       selector: undefined,
       target,
