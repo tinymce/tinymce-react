@@ -1,5 +1,5 @@
 #!groovy
-@Library('waluigi@v4.1.0') _
+@Library('waluigi@v5.0.0') _
 
 standardProperties()
 
@@ -27,13 +27,13 @@ node("primary") {
     sh "yarn lint"
   }
 
-  bedrockBrowsers testDirs: [ "src/test/ts/browser" ]
+  bedrockBrowsers()
 
   stage("update storybook") {
     def status = beehiveFlowStatus();
     if (status.branchState == 'releaseReady' && status.isLatest) {
-      sshagent (credentials: ['dcd9940f-08e1-4b75-bf0c-63fff1913540']) {
-        sh 'yarn storybook-to-ghpages'
+      sshagent (credentials: ['jenkins2-github']) {
+        sh 'yarn deploy-storybook'
       }
     } else {
       echo "Skipping as is not latest release"

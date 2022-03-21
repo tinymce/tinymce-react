@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## 4.0.0
+### Changed
+- License changed to MIT (from Apache 2) this matches TinyMCE 6 license
+- Changed default cloudChannel to `'6'`.
+
+### Removed
+- Removed `outputFormat` prop. If text output is required call `editor.getContent({ format: 'text' })` in any of the event callbacks.
+
 ## 3.13.1 - 2022-01-20
 ### Fixed
 - Updated dependencies

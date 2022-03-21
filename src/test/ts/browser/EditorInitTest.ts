@@ -10,7 +10,7 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
     Assertions.assertEq(propName + ' should be ' + expected, expected, (el as unknown as Record<string, unknown>)[propName]);
   });
 
-  const sTestVersion = (version: '4' | '5') => VersionLoader.sWithVersion(
+  const sTestVersion = (version: '4' | '5' | '6') => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
       Logger.t('tagName prop changes element', GeneralSteps.sequence([
@@ -100,6 +100,7 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
   );
 
   Pipeline.async({}, [
+    sTestVersion('6'),
     sTestVersion('5'),
     sTestVersion('4'),
   ], success, failure);
