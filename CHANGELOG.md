@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Removed `outputFormat` prop. If text output is required call `editor.getContent({ format: 'text' })` in any of the event callbacks.
 
+
+## 3.14.0 - 2022-04-04
+
+### Changed
+- Allow react version "^18.0.0"
+
+### Fixed
+- Updated dependencies.
+
 ## 3.13.1 - 2022-01-20
 ### Fixed
 - Updated dependencies
