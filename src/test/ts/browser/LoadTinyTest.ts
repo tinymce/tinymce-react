@@ -47,24 +47,24 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
       cDeleteTinymce,
     ]),
     Log.chainsAsStep('Should be able to load TinyMCE from Cloud', '', [
-      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '6-testing' }),
+      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '6' }),
       cAssertTinymceVersion('6'),
       Chain.op(() => {
         Assertions.assertEq(
           'TinyMCE should have been loaded from Cloud',
-          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/6-testing',
+          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/6',
           Global.tinymce.baseURI.source
         );
       }),
       cRemove,
       cDeleteTinymce,
 
-      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '5-stable' }),
+      cRender({ apiKey: 'a-fake-api-key', cloudChannel: '5' }),
       cAssertTinymceVersion('5'),
       Chain.op(() => {
         Assertions.assertEq(
           'TinyMCE should have been loaded from Cloud',
-          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/5-stable',
+          'https://cdn.tiny.cloud/1/a-fake-api-key/tinymce/5',
           Global.tinymce.baseURI.source
         );
       }),
