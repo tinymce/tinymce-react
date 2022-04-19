@@ -137,6 +137,19 @@ ToggleDisabledProp.parameters = {
   controls: { hideNoControlsWarning: true },
 };
 
+export const PlaceholderProp: Story = () => {
+  return (
+    <div>
+      <Editor
+        apiKey={apiKey}
+        placeholder="This is some placeholder text that works like a placeholder"
+      />
+    </div>
+  );
+};
+
+PlaceholderProp.storyName = 'Set placeholder text';
+
 export const CloudChannelSetTo5Dev: Story = () => (
   <div>
     <Editor

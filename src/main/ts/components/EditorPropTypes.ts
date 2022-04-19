@@ -86,6 +86,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   id: PropTypes.string,
   inline: PropTypes.bool,
   init: PropTypes.object,
+  placeholder: PropTypes.string,
   initialValue: PropTypes.string,
   onEditorChange: PropTypes.func,
   value: PropTypes.string,

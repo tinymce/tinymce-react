@@ -21,6 +21,7 @@ export interface IProps {
   id: string;
   inline: boolean;
   initialValue: string;
+  placeholder: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
   init: EditorOptions & { selector?: undefined; target?: undefined };
@@ -315,6 +316,7 @@ export class Editor extends React.Component<IAllProps> {
       selector: undefined,
       target,
       readonly: this.props.disabled,
+      placeholder: this.props.placeholder,
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
