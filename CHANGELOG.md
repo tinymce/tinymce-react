@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Updated issue templates with updated codesandbox
+- Updated the readme with links to the TinyMCE 6 documentation
+- Updated the security issue reporting link to the TinyMCE 6 documentation
 
 ## 4.0.0 - 2022-04-08
 ### Changed
