@@ -78,6 +78,12 @@ export interface ITinyEvents {
   onSubmit: EventHandler<unknown>;
   onUndo: EEventHandler<'Undo'>;
   onVisualAid: EventHandler<unknown>;
+  onSkinLoadError: EEventHandler<'SkinLoadError'>;
+  onThemeLoadError: EEventHandler<'ThemeLoadError'>;
+  onModelLoadError: EEventHandler<'ModelLoadError'>;
+  onPluginLoadError: EEventHandler<'PluginLoadError'>;
+  onIconsLoadError: EEventHandler<'IconsLoadError'>;
+  onLanguageLoadError: EEventHandler<'LanguageLoadError'>;
 }
 
 export interface IEvents extends INativeEvents, ITinyEvents {}

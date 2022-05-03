@@ -68,6 +68,6 @@
     "typescript": "~4.6.3",
     "webpack": "^5.71.0"
   },
-  "version": "4.0.1-rc",
+  "version": "4.1.0-rc",
   "name": "@tinymce/tinymce-react"
 }

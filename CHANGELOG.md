@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Added props for the events `SkinLoadError`, `ThemeLoadError`, `ModelLoadError`, `PluginLoadError`, `IconsLoadError` and `LanguageLoadError`.
+
 ### Fixed
 - Updated issue templates with updated codesandbox
 - Updated the readme with links to the TinyMCE 6 documentation
