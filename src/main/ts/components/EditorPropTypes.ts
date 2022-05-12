@@ -78,7 +78,13 @@ export const eventPropTypes: IEventPropTypes = {
   onShow: PropTypes.func,
   onSubmit: PropTypes.func,
   onUndo: PropTypes.func,
-  onVisualAid: PropTypes.func
+  onVisualAid: PropTypes.func,
+  onSkinLoadError: PropTypes.func,
+  onThemeLoadError: PropTypes.func,
+  onModelLoadError: PropTypes.func,
+  onPluginLoadError: PropTypes.func,
+  onIconsLoadError: PropTypes.func,
+  onLanguageLoadError: PropTypes.func,
 };
 
 export const EditorPropTypes: IEditorPropTypes = {
