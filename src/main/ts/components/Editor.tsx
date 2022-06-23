@@ -41,11 +41,6 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
-const changeEvents = (win: Window) => getTinymce(win)?.Env?.browser?.isIE()
-  ? 'change keyup compositionend setcontent'
-  : 'change input compositionend setcontent';
-const beforeInputEvent = () => isBeforeInputEventAvailable() ? 'beforeinput SelectionChange' : 'SelectionChange';
-
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
@@ -71,7 +66,7 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
-  private get win() {
+  private get view() {
     return this.elementRef.current?.ownerDocument.defaultView ?? window;
   }
 
@@ -127,7 +122,7 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidMount() {
-    if (getTinymce(this.win) !== null) {
+    if (getTinymce(this.view) !== null) {
       this.initialise();
     } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
       ScriptLoader.load(
@@ -144,8 +139,8 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off(changeEvents(this.win), this.handleEditorChange);
-      editor.off(beforeInputEvent(), this.handleBeforeInput);
+      editor.off(this.changeEvents(), this.handleEditorChange);
+      editor.off(this.beforeInputEvent(), this.handleBeforeInput);
       editor.off('keypress', this.handleEditorChangeSpecial);
       editor.off('keydown', this.handleBeforeInputSpecial);
       editor.off('NewBlock', this.handleEditorChange);
@@ -160,6 +155,15 @@ export class Editor extends React.Component<IAllProps> {
 
   public render() {
     return this.inline ? this.renderInline() : this.renderIframe();
+  }
+
+  private changeEvents() {
+    const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
+    return isIE ? 'change keyup compositionend setcontent' : 'change input compositionend setcontent';
+  }
+
+  private beforeInputEvent() {
+    return isBeforeInputEventAvailable() ? 'beforeinput SelectionChange' : 'SelectionChange';
   }
 
   private renderInline() {
@@ -209,14 +213,14 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on(changeEvents(this.win), this.handleEditorChange);
-        this.editor.on(beforeInputEvent(), this.handleBeforeInput);
+        this.editor.on(this.changeEvents(), this.handleEditorChange);
+        this.editor.on(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.on('keydown', this.handleBeforeInputSpecial);
         this.editor.on('keyup', this.handleEditorChangeSpecial);
         this.editor.on('NewBlock', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off(changeEvents(this.win), this.handleEditorChange);
-        this.editor.off(beforeInputEvent(), this.handleBeforeInput);
+        this.editor.off(this.changeEvents(), this.handleEditorChange);
+        this.editor.off(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.off('keydown', this.handleBeforeInputSpecial);
         this.editor.off('keyup', this.handleEditorChangeSpecial);
         this.editor.off('NewBlock', this.handleEditorChange);
@@ -311,7 +315,7 @@ export class Editor extends React.Component<IAllProps> {
       return;
     }
 
-    const tinymce = getTinymce(this.win);
+    const tinymce = getTinymce(this.view);
     if (!tinymce) {
       throw new Error('tinymce should have been loaded into global scope');
     }

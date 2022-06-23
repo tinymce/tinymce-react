@@ -8,8 +8,8 @@
 
 import { TinyMCE as TinyMCEGlobal } from 'tinymce';
 
-const getTinymce = (window: Window): TinyMCEGlobal | null => {
-  const global = window as any;
+const getTinymce = (view: Window): TinyMCEGlobal | null => {
+  const global = view as any;
 
   return global && global.tinymce ? global.tinymce : null;
 };
