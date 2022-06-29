@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Fixed
+- Source the tinymce object from the window associated with the target element.
 - Updated dependencies.
 
 ## 4.1.0 - 2022-05-12
