@@ -53,6 +53,7 @@ export interface ITinyEvents {
   onBeforeSetContent: EEventHandler<'BeforeSetContent'>;
   onChange: EventHandler<unknown>;
   onClearUndos: EEventHandler<'ClearUndos'>;
+  onCommentChange: EventHandler<unknown>;
   onDeactivate: EEventHandler<'deactivate'>;
   onDirty: EventHandler<unknown>;
   onExecCommand: EEventHandler<'ExecCommand'>;
