@@ -30,6 +30,7 @@ export const eventPropTypes: IEventPropTypes = {
   onClearUndos: PropTypes.func,
   onClick: PropTypes.func,
   onContextMenu: PropTypes.func,
+  onCommentChange: PropTypes.func,
   onCopy: PropTypes.func,
   onCut: PropTypes.func,
   onDblclick: PropTypes.func,

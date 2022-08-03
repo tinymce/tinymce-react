@@ -159,7 +159,10 @@ export class Editor extends React.Component<IAllProps> {
 
   private changeEvents() {
     const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
-    return isIE ? 'change keyup compositionend setcontent' : 'change input compositionend setcontent';
+    return (isIE
+      ? 'change keyup compositionend setcontent CommentChange'
+      : 'change input compositionend setcontent CommentChange'
+    );
   }
 
   private beforeInputEvent() {
