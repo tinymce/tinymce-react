@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added prop for the event `CommentChange`.
 
 ### Fixed
-- Added `CommentChange` to the list of events that trigger the onEditorChange handler. 
+- Added `CommentChange` to the list of events that trigger the `onEditorChange` handler. 
 - Source the tinymce object from the window associated with the target element.
 - Updated dependencies.
 
