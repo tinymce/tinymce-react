@@ -131,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated dependencies to latest available
 
 ## 3.10.2 - 2021-02-20
-## Fixed
+### Fixed
 - Event handlers are registered at setup time so props like `onBeforeRenderUI` will now be called. #INT-2325
 
 ## 3.10.1 - 2021-02-01
