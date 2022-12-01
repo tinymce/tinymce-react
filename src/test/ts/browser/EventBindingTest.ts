@@ -4,10 +4,12 @@ import { Arr, Obj, Fun } from '@ephox/katamari';
 import { IAllProps } from 'src/main/ts/components/Editor';
 import { configHandlers2 } from '../../../main/ts/Utils';
 
-interface Handler { key: string }
+interface Handler {
+  key: string;
+}
 
 UnitTest.test('Event binding test', () => {
-  let calls: {type: 'on' | 'off'; name: string; handler: Handler}[];
+  let calls: { type: 'on' | 'off'; name: string; handler: Handler }[];
   let boundHandlers: Record<string, Handler>;
 
   const check = (handlers: Record<string, 'off' | 'on'>, activeHandlers: string[]) => {
