@@ -8,9 +8,9 @@
 
 import { uuid } from './Utils';
 
-export type callbackFn = () => void;
+export type CallbackFn = () => void;
 export interface IStateObj {
-  listeners: callbackFn[];
+  listeners: CallbackFn[];
   scriptId: string;
   scriptLoading: boolean;
   scriptLoaded: boolean;
@@ -24,14 +24,14 @@ const createState = (): IStateObj => ({
 });
 
 interface ScriptLoader {
-  load: (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: callbackFn) => void;
+  load: (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: CallbackFn) => void;
   reinitialize: () => void;
 }
 
 const CreateScriptLoader = (): ScriptLoader => {
   let state: IStateObj = createState();
 
-  const injectScriptTag = (scriptId: string, doc: Document, url: string, async: boolean, defer: boolean, callback: callbackFn) => {
+  const injectScriptTag = (scriptId: string, doc: Document, url: string, async: boolean, defer: boolean, callback: CallbackFn) => {
     const scriptTag = doc.createElement('script');
     scriptTag.referrerPolicy = 'origin';
     scriptTag.type = 'application/javascript';
@@ -50,7 +50,7 @@ const CreateScriptLoader = (): ScriptLoader => {
     }
   };
 
-  const load = (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: callbackFn) => {
+  const load = (doc: Document, url: string, async: boolean, defer: boolean, delay: number, callback: CallbackFn) => {
 
     const scriptTagInjection = () => injectScriptTag(
       state.scriptId, doc, url, async, defer,
