@@ -3,7 +3,7 @@ import { UnitTest } from '@ephox/bedrock-client';
 import { Arr, Strings, Global } from '@ephox/katamari';
 import { SelectorFilter, Attribute, SugarElement, Remove } from '@ephox/sugar';
 
-import { ScriptLoader } from '../../../main/ts/ScriptLoader';
+import { ScriptLoader } from '../../../main/ts/ScriptLoader2';
 import { cRemove, cRender } from '../alien/Loader';
 
 UnitTest.asynctest('LoadTinyTest', (success, failure) => {

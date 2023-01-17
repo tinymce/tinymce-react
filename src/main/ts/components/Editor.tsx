@@ -1,14 +1,6 @@
-/**
- * Copyright (c) 2017-present, Ephox, Inc.
- *
- * This source code is licensed under the Apache 2 license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import * as React from 'react';
 import { IEvents } from '../Events';
-import { ScriptLoader } from '../ScriptLoader';
+import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
@@ -30,9 +22,10 @@ export interface IProps {
   toolbar: NonNullable<EditorOptions['toolbar']>;
   disabled: boolean;
   textareaName: string;
-  tinymceScriptSrc: string;
+  tinymceScriptSrc: string | string[] | ScriptItem[];
   rollback: number | false;
   scriptLoading: {
+    block?: boolean;
     async?: boolean;
     defer?: boolean;
     delay?: number;
@@ -124,14 +117,22 @@ export class Editor extends React.Component<IAllProps> {
   public componentDidMount() {
     if (getTinymce(this.view) !== null) {
       this.initialise();
-    } else if (this.elementRef.current && this.elementRef.current.ownerDocument) {
-      ScriptLoader.load(
+    } else if (this.props.scriptLoading?.block) {
+      this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but `scriptLoading.block` is `true`.'));
+    } else if (this.elementRef.current?.ownerDocument) {
+      const successHandler = () => {
+        this.props.onScriptsLoad?.();
+        this.initialise();
+      };
+      const errorHandler = (err: unknown) => {
+        this.props.onScriptsLoadError?.(err);
+      };
+      ScriptLoader.loadList(
         this.elementRef.current.ownerDocument,
-        this.getScriptSrc(),
-        this.props.scriptLoading?.async ?? false,
-        this.props.scriptLoading?.defer ?? false,
+        this.getScriptSources(),
         this.props.scriptLoading?.delay ?? 0,
-        this.initialise
+        successHandler,
+        errorHandler
       );
     }
   }
@@ -187,14 +188,29 @@ export class Editor extends React.Component<IAllProps> {
     });
   }
 
-  private getScriptSrc() {
-    if (typeof this.props.tinymceScriptSrc === 'string') {
-      return this.props.tinymceScriptSrc;
-    } else {
-      const channel = this.props.cloudChannel;
-      const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
-      return `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
+  private getScriptSources(): ScriptItem[] {
+    const async = this.props.scriptLoading?.async;
+    const defer = this.props.scriptLoading?.defer;
+    if (this.props.tinymceScriptSrc !== undefined) {
+      if (typeof this.props.tinymceScriptSrc === 'string') {
+        return [{ src: this.props.tinymceScriptSrc, async, defer }];
+      }
+      // multiple scripts can be specified which allows for hybrid mode
+      return this.props.tinymceScriptSrc.map((item) => {
+        if (typeof item === 'string') {
+          // async does not make sense for multiple items unless
+          // they are not dependent (which will be unlikely)
+          return { src: item, async, defer };
+        } else {
+          return item;
+        }
+      });
     }
+    // fallback to the cloud when the tinymceScriptSrc is not specified
+    const channel = this.props.cloudChannel;
+    const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
+    const cloudTinyJs = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
+    return [{ src: cloudTinyJs, async, defer }];
   }
 
   private getInitialValue() {
