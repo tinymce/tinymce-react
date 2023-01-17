@@ -75,7 +75,7 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
     Log.chainsAsStep('Should be able to load TinyMCE in hybrid', '', [
       cRender({ tinymceScriptSrc: [
         '/project/node_modules/tinymce-6/tinymce.min.js',
-        `https://cdn.tiny.cloud/1/${apiKey}/tinymce/6/cloud-plugins.min.js?tinydrive=6.3.1`
+        `https://cdn.tiny.cloud/1/${apiKey}/tinymce/6/cloud-plugins.min.js?tinydrive=6`
       ], plugins: [ 'tinydrive' ] }),
       cAssertTinymceVersion('6'),
       Chain.op(() => {
@@ -88,7 +88,7 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
       Chain.op(() => {
         Assertions.assertEq(
           'The tinydrive plugin should have defaults for the cloud',
-          `https://cdn.tiny.cloud/1/${apiKey}/tinymce-plugins/tinydrive/6.3.1/plugin.min.js`,
+          `https://cdn.tiny.cloud/1/${apiKey}/tinymce-plugins/tinydrive/6/plugin.min.js`,
           Global.tinymce.defaultOptions?.custom_plugin_urls?.tinydrive
         );
       }),
@@ -97,7 +97,7 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
 
       cRender({ tinymceScriptSrc: [
         '/project/node_modules/tinymce-5/tinymce.min.js',
-        `https://cdn.tiny.cloud/1/${apiKey}/tinymce/5/cloud-plugins.min.js?tinydrive=5.10.7`
+        `https://cdn.tiny.cloud/1/${apiKey}/tinymce/5/cloud-plugins.min.js?tinydrive=5`
       ], plugins: [ 'tinydrive' ] }),
       cAssertTinymceVersion('5'),
       Chain.op(() => {
@@ -110,7 +110,7 @@ UnitTest.asynctest('LoadTinyTest', (success, failure) => {
       Chain.op(() => {
         Assertions.assertEq(
           'The tinydrive plugin should have defaults for the cloud',
-          `https://cdn.tiny.cloud/1/${apiKey}/tinymce-plugins/tinydrive/5.10.7/plugin.min.js`,
+          `https://cdn.tiny.cloud/1/${apiKey}/tinymce-plugins/tinydrive/5/plugin.min.js`,
           Global.tinymce.defaultSettings?.custom_plugin_urls?.tinydrive
         );
       }),
