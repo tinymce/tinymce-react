@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2017-present, Ephox, Inc.
- *
- * This source code is licensed under the Apache 2 license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import * as PropTypes from 'prop-types';
 import { IEvents } from '../Events';
 import { IProps } from './Editor';
@@ -86,6 +78,8 @@ export const eventPropTypes: IEventPropTypes = {
   onPluginLoadError: PropTypes.func,
   onIconsLoadError: PropTypes.func,
   onLanguageLoadError: PropTypes.func,
+  onScriptsLoad: PropTypes.func,
+  onScriptsLoadError: PropTypes.func,
 };
 
 export const EditorPropTypes: IEditorPropTypes = {
@@ -102,7 +96,15 @@ export const EditorPropTypes: IEditorPropTypes = {
   toolbar: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
   disabled: PropTypes.bool,
   textareaName: PropTypes.string,
-  tinymceScriptSrc: PropTypes.string,
+  tinymceScriptSrc: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.arrayOf(PropTypes.shape({
+      src: PropTypes.string,
+      async: PropTypes.bool,
+      defer: PropTypes.bool
+    }))
+  ]),
   rollback: PropTypes.oneOfType([ PropTypes.number, PropTypes.oneOf([ false ]) ]),
   scriptLoading: PropTypes.shape({
     async: PropTypes.bool,

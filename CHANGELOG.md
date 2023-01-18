@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Added events `onScriptsLoad` and `onScriptsLoadError` for the loading of the script tags when no `tinymce` global is available.
+
+### Changed
+- Changed `tinymceScriptSrc` prop so it can now accept an array of scripts to make hybrid mode easier to use. 
+  An empty array will avoid loading scripts but will call `onScriptsLoadError` when `tinymce` is missing.
+
 ### Fixed
 - Updated CI library to latest
 - Updated dependencies.

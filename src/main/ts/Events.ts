@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2017-present, Ephox, Inc.
- *
- * This source code is licensed under the Apache 2 license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 export type EventHandler<A> = (a: EditorEvent<A>, editor: TinyMCEEditor) => unknown;
@@ -85,6 +77,8 @@ export interface ITinyEvents {
   onPluginLoadError: EEventHandler<'PluginLoadError'>;
   onIconsLoadError: EEventHandler<'IconsLoadError'>;
   onLanguageLoadError: EEventHandler<'LanguageLoadError'>;
+  onScriptsLoad: () => void;
+  onScriptsLoadError: (err: unknown) => void;
 }
 
 export interface IEvents extends INativeEvents, ITinyEvents {}
