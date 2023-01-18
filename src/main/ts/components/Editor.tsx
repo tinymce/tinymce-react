@@ -25,7 +25,6 @@ export interface IProps {
   tinymceScriptSrc: string | string[] | ScriptItem[];
   rollback: number | false;
   scriptLoading: {
-    block?: boolean;
     async?: boolean;
     defer?: boolean;
     delay?: number;
@@ -117,8 +116,8 @@ export class Editor extends React.Component<IAllProps> {
   public componentDidMount() {
     if (getTinymce(this.view) !== null) {
       this.initialise();
-    } else if (this.props.scriptLoading?.block) {
-      this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but `scriptLoading.block` is `true`.'));
+    } else if (Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
+      this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but the `tinymceScriptSrc` prop was an empty array.'));
     } else if (this.elementRef.current?.ownerDocument) {
       const successHandler = () => {
         this.props.onScriptsLoad?.();

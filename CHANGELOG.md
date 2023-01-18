@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
-- Added `block` setting to `scriptLoading` prop to stop adding script tags when no `tinymce` global is available.
 - Added events `onScriptsLoad` and `onScriptsLoadError` for the loading of the script tags when no `tinymce` global is available.
 
 ### Changed
-- Changed `tinymceScriptSrc` prop so it can now accept an array of scripts to make hybrid mode easier to use.
+- Changed `tinymceScriptSrc` prop so it can now accept an array of scripts to make hybrid mode easier to use. 
+  An empty array will avoid loading scripts but will call `onScriptsLoadError` when `tinymce` is missing.
 
 ### Fixed
 - Updated CI library to latest

@@ -62,6 +62,12 @@ const createDocumentScriptLoader = (doc: Document) => {
   };
 
   const loadScripts = (items: ScriptItem[], success: () => void, failure?: (err: unknown) => void) => {
+    // eslint-disable-next-line no-console
+    const failureOrLog = (err: unknown) => failure !== undefined ? failure(err) : console.error(err);
+    if (items.length === 0) {
+      failureOrLog(new Error('At least one script must be provided'));
+      return;
+    }
     let successCount = 0;
     let failed = false;
     const loaded = (_src: string, err?: unknown) => {
@@ -70,8 +76,7 @@ const createDocumentScriptLoader = (doc: Document) => {
       }
       if (err) {
         failed = true;
-        // eslint-disable-next-line no-console
-        failure !== undefined ? failure(err) : console.error(err);
+        failureOrLog(err);
       } else if (++successCount === items.length) {
         success();
       }
