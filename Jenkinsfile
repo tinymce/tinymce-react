@@ -2,7 +2,7 @@
 @Library('waluigi@release/7') _
 
 beehiveFlowBuild(
-  containerConfig: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
+  container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
   test: {
     bedrockBrowsers()
   },
