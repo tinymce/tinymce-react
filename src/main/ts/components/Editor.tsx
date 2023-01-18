@@ -6,7 +6,7 @@ import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBe
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
 
-type EditorOptions = Parameters<TinyMCE['init']>[0];
+export type EditorOptions = Parameters<TinyMCE['init']>[0];
 
 export interface IProps {
   apiKey: string;
