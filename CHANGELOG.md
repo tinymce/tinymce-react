@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Reverted accidental change to allowed tinymce dependency versions in 4.3.0
+- Updated dependencies
+
 ## 4.3.0 - 2023-01-18
 
 ### Added
