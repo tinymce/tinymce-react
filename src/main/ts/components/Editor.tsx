@@ -23,6 +23,7 @@ export interface IProps {
   disabled: boolean;
   textareaName: string;
   tinymceScriptSrc: string | string[] | ScriptItem[];
+  globalElementName: string;
   rollback: number | false;
   scriptLoading: {
     async?: boolean;
@@ -37,7 +38,8 @@ export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '6'
+    cloudChannel: '6',
+    globalElementName: 'tinymce'
   };
 
   public editor?: TinyMCEEditor;
@@ -114,7 +116,7 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   public componentDidMount() {
-    if (getTinymce(this.view) !== null) {
+    if (getTinymce(this.props, this.view) !== null) {
       this.initialise();
     } else if (Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
       this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but the `tinymceScriptSrc` prop was an empty array.'));
@@ -158,7 +160,7 @@ export class Editor extends React.Component<IAllProps> {
   }
 
   private changeEvents() {
-    const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
+    const isIE = getTinymce(this.props, this.view)?.Env?.browser?.isIE();
     return (isIE
       ? 'change keyup compositionend setcontent CommentChange'
       : 'change input compositionend setcontent CommentChange'
@@ -333,7 +335,7 @@ export class Editor extends React.Component<IAllProps> {
       return;
     }
 
-    const tinymce = getTinymce(this.view);
+    const tinymce = getTinymce(this.props, this.view);
     if (!tinymce) {
       throw new Error('tinymce should have been loaded into global scope');
     }

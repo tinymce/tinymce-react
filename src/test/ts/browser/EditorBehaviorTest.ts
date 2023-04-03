@@ -19,7 +19,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
   }
 
   const isEditor = (val: unknown): val is TinyMCEEditor => {
-    const tinymce = getTinymce(window);
+    const tinymce = getTinymce({globalElementName: 'tinymce'}, window);
     if (!tinymce) {
       return false;
     }

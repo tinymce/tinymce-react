@@ -105,6 +105,7 @@ export const EditorPropTypes: IEditorPropTypes = {
       defer: PropTypes.bool
     }))
   ]),
+  globalElementName: PropTypes.string,
   rollback: PropTypes.oneOfType([ PropTypes.number, PropTypes.oneOf([ false ]) ]),
   scriptLoading: PropTypes.shape({
     async: PropTypes.bool,
