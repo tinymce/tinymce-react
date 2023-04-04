@@ -54,7 +54,7 @@
     "@tinymce/miniature": "^5.0.1",
     "@types/node": "^18.13.0",
     "@types/prop-types": "^15.7.5",
-    "@types/react": "^18.0.28",
+    "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.11",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^9.1.2",
@@ -71,5 +71,5 @@
     "webpack": "^5.75.0"
   },
   "version": "4.3.1-rc",
-  "name": "@tinymce/tinymce-react"
+  "name": "@reachsuite/tinymce-react"
 }
