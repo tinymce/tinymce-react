@@ -148,8 +148,10 @@ export class Editor extends React.Component<IAllProps> {
         editor.off(eventName, this.boundHandlers[eventName]);
       });
       this.boundHandlers = {};
-      editor.remove();
-      this.editor = undefined;
+      setTimeout(() => {
+        editor.remove();
+        this.editor = undefined;
+      }, 0);
     }
   }
 
