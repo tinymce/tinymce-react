@@ -26,7 +26,6 @@
   "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
   "license": "MIT",
   "dependencies": {
-    "@storybook/storybook-deployer": "^2.8.16",
     "prop-types": "^15.6.2",
     "tinymce": "^6.0.0 || ^5.5.1"
   },
@@ -53,6 +52,7 @@
     "@storybook/blocks": "^7.5.3",
     "@storybook/react": "^7.5.3",
     "@storybook/react-webpack5": "^7.5.3",
+    "@storybook/storybook-deployer": "^2.8.16",
     "@storybook/testing-library": "^0.2.2",
     "@tinymce/beehive-flow": "^0.19.0",
     "@tinymce/eslint-plugin": "^2.3.1",
