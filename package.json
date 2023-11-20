@@ -70,6 +70,6 @@
     "tinymce-6": "npm:tinymce@^6",
     "typescript": "~5.2.2"
   },
-  "version": "4.3.2-rc",
+  "version": "4.3.2",
   "name": "@tinymce/tinymce-react"
 }

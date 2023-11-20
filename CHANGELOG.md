@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed 
+## 4.3.2 - 2023-11-20
+
+### Fixed
 - Removed `storybook-deploy` dependency. #INT-3254
 
 ## 4.3.1 - 2023-11-16
