@@ -20,7 +20,7 @@ jobs:
         with:
           stale-issue-message: 'This issue is stale because it has been open for 30 days with no activity. Respond with a comment or this will be closed in 7 days.'
           days-before-stale: 30 # Days before an issue becomes stale
-          days-before-close: 7 # Days before an issue with no activity after begin labelled "stale" is closed
+          days-before-close: 7 # Days before a stale labelled issue is closed
           any-of-labels: 'needs: more info'
           labels-to-remove-when-unstale: 'needs: more info'
 
