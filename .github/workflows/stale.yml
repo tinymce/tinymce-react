@@ -1,0 +1,26 @@
+name: "Stale"
+
+# This uses Github actions minutes. To learn more: https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  stale:
+    name: Close stale issues
+    runs-on: ubuntu-latest
+    permissions:
+      # contents: write # only for delete-branch option
+      issues: write
+      # pull-requests: write # only makes issues stale, not PRs
+
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-issue-message: 'This issue is stale because it has been open for 30 days with no activity. Respond with a comment or this will be closed in 7 days.'
+          days-before-stale: 30 # Days before an issue becomes stale
+          days-before-close: 7 # Days before a stale labelled issue is closed
+          any-of-labels: 'needs: more info'
+          labels-to-remove-when-unstale: 'needs: more info'
+
