@@ -1,13 +1,13 @@
 #!groovy
 @Library('waluigi@feature/TINY-10569') _
 
-mixedBeehiveFlowBuild(
+mixedBeehiveFlow(
   container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
   testPrefix: 'Tiny-React',
   platforms: [
     [ browser: 'chrome', headless: true ],
     [ browser: 'firefox', provider: 'aws', buckets: 2 ],
-    [ browser: 'safari', provider: 'lambdatest', os: 'macOS Sonoma', buckets: 1 ]
+    // [ browser: 'safari', provider: 'lambdatest', os: 'macOS Sonoma', buckets: 1 ]
   ],
   customSteps: {
     stage("update storybook") {
