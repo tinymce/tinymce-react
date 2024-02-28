@@ -5,7 +5,7 @@ mixedBeehiveFlowBuild(
   container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
   testPrefix: 'Tiny-React',
   platforms: [
-    [ browser: 'chrome', headless: true os: 'Lin'],
+    [ browser: 'chrome', headless: true ],
     [ browser: 'firefox', provider: 'aws', buckets: 2 ],
     [ browser: 'safari', provider: 'lambdatest', os: 'macOS Sonoma', buckets: 1 ]
   ],
