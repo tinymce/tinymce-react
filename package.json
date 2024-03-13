@@ -27,7 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "tinymce": "^6.0.0 || ^5.5.1"
+    "tinymce": "^7.0.0 || ^6.0.0 || ^5.5.1"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^17.0.1 || ^16.7.0",
