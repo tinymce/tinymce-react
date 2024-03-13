@@ -10,6 +10,10 @@ interface EventHandlerArgs<T> {
 
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
+const VERSIONS = [ '4', '5', '6', '7' ] as const;
+type Version = typeof VERSIONS[number];
+const CLOUD_VERSIONS = [ '5', '6', '7' ] as const;
+
 const EventStore = () => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
 
@@ -51,5 +55,8 @@ const cAssertContent = (content: string) => ApiChains.cAssertContent(content) as
 export {
   EventStore,
   cSetContent,
-  cAssertContent
+  cAssertContent,
+  VERSIONS,
+  CLOUD_VERSIONS,
+  Version
 };

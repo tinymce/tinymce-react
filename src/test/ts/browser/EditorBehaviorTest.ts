@@ -5,7 +5,7 @@ import { VersionLoader } from '@tinymce/miniature';
 import { PlatformDetection } from '@ephox/sand';
 
 import { getTinymce } from '../../../main/ts/TinyMCE';
-import { EventStore, cAssertContent, cSetContent } from '../alien/TestHelpers';
+import { EventStore, VERSIONS, cAssertContent, cSetContent, type Version } from '../alien/TestHelpers';
 import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
@@ -28,7 +28,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
   const eventStore = EventStore();
 
-  const sTestVersion = (version: '4' | '5' | '6') => VersionLoader.sWithVersion(
+  const sTestVersion = (version: Version) => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
       Logger.t('Assert structure of tinymce and tinymce-react events', Chain.asStep({}, [
@@ -125,9 +125,5 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
     ])
   );
 
-  Pipeline.async({}, [
-    sTestVersion('6'),
-    sTestVersion('5'),
-    sTestVersion('4')
-  ], success, failure);
+  Pipeline.async({}, VERSIONS.map(sTestVersion), success, failure);
 });
