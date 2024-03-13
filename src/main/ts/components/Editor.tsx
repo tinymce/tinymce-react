@@ -10,12 +10,13 @@ type EditorOptions = Parameters<TinyMCE['init']>[0];
 
 export interface IProps {
   apiKey: string;
+  licenseKey: string;
   id: string;
   inline: boolean;
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly', undefined>>;
+  init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly' | 'license_key', undefined>>;
   tagName: string;
   cloudChannel: string;
   plugins: NonNullable<EditorOptions['plugins']>;
@@ -346,6 +347,7 @@ export class Editor extends React.Component<IAllProps> {
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
+      license_key: this.props.licenseKey,
       setup: (editor) => {
         this.editor = editor;
         this.bindHandlers({});
