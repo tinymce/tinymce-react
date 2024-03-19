@@ -34,6 +34,9 @@ export interface IProps {
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
+/**
+ * @see https://www.tiny.cloud/docs/tinymce/7/react-ref/ for the TinyMCE React Technical Reference
+ */
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
