@@ -8,9 +8,18 @@ import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce
 
 type EditorOptions = Parameters<TinyMCE['init']>[0];
 
-export interface IProps {
+export type Version = `${'4' | '5' | '6' | '7'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
+
+export interface CloudHostedProps {
   apiKey: string;
+}
+
+export interface HybridOrSelfHostedProps {
+  tinymceScriptSrc: string | string[] | ScriptItem[];
   licenseKey: string;
+}
+
+export interface IProps {
   id: string;
   inline: boolean;
   initialValue: string;
@@ -18,12 +27,11 @@ export interface IProps {
   value: string;
   init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly' | 'license_key', undefined>>;
   tagName: string;
-  cloudChannel: string;
+  cloudChannel: Version;
   plugins: NonNullable<EditorOptions['plugins']>;
   toolbar: NonNullable<EditorOptions['toolbar']>;
   disabled: boolean;
   textareaName: string;
-  tinymceScriptSrc: string | string[] | ScriptItem[];
   rollback: number | false;
   scriptLoading: {
     async?: boolean;
@@ -32,7 +40,7 @@ export interface IProps {
   };
 }
 
-export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
+export type IAllProps = (CloudHostedProps | HybridOrSelfHostedProps) & Partial<IProps & IEvents>;
 
 /**
  * @see https://www.tiny.cloud/docs/tinymce/7/react-ref/ for the TinyMCE React Technical Reference
@@ -54,7 +62,7 @@ export class Editor extends React.Component<IAllProps> {
   private rollbackTimer: number | undefined = undefined;
   private valueCursor: Bookmark | undefined = undefined;
 
-  public constructor(props: Partial<IAllProps>) {
+  public constructor(props: IAllProps) {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
     this.elementRef = React.createRef<HTMLElement>();
@@ -120,7 +128,7 @@ export class Editor extends React.Component<IAllProps> {
   public componentDidMount() {
     if (getTinymce(this.view) !== null) {
       this.initialise();
-    } else if (Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
+    } else if ('tinymceScriptSrc' in this.props && Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
       this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but the `tinymceScriptSrc` prop was an empty array.'));
     } else if (this.elementRef.current?.ownerDocument) {
       const successHandler = () => {
@@ -194,7 +202,7 @@ export class Editor extends React.Component<IAllProps> {
   private getScriptSources(): ScriptItem[] {
     const async = this.props.scriptLoading?.async;
     const defer = this.props.scriptLoading?.defer;
-    if (this.props.tinymceScriptSrc !== undefined) {
+    if ('tinymceScriptSrc' in this.props && this.props.tinymceScriptSrc !== undefined) {
       if (typeof this.props.tinymceScriptSrc === 'string') {
         return [{ src: this.props.tinymceScriptSrc, async, defer }];
       }
@@ -210,8 +218,8 @@ export class Editor extends React.Component<IAllProps> {
       });
     }
     // fallback to the cloud when the tinymceScriptSrc is not specified
-    const channel = this.props.cloudChannel;
-    const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
+    const channel = 'cloudChannel' in this.props && this.props.cloudChannel;
+    const apiKey = 'apiKey' in this.props && this.props.apiKey ? this.props.apiKey : 'no-api-key';
     const cloudTinyJs = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
     return [{ src: cloudTinyJs, async, defer }];
   }
@@ -350,7 +358,7 @@ export class Editor extends React.Component<IAllProps> {
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
-      license_key: this.props.licenseKey,
+      ...('licenseKey' in this.props && this.props.licenseKey ? { license_key: this.props.licenseKey } : {}),
       setup: (editor) => {
         this.editor = editor;
         this.bindHandlers({});

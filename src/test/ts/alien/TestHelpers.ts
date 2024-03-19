@@ -1,6 +1,7 @@
 import { Chain, Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
 import { ApiChains } from '@ephox/mcagar';
+import { Version } from 'src/main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
 interface EventHandlerArgs<T> {
@@ -10,9 +11,8 @@ interface EventHandlerArgs<T> {
 
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
-const VERSIONS = [ '4', '5', '6', '7' ] as const;
-type Version = `${typeof VERSIONS[number]}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
-const CLOUD_VERSIONS = [ '5', '6', '7-dev' ] as const; // TODO: swap '7-dev' with '7' when it's available
+const VERSIONS: Version[] = [ '4', '5', '6', /* '7' */ ]; // TODO: Put back '7' when it's released
+const CLOUD_VERSIONS: Version[] = [ '5', '6', /* '7' */ ];
 
 const EventStore = () => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
