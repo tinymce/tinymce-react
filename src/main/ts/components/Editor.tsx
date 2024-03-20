@@ -43,13 +43,13 @@ export interface IProps {
 export type IAllProps = (CloudHostedProps | HybridOrSelfHostedProps) & Partial<IProps & IEvents>;
 
 /**
- * @see https://www.tiny.cloud/docs/tinymce/7/react-ref/ for the TinyMCE React Technical Reference
+ * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/} for the TinyMCE React Technical Reference
  */
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '6'
+    cloudChannel: '7-dev',
   };
 
   public editor?: TinyMCEEditor;
