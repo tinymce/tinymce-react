@@ -11,8 +11,8 @@ interface EventHandlerArgs<T> {
 
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
-const VERSIONS: Version[] = [ '4', '5', '6', /* '7' */ ]; // TODO: Put back '7' when it's released
-const CLOUD_VERSIONS: Version[] = [ '5', '6', /* '7' */ ];
+const VERSIONS: Version[] = [ '4', '5', '6', '7' ];
+const CLOUD_VERSIONS: Version[] = [ '5', '6', '7' ];
 
 const EventStore = () => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
