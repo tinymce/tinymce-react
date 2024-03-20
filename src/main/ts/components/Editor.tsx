@@ -49,7 +49,7 @@ export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '7-dev',
+    cloudChannel: '7',
   };
 
   public editor?: TinyMCEEditor;
