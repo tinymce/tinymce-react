@@ -21,6 +21,11 @@ const argTypes = {
 export default {
   title: 'Editor',
   component: Editor,
+  parameters: {
+    actions: {
+      disable: true
+    }
+  }
 };
 
 export const IframeEditor: StoryObj<Editor> = {
