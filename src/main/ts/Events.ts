@@ -8,6 +8,9 @@ export interface INativeEvents {
   onBeforePaste: EEventHandler<'beforepaste'>;
   onBlur: EEventHandler<'blur'>;
   onClick: EEventHandler<'click'>;
+  onCompositionEnd: EEventHandler<'compositionend'>;
+  onCompositionStart: EEventHandler<'compositionstart'>;
+  onCompositionUpdate: EEventHandler<'compositionupdate'>;
   onContextMenu: EEventHandler<'contextmenu'>;
   onCopy: EEventHandler<'copy'>;
   onCut: EEventHandler<'cut'>;
@@ -52,6 +55,7 @@ export interface ITinyEvents {
   onGetContent: EEventHandler<'GetContent'>;
   onHide: EventHandler<unknown>;
   onInit: EEventHandler<'init'>;
+  onInput: EEventHandler<'input'>;
   onLoadContent: EEventHandler<'LoadContent'>;
   onNodeChange: EEventHandler<'NodeChange'>;
   onPostProcess: EventHandler<unknown>;
