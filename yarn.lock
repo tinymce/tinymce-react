@@ -10426,12 +10426,12 @@ tiny-invariant@^1.3.1, tiny-invariant@^1.3.3:
   resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.10.9.tgz#1dfacb3231c71a688d90ff44a0b3f2e91b3b9edf"
   integrity sha512-5bkrors87X9LhYX2xq8GgPHrIgJYHl87YNs+kBcjQ5I3CiUgzo/vFcGvT3MZQ9QHsEeYMhYO6a5CLGGffR8hMg==
 
-"tinymce-6@npm:tinymce@^6", "tinymce-7@npm:tinymce@^6":
+"tinymce-6@npm:tinymce@^6":
   version "6.8.3"
   resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-6.8.3.tgz#0025a4aaa4c24dc2a3e32e83dfda705d196fd802"
   integrity sha512-3fCHKAeqT+xNwBVESf6iDbDV0VNwZNmfrkx9c/6Gz5iB8piMfaO6s7FvoiTrj1hf1gVbfyLTnz1DooI6DhgINQ==
 
-"tinymce@^7.0.0 || ^6.0.0 || ^5.5.1":
+"tinymce-7@npm:tinymce@^7", "tinymce@^7.0.0 || ^6.0.0 || ^5.5.1":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-7.0.0.tgz#d35441e15f8011cf549b39e58b64648798816e92"
   integrity sha512-ggXLfTRrUALAcjeJSRrZcJDOl6MgC2tPXe/zNOEkQXvTDgcKqFypPRoPpfpK5wejexjyaI/7dwETOntJ5MPBFg==
