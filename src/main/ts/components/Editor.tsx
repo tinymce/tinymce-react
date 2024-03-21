@@ -15,7 +15,6 @@ export interface CloudHostedProps {
 }
 
 export interface HybridOrSelfHostedProps {
-  tinymceScriptSrc: string | string[] | ScriptItem[];
   licenseKey: string;
 }
 
@@ -32,6 +31,7 @@ export interface IProps {
   toolbar: NonNullable<EditorOptions['toolbar']>;
   disabled: boolean;
   textareaName: string;
+  tinymceScriptSrc: string | string[] | ScriptItem[];
   rollback: number | false;
   scriptLoading: {
     async?: boolean;
