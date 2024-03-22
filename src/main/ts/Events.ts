@@ -24,6 +24,7 @@ export interface INativeEvents {
   onFocus: EEventHandler<'focus'>;
   onFocusIn: EEventHandler<'focusin'>;
   onFocusOut: EEventHandler<'focusout'>;
+  onInput: EEventHandler<'input'>;
   onKeyDown: EEventHandler<'keydown'>;
   onKeyPress: EEventHandler<'keypress'>;
   onKeyUp: EEventHandler<'keyup'>;
@@ -55,7 +56,6 @@ export interface ITinyEvents {
   onGetContent: EEventHandler<'GetContent'>;
   onHide: EventHandler<unknown>;
   onInit: EEventHandler<'init'>;
-  onInput: EEventHandler<'input'>;
   onLoadContent: EEventHandler<'LoadContent'>;
   onNodeChange: EEventHandler<'NodeChange'>;
   onPostProcess: EventHandler<unknown>;
