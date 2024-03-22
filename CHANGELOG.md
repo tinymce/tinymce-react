@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Added `licenseKey` property that overrides the TinyMCE `license_key` init property. #INT-3291
+- Added events `onInput`, `onCompositionEnd`, `onCompositionStart` & `onCompositionUpdate`. #INT-3291
+- Added a JSDoc link to the TinyMCE 7 React Technical Reference docs page. #INT-3291
+
+### Fixed
+- `readonly` init property is now properly typed as undefined, as it's overriden by the integration. #INT-3287
+
+### Changed
+- Updated dependencies. #INT-3291
+- Changed default cloudChannel to `'7'`. #INT-3291
+
+### Improved
+- Improved `cloudChannel` type. #INT-3291
+- Updated to Storybook v8 and it now uses react-vite as a bundler/builder instead of webpack. #INT-3291
+- Storybook examples now use CSFv3 components. #INT-3291
+- Tests now run against TinyMCE version 7 as well. #INT-3291
+
 ## 4.3.2 - 2023-11-20
 
 ### Fixed
