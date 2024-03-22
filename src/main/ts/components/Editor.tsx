@@ -17,6 +17,7 @@ export interface IProps {
   value: string;
   init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly', undefined>>;
   tagName: string;
+  tabIndex: number;
   cloudChannel: string;
   plugins: NonNullable<EditorOptions['plugins']>;
   toolbar: NonNullable<EditorOptions['toolbar']>;
@@ -174,7 +175,8 @@ export class Editor extends React.Component<IAllProps> {
 
     return React.createElement(tagName, {
       ref: this.elementRef,
-      id: this.id
+      id: this.id,
+      tabIndex: this.props.tabIndex
     });
   }
 
@@ -183,7 +185,8 @@ export class Editor extends React.Component<IAllProps> {
       ref: this.elementRef,
       style: { visibility: 'hidden' },
       name: this.props.textareaName,
-      id: this.id
+      id: this.id,
+      tabIndex: this.props.tabIndex
     });
   }
 
