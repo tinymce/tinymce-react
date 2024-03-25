@@ -8,6 +8,8 @@ import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce
 
 type EditorOptions = Parameters<TinyMCE['init']>[0];
 
+export type Version = `${'4' | '5' | '6' | '7'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
+
 export interface IProps {
   apiKey: string;
   id: string;
@@ -15,9 +17,9 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly', undefined>>;
+  init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly' | 'license_key', undefined>>;
   tagName: string;
-  cloudChannel: string;
+  cloudChannel: Version;
   plugins: NonNullable<EditorOptions['plugins']>;
   toolbar: NonNullable<EditorOptions['toolbar']>;
   disabled: boolean;
@@ -29,15 +31,19 @@ export interface IProps {
     defer?: boolean;
     delay?: number;
   };
+  licenseKey: string;
 }
 
 export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 
+/**
+ * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/} for the TinyMCE React Technical Reference
+ */
 export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '6'
+    cloudChannel: '7',
   };
 
   public editor?: TinyMCEEditor;
@@ -206,7 +212,7 @@ export class Editor extends React.Component<IAllProps> {
       });
     }
     // fallback to the cloud when the tinymceScriptSrc is not specified
-    const channel = this.props.cloudChannel;
+    const channel = this.props.cloudChannel as Version; // `cloudChannel` is in `defaultProps`, so it's always defined.
     const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
     const cloudTinyJs = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
     return [{ src: cloudTinyJs, async, defer }];
@@ -346,6 +352,7 @@ export class Editor extends React.Component<IAllProps> {
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
+      ...(this.props.licenseKey ? { license_key: this.props.licenseKey } : {}),
       setup: (editor) => {
         this.editor = editor;
         this.bindHandlers({});

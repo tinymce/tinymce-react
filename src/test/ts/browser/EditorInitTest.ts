@@ -3,14 +3,14 @@ import { UnitTest } from '@ephox/bedrock-client';
 import { VersionLoader } from '@tinymce/miniature';
 
 import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader';
-import { cAssertContent } from '../alien/TestHelpers';
+import { type Version, cAssertContent, VERSIONS } from '../alien/TestHelpers';
 
 UnitTest.asynctest('Editor.test', (success, failure) => {
   const cAssertProperty = (propName: string, expected: string) => Chain.op((el: HTMLElement) => {
     Assertions.assertEq(propName + ' should be ' + expected, expected, (el as unknown as Record<string, unknown>)[propName]);
   });
 
-  const sTestVersion = (version: '4' | '5' | '6') => VersionLoader.sWithVersion(
+  const sTestVersion = (version: Version) => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
       Logger.t('tagName prop changes element', GeneralSteps.sequence([
@@ -99,9 +99,5 @@ UnitTest.asynctest('Editor.test', (success, failure) => {
     ])
   );
 
-  Pipeline.async({}, [
-    sTestVersion('6'),
-    sTestVersion('5'),
-    sTestVersion('4'),
-  ], success, failure);
+  Pipeline.async({}, VERSIONS.map(sTestVersion), success, failure);
 });

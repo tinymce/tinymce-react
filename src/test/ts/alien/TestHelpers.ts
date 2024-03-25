@@ -1,6 +1,7 @@
 import { Chain, Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
 import { ApiChains } from '@ephox/mcagar';
+import { Version } from 'src/main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
 interface EventHandlerArgs<T> {
@@ -9,6 +10,9 @@ interface EventHandlerArgs<T> {
 }
 
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
+
+const VERSIONS: Version[] = [ '4', '5', '6', '7' ];
+const CLOUD_VERSIONS: Version[] = [ '5', '6', '7' ];
 
 const EventStore = () => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
@@ -51,5 +55,8 @@ const cAssertContent = (content: string) => ApiChains.cAssertContent(content) as
 export {
   EventStore,
   cSetContent,
-  cAssertContent
+  cAssertContent,
+  VERSIONS,
+  CLOUD_VERSIONS,
+  Version
 };

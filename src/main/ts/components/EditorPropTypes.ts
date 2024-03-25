@@ -23,6 +23,9 @@ export const eventPropTypes: IEventPropTypes = {
   onClick: PropTypes.func,
   onContextMenu: PropTypes.func,
   onCommentChange: PropTypes.func,
+  onCompositionEnd: PropTypes.func,
+  onCompositionStart: PropTypes.func,
+  onCompositionUpdate: PropTypes.func,
   onCopy: PropTypes.func,
   onCut: PropTypes.func,
   onDblclick: PropTypes.func,
@@ -41,6 +44,7 @@ export const eventPropTypes: IEventPropTypes = {
   onGetContent: PropTypes.func,
   onHide: PropTypes.func,
   onInit: PropTypes.func,
+  onInput: PropTypes.func,
   onKeyDown: PropTypes.func,
   onKeyPress: PropTypes.func,
   onKeyUp: PropTypes.func,
@@ -84,6 +88,7 @@ export const eventPropTypes: IEventPropTypes = {
 
 export const EditorPropTypes: IEditorPropTypes = {
   apiKey: PropTypes.string,
+  licenseKey: PropTypes.string,
   id: PropTypes.string,
   inline: PropTypes.bool,
   init: PropTypes.object,

@@ -5,7 +5,7 @@ import { VersionLoader } from '@tinymce/miniature';
 import { PlatformDetection } from '@ephox/sand';
 
 import { getTinymce } from '../../../main/ts/TinyMCE';
-import { EventStore, cAssertContent, cSetContent } from '../alien/TestHelpers';
+import { EventStore, VERSIONS, cAssertContent, cSetContent, type Version } from '../alien/TestHelpers';
 import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
@@ -17,6 +17,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
     success();
     return;
   }
+  const versionRegex = /6|7/;
 
   const isEditor = (val: unknown): val is TinyMCEEditor => {
     const tinymce = getTinymce(window);
@@ -28,7 +29,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
 
   const eventStore = EventStore();
 
-  const sTestVersion = (version: '4' | '5' | '6') => VersionLoader.sWithVersion(
+  const sTestVersion = (version: Version) => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
       Logger.t('Assert structure of tinymce and tinymce-react events', Chain.asStep({}, [
@@ -41,7 +42,11 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
         // initial content is empty as editor does not have a value or initialValue
         eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
           // note that this difference in behavior in 5-6 may be a bug, the team is investigating
-          Assertions.assertEq('First arg should be event from Tiny', version === '6' ? '<p><br data-mce-bogus="1"></p>' : '', events[0].editorEvent.content);
+          Assertions.assertEq(
+            'First arg should be event from Tiny',
+            versionRegex.test(version) ? '<p><br data-mce-bogus="1"></p>' : '',
+            events[0].editorEvent.content
+          );
           Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
         }),
 
@@ -103,7 +108,7 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
           Assertions.assertEq(
             'Initial content is empty as editor does not have a value or initialValue',
             // note that this difference in behavior in 5-6 may be a bug, the team is investigating
-            version === '6' ? '<p><br data-mce-bogus="1"></p>' : '',
+            versionRegex.test(version) ? '<p><br data-mce-bogus="1"></p>' : '',
             events[0].editorEvent.content);
         }),
         eventStore.cClearState,
@@ -125,9 +130,5 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
     ])
   );
 
-  Pipeline.async({}, [
-    sTestVersion('6'),
-    sTestVersion('5'),
-    sTestVersion('4')
-  ], success, failure);
+  Pipeline.async({}, VERSIONS.map(sTestVersion), success, failure);
 });
