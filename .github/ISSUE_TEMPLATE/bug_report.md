@@ -9,7 +9,7 @@ assignees: ''
 
 **What is the current behavior?**
 
-**Please provide the steps to reproduce and if possible a minimal demo of the problem via [codesandbox.io](https://codesandbox.io/s/tinymce-tinymce-react-p6bqty?file=/src/index.js) or similar.**
+**Please provide the steps to reproduce and if possible a minimal demo of the problem via [codesandbox.io](https://codesandbox.io/p/sandbox/tinymce-react-yny726?file=src/index.tsx) or similar.**
 
 **What is the expected behavior?**
 

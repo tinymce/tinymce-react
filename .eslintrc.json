@@ -11,7 +11,8 @@
         "sourceType": "module"
       },
       "rules": {
-        "@tinymce/prefer-fun": "off"
+        "@tinymce/prefer-fun": "off",
+        "@typescript-eslint/no-unsafe-argument": "off"
       }
     }
   ]
