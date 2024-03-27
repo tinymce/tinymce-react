@@ -20,7 +20,7 @@
     "watch": "tsc -w -p ./tsconfig.es2015.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "deploy-storybook": "storybook build && gh-pages -d ./storybook-static -u 'tiny-bot <no-reply@tiny.cloud>'"
+    "deploy-storybook": "storybook build && gh-pages -d ./storybook-static -u 'tiny-bot <no-reply@tiny.cloud>' --nojekyll"
   },
   "keywords": [],
   "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
