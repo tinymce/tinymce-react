@@ -1,5 +1,5 @@
 #!groovy
-@Library('waluigi@feature/TINY-10569') _
+@Library('waluigi@release/7') _
 
 mixedBeehiveFlow(
   container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
