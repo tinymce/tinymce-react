@@ -1,6 +1,5 @@
-import { Chain, Assertions } from '@ephox/agar';
+import { Assertions } from '@ephox/agar';
 import { Cell, Obj } from '@ephox/katamari';
-import { ApiChains } from '@ephox/mcagar';
 import { Version } from 'src/main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
@@ -13,6 +12,8 @@ type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
 const VERSIONS: Version[] = [ '4', '5', '6', '7' ];
 const CLOUD_VERSIONS: Version[] = [ '5', '6', '7' ];
+
+const VALID_API_KEY = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
 
 const EventStore = () => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
@@ -30,32 +31,25 @@ const EventStore = () => {
     });
   };
 
-  const cEach = <T>(name: string, assertState: (state: EventHandlerArgs<T>[]) => void) => Chain.fromChains([
-    Chain.op(() => {
-      Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
-      assertState(state.get()[name] as unknown as EventHandlerArgs<T>[]);
-    })
-  ]);
+  const each = <T>(name: string, assertState: (state: EventHandlerArgs<T>[]) => void) => {
+    Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
+    assertState(state.get()[name] as unknown as EventHandlerArgs<T>[]);
+  };
 
-  const cClearState = Chain.op(() => {
+  const clearState = () => {
     state.set({});
-  });
+  };
 
   return {
-    cEach,
+    each,
     createHandler,
-    cClearState
+    clearState
   };
 };
 
-// casting needed due to fake types used in mcagar
-const cSetContent = (content: string) => ApiChains.cSetContent(content) as unknown as Chain<TinyMCEEditor, TinyMCEEditor>;
-const cAssertContent = (content: string) => ApiChains.cAssertContent(content) as unknown as Chain<TinyMCEEditor, TinyMCEEditor>;
-
 export {
+  VALID_API_KEY,
   EventStore,
-  cSetContent,
-  cAssertContent,
   VERSIONS,
   CLOUD_VERSIONS,
   Version
