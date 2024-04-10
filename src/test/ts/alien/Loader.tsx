@@ -15,7 +15,7 @@ export interface Context {
   DOMNode: HTMLElement;
   editor: TinyMCEEditor;
   ref: React.RefObject<Editor>;
-  majorVersion: string;
+  version: string;
 }
 
 const getRoot = () => Optional.from(document.getElementById('root')).getOrThunk(() => {
@@ -69,7 +69,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
                   ref,
                   editor,
                   DOMNode,
-                  majorVersion: Global.tinymce.majorVersion
+                  version: Global.tinymce.majorVersion
                 });
               });
           }, 0);
