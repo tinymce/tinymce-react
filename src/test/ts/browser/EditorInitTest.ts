@@ -6,15 +6,13 @@ import * as Loader from '../alien/Loader';
 import { TinyAssertions } from '@ephox/mcagar';
 import { IAllProps } from 'src/main/ts';
 
-function assertProperty<T extends HTMLElement | Record<string, unknown>, K extends keyof T>(obj: T, propName: K, expected: T[K]): void
-function assertProperty(obj: {}, propName: string, expected: unknown): void;
-function assertProperty(obj: Record<string, unknown>, propName: string, expected: unknown): void {
-  Assertions.assertEq(propName.toString() + ' should be ' + expected, expected, obj[propName]);
-}
+const assertProperty = (obj: {}, propName: string, expected: unknown) => {
+  Assertions.assertEq(propName.toString() + ' should be ' + expected, expected, (obj as any)[propName]);
+};
 
-describe('EditorInitTest', async () => {
+describe('EditorInitTest', () => {
   VERSIONS.forEach((version) =>
-    context(`TinyMCE (${version})`, async () => {
+    context(`TinyMCE (${version})`, () => {
       const defaultProps: IAllProps = { apiKey: VALID_API_KEY, cloudChannel: version };
       const render = (props: IAllProps = {}) => Loader.render({ ...defaultProps, ...props });
 
@@ -73,9 +71,9 @@ describe('EditorInitTest', async () => {
 
       it('Disabled prop should disable editor', async () => {
         using ctx = await render();
-        Assertions.assertEq('Should be design mode', true, ['4'].includes(version) ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
+        Assertions.assertEq('Should be design mode', true, '4' === version ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
         ctx.reRender({ ...defaultProps, disabled: true });
-        Assertions.assertEq('Should be readonly mode', true, ['4'].includes(version) ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
+        Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
       });
     })
   );

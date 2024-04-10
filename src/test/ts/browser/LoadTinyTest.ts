@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Assertions } from '@ephox/agar';
 import { describe, it } from '@ephox/bedrock-client';
 import { Global } from '@ephox/katamari';
@@ -12,7 +13,7 @@ const assertTinymceVersion = (version: Version) => {
 describe('LoadTinyTest', () => {
   VERSIONS.forEach((version) => {
     it(`Should be able to load local version (${version}) of TinyMCE using the tinymceScriptSrc prop`, async () => {
-      using _ctx = await render({ tinymceScriptSrc: `/project/node_modules/tinymce-${version}/tinymce.min.js`, licenseKey: 'gpl' });
+      using _ = await render({ tinymceScriptSrc: `/project/node_modules/tinymce-${version}/tinymce.min.js`, licenseKey: 'gpl' });
       assertTinymceVersion(version);
     });
   });
@@ -20,7 +21,7 @@ describe('LoadTinyTest', () => {
   CLOUD_VERSIONS.forEach((version) => {
     it(`Should be able to load TinyMCE from Cloud (${version})`, async () => {
       const apiKey = 'a-fake-api-key';
-      using _ctx = await render({ apiKey, cloudChannel: version });
+      using _ = await render({ apiKey, cloudChannel: version });
       assertTinymceVersion(version);
       Assertions.assertEq(
         'TinyMCE should have been loaded from Cloud',
@@ -30,7 +31,7 @@ describe('LoadTinyTest', () => {
     });
 
     it(`Should be able to load TinyMCE (${version}) in hybrid`, async () => {
-      using _ctx = await render({
+      using _ = await render({
         tinymceScriptSrc: [
           `/project/node_modules/tinymce-${version}/tinymce.min.js`,
           `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?tinydrive=${version}`

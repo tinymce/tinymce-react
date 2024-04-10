@@ -35,7 +35,7 @@ describe('EditorBehaviourTest', () => {
         using ctx = await render({
           cloudChannel: version,
           onEditorChange: eventStore.createHandler('onEditorChange'),
-          onSetContent: eventStore.createHandler('onSetContent')
+          onSetContent: eventStore.createHandler('onSetContent'),
         });
 
         // tinymce native event
@@ -50,12 +50,16 @@ describe('EditorBehaviourTest', () => {
           Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
         });
         eventStore.clearState();
-        
+
         ctx.editor.setContent('<p>Initial Content</p>');
         // tinymce native event
         eventStore.each<SetContentEvent>('onSetContent', (events) => {
           Assertions.assertEq('onSetContent should have been fired once', 1, events.length);
-          Assertions.assertEq('First arg should be event from Tiny', '<p>Initial Content</p>', events[0].editorEvent.content);
+          Assertions.assertEq(
+            'First arg should be event from Tiny',
+            '<p>Initial Content</p>',
+            events[0].editorEvent.content
+          );
           Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
         });
 
@@ -70,7 +74,7 @@ describe('EditorBehaviourTest', () => {
       it('onEditorChange should only fire when the editors content changes', async () => {
         using ctx = await render({
           cloudChannel: version,
-          onEditorChange: eventStore.createHandler('onEditorChange')
+          onEditorChange: eventStore.createHandler('onEditorChange'),
         });
 
         ctx.editor.setContent('<p>Initial Content</p>');
@@ -90,7 +94,11 @@ describe('EditorBehaviourTest', () => {
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('onSetContent', (events) => {
-          Assertions.assertEq('Should have bound handler, hence new content', '<p>New Content</p>', events[0].editorEvent.content);
+          Assertions.assertEq(
+            'Should have bound handler, hence new content',
+            '<p>New Content</p>',
+            events[0].editorEvent.content
+          );
         });
 
         eventStore.clearState();
@@ -103,20 +111,29 @@ describe('EditorBehaviourTest', () => {
             'Initial content is empty as editor does not have a value or initialValue',
             // note that this difference in behavior in 5-6 may be a bug, the team is investigating
             versionRegex.test(version) ? '<p><br data-mce-bogus="1"></p>' : '',
-            events[0].editorEvent.content);
+            events[0].editorEvent.content
+          );
         });
         eventStore.clearState();
         ctx.editor.setContent('<p>Initial Content</p>');
 
-        await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') }),
+        await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') });
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {
-          Assertions.assertEq('Initial handler should have been unbound, hence initial content', '<p>Initial Content</p>', events[0].editorEvent.content);
-        }),
+          Assertions.assertEq(
+            'Initial handler should have been unbound, hence initial content',
+            '<p>Initial Content</p>',
+            events[0].editorEvent.content
+          );
+        });
         eventStore.each<SetContentEvent>('NewHandler', (events) => {
-          Assertions.assertEq('New handler should have been bound, hence new content', '<p>New Content</p>', events[0].editorEvent.content);
-        })
+          Assertions.assertEq(
+            'New handler should have been bound, hence new content',
+            '<p>New Content</p>',
+            events[0].editorEvent.content
+          );
+        });
 
         eventStore.clearState();
       });

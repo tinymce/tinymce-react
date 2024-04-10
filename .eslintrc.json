@@ -14,6 +14,15 @@
         "@tinymce/prefer-fun": "off",
         "@typescript-eslint/no-unsafe-argument": "off"
       }
+    },
+    {
+      "files": [
+        "src/test/**/*"
+      ],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+        "no-var": "off" // Without this the `using` keyword causes eslint to throw an error during linting.
+      }
     }
   ]
 }
