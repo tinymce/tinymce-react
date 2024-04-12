@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## Added
+### Added
 - Added `tabIndex` prop. Community PR acknowledgement: Grand Julivan <grandjulivan@gmail.com>
 
 ## 5.0.0 - 2024-03-27
