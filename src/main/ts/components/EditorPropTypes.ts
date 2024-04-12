@@ -96,6 +96,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   onEditorChange: PropTypes.func,
   value: PropTypes.string,
   tagName: PropTypes.string,
+  tabIndex: PropTypes.number,
   cloudChannel: PropTypes.string,
   plugins: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
   toolbar: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
