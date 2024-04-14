@@ -1,11 +1,14 @@
 #!groovy
 @Library('waluigi@release/7') _
 
-beehiveFlowBuild(
+mixedBeehiveFlow(
   container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
-  test: {
-    bedrockBrowsers()
-  },
+  testPrefix: 'Tiny-React',
+  platforms: [
+    [ browser: 'chrome', headless: true ],
+    [ browser: 'firefox', provider: 'aws', buckets: 1 ],
+    [ browser: 'safari', provider: 'lambdatest', buckets: 1 ]
+  ],
   customSteps: {
     stage("update storybook") {
       def status = beehiveFlowStatus()
