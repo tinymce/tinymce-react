@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Editor, IAllProps, IProps } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { ScriptLoader } from 'src/main/ts/ScriptLoader2';
+import { ScriptLoader } from '../../../main/ts/ScriptLoader2';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');
