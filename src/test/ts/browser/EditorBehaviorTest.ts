@@ -1,7 +1,7 @@
-import { render } from '../alien/Loader';
+import * as Loader from '../alien/Loader';
 import { PlatformDetection } from '@ephox/sand';
 
-import { context, describe, it } from '@ephox/bedrock-client';
+import { describe, it } from '@ephox/bedrock-client';
 
 import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventStore, VERSIONS } from '../alien/TestHelpers';
@@ -30,10 +30,9 @@ describe('EditorBehaviourTest', () => {
   const eventStore = EventStore();
 
   VERSIONS.forEach((version) =>
-    context(`TinyMCE (${version})`, () => {
+    Loader.withVersion(version, (render) => {
       it('Assert structure of tinymce and tinymce-react events', async () => {
         using ctx = await render({
-          cloudChannel: version,
           onEditorChange: eventStore.createHandler('onEditorChange'),
           onSetContent: eventStore.createHandler('onSetContent'),
         });
@@ -73,7 +72,6 @@ describe('EditorBehaviourTest', () => {
 
       it('onEditorChange should only fire when the editors content changes', async () => {
         using ctx = await render({
-          cloudChannel: version,
           onEditorChange: eventStore.createHandler('onEditorChange'),
         });
 
@@ -87,7 +85,7 @@ describe('EditorBehaviourTest', () => {
       });
 
       it('Should be able to register an event handler after initial render', async () => {
-        using ctx = await render({ cloudChannel: version, initialValue: '<p>Initial Content</p>' });
+        using ctx = await render({ initialValue: '<p>Initial Content</p>' });
         await ctx.reRender({ onSetContent: eventStore.createHandler('onSetContent') });
 
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Content</p>');
@@ -105,7 +103,7 @@ describe('EditorBehaviourTest', () => {
       });
 
       it('Providing a new event handler and re-rendering should unbind old handler and bind new handler', async () => {
-        using ctx = await render({ cloudChannel: version, onSetContent: eventStore.createHandler('InitialHandler') });
+        using ctx = await render({ onSetContent: eventStore.createHandler('InitialHandler') });
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {
           Assertions.assertEq(
             'Initial content is empty as editor does not have a value or initialValue',

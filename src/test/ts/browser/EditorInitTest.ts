@@ -12,9 +12,9 @@ const assertProperty = (obj: {}, propName: string, expected: unknown) => {
 
 describe('EditorInitTest', () => {
   VERSIONS.forEach((version) =>
-    context(`TinyMCE (${version})`, () => {
+    Loader.withVersion(version, (renderWithVersion) => {
       const defaultProps: IAllProps = { apiKey: VALID_API_KEY, cloudChannel: version };
-      const render = (props: IAllProps = {}) => Loader.render({ ...defaultProps, ...props });
+      const render = (props: IAllProps = {}) => renderWithVersion({ ...defaultProps, ...props });
 
       context('tagName prop changes element', () => {
         it('is div by default for inline', async () => {
