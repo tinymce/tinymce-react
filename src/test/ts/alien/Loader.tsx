@@ -86,7 +86,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
 };
 
 type RenderWithVersion = (
-  props: Omit<IAllProps, 'cloudChannel' | 'licenseKey' | 'tinymceScriptSrc'>,
+  props: Omit<IAllProps, 'cloudChannel' | 'tinymceScriptSrc'>,
   container?: HTMLElement | HTMLDivElement
 ) => Promise<ReactEditorContext>;
 
