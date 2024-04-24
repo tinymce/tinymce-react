@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { Assert, UnitTest } from '@ephox/bedrock-client';
+import { Assert, describe } from '@ephox/bedrock-client';
 import { Arr, Obj, Fun } from '@ephox/katamari';
 import { IAllProps } from 'src/main/ts/components/Editor';
 import { configHandlers2 } from '../../../main/ts/Utils';
@@ -8,7 +7,7 @@ interface Handler {
   key: string;
 }
 
-UnitTest.test('Event binding test', () => {
+describe('EventBindingTest', () => {
   let calls: { type: 'on' | 'off'; name: string; handler: Handler }[];
   let boundHandlers: Record<string, Handler>;
 
@@ -39,8 +38,8 @@ UnitTest.test('Event binding test', () => {
   const dummyLookupProp: any = <K extends keyof IAllProps>(_key: K) => Fun.die('not implemented');
 
   // dummy functions for handlers
-  const focusHandler = () => {};
-  const blurHandler = () => {};
+  const focusHandler = Fun.noop;
+  const blurHandler = Fun.noop;
 
   // check no handlers
   calls = [];
@@ -80,5 +79,4 @@ UnitTest.test('Event binding test', () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler, onBlur: blurHandler }, { onFocus: focusHandler }, boundHandlers);
   check({ Blur: 'off' }, [ 'onFocus' ]);
-
 });

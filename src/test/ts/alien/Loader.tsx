@@ -1,10 +1,16 @@
-import { Chain, NamedChain } from '@ephox/agar';
 import { Fun, Optional } from '@ephox/katamari';
 import { SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Editor, IAllProps, IProps } from '../../../main/ts/components/Editor';
+import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
+import { before, context } from '@ephox/bedrock-client';
+import { VersionLoader } from '@tinymce/miniature';
+
+// @ts-expect-error Remove when dispose polyfill is not needed
+Symbol.dispose ??= Symbol('Symbol.dispose');
+// @ts-expect-error Remove when dispose polyfill is not needed
+Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose');
 
 export interface Context {
   DOMNode: HTMLElement;
@@ -18,78 +24,78 @@ const getRoot = () => Optional.from(document.getElementById('root')).getOrThunk(
   document.body.appendChild(root);
   return root;
 });
+export interface ReactEditorContext extends Context, Disposable {
+  reRender(props: IAllProps): Promise<void>;
+  remove(): void;
+}
 
-const cRender = (props: Partial<IAllProps>) => Chain.async<unknown, Context>((_, next, die) => {
+export const render = async (props: Partial<IAllProps> = {}, container: HTMLElement = getRoot()): Promise<ReactEditorContext> => {
   const originalInit = props.init || {};
   const originalSetup = originalInit.setup || Fun.noop;
   const ref = React.createRef<Editor>();
 
-  const init: IProps['init'] = {
-    ...originalInit,
-    setup: (editor) => {
-      originalSetup(editor);
+  const ctx = await new Promise<Context>((resolve, reject) => {
+    const init: IProps['init'] = {
+      ...originalInit,
+      setup: (editor) => {
+        originalSetup(editor);
 
-      editor.on('SkinLoaded', () => {
-        setTimeout(() => {
-          Optional.from(ref.current)
-            .map(ReactDOM.findDOMNode)
-            .bind(Optional.from)
-            .map(SugarElement.fromDom)
-            .filter(SugarNode.isHTMLElement)
-            .map((val) => val.dom)
-            .fold(() => die('Could not find DOMNode'), (DOMNode) => {
-              next({
-                ref,
-                editor,
-                DOMNode
+        editor.on('SkinLoaded', () => {
+          setTimeout(() => {
+            Optional.from(ref.current)
+              .map(ReactDOM.findDOMNode)
+              .bind(Optional.from)
+              .map(SugarElement.fromDom)
+              .filter(SugarNode.isHTMLElement)
+              .map((val) => val.dom)
+              .fold(() => reject('Could not find DOMNode'), (DOMNode) => {
+                resolve({
+                  ref,
+                  editor,
+                  DOMNode,
+                });
               });
-            });
-        }, 0);
-      });
-    }
-  };
+          }, 0);
+        });
+      }
+    };
 
-  /**
+    /**
      * NOTE: TinyMCE will manipulate the DOM directly and this may cause issues with React's virtual DOM getting
      * out of sync. The official fix for this is wrap everything (textarea + editor) in an element. As far as React
      * is concerned, the wrapper always only has a single child, thus ensuring that React doesn’t have a reason to
      * touch the nodes created by TinyMCE. Since this only seems to be an issue when rendering TinyMCE 4 directly
      * into a root and a fix would be a breaking change, let's just wrap the editor in a <div> here for now.
      */
-  ReactDOM.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} /></div>, getRoot());
-});
+    ReactDOM.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} /></div>, container);
+  });
 
-// By rendering the Editor into the same root, React will perform a diff and update.
-const cReRender = (props: Partial<IAllProps>) => Chain.op<Context>((context) => {
-  ReactDOM.render(<div><Editor apiKey='no-api-key' ref={context.ref} {...props} /></div>, getRoot());
-});
+  const remove = () => {
+    ReactDOM.unmountComponentAtNode(container);
+  };
 
-const cRemove = Chain.op((_) => {
-  ReactDOM.unmountComponentAtNode(getRoot());
-});
+  return {
+    ...ctx,
+    /** By rendering the Editor into the same root, React will perform a diff and update. */
+    reRender: (newProps: IAllProps) => new Promise<void>((resolve) =>
+      ReactDOM.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>, container, resolve)
+    ),
+    remove,
+    [Symbol.dispose]: remove
+  };
+};
 
-const cNamedChainDirect = (name: keyof Context) => NamedChain.direct(
-  NamedChain.inputName(),
-  Chain.mapper((res: Context) => res[name]),
-  name
-);
+type RenderWithVersion = (
+  props: Omit<IAllProps, 'cloudChannel' | 'tinymceScriptSrc'>,
+  container?: HTMLElement | HTMLDivElement
+) => Promise<ReactEditorContext>;
 
-const cDOMNode = (chain: Chain<Context['DOMNode'], unknown>): Chain<Context, Context> => NamedChain.asChain<Context>([
-  cNamedChainDirect('DOMNode'),
-  NamedChain.read('DOMNode', chain),
-  NamedChain.outputInput
-]);
+export const withVersion = (version: Version, fn: (render: RenderWithVersion) => void): void => {
+  context(`TinyMCE (${version})`, () => {
+    before(async () => {
+      await VersionLoader.pLoadVersion(version);
+    });
 
-const cEditor = (chain: Chain<Context['editor'], unknown>): Chain<Context, Context> => NamedChain.asChain<Context>([
-  cNamedChainDirect('editor'),
-  NamedChain.read('editor', chain),
-  NamedChain.outputInput
-]);
-
-export {
-  cRender,
-  cReRender,
-  cRemove,
-  cDOMNode,
-  cEditor
+    fn(render as RenderWithVersion);
+  });
 };

@@ -1,103 +1,80 @@
-import { Assertions, Chain, GeneralSteps, Logger, Pipeline } from '@ephox/agar';
-import { UnitTest } from '@ephox/bedrock-client';
-import { VersionLoader } from '@tinymce/miniature';
+import { Assertions } from '@ephox/agar';
+import { context, describe, it } from '@ephox/bedrock-client';
 
-import { cRemove, cRender, cDOMNode, cEditor, cReRender } from '../alien/Loader';
-import { type Version, cAssertContent, VERSIONS } from '../alien/TestHelpers';
+import { VALID_API_KEY, VERSIONS } from '../alien/TestHelpers';
+import * as Loader from '../alien/Loader';
+import { TinyAssertions } from '@ephox/mcagar';
+import { IAllProps } from 'src/main/ts';
 
-UnitTest.asynctest('Editor.test', (success, failure) => {
-  const cAssertProperty = (propName: string, expected: string) => Chain.op((el: HTMLElement) => {
-    Assertions.assertEq(propName + ' should be ' + expected, expected, (el as unknown as Record<string, unknown>)[propName]);
-  });
+const assertProperty = (obj: {}, propName: string, expected: unknown) => {
+  Assertions.assertEq(propName.toString() + ' should be ' + expected, expected, (obj as any)[propName]);
+};
 
-  const sTestVersion = (version: Version) => VersionLoader.sWithVersion(
-    version,
-    GeneralSteps.sequence([
-      Logger.t('tagName prop changes element', GeneralSteps.sequence([
-        Logger.t('it is div by default for inline', Chain.asStep({}, [
-          cRender({ inline: true }),
-          cDOMNode(cAssertProperty('tagName', 'DIV')),
-          cRemove
-        ])),
+describe('EditorInitTest', () => {
+  VERSIONS.forEach((version) =>
+    Loader.withVersion(version, (renderWithVersion) => {
+      const defaultProps: IAllProps = { apiKey: VALID_API_KEY, cloudChannel: version };
+      const render = (props: IAllProps = {}) => renderWithVersion({ ...defaultProps, ...props });
 
-        Logger.t('can be set to inline in init', Chain.asStep({}, [
-          cRender({
-            init: {
-              inline: true
-            }
-          }),
-          cDOMNode(cAssertProperty('tagName', 'DIV')),
-          cRemove
-        ])),
+      context('tagName prop changes element', () => {
+        it('is div by default for inline', async () => {
+          using ctx = await render({ inline: true });
+          assertProperty(ctx.DOMNode, 'tagName', 'DIV');
+        });
 
-        Logger.t('it can be changed to p', Chain.asStep({}, [
-          cRender({
-            inline: true,
-            tagName: 'p'
-          }),
-          cDOMNode(cAssertProperty('tagName', 'P')),
-          cRemove
-        ])),
+        it('can be set to inline in init', async () => {
+          using ctx = await render({ init: { inline: true }});
+          assertProperty(ctx.DOMNode, 'tagName', 'DIV');
+        });
 
-        Logger.t('iframe editor does not change element', Chain.asStep({}, [
-          cRender({ tagName: 'p' }),
-          cDOMNode(cAssertProperty('tagName', 'TEXTAREA')),
-          cRemove
-        ]))
-      ])),
+        it('can be changed to p', async () => {
+          using ctx = await render({ inline: true, tagName: 'p' });
+          assertProperty(ctx.DOMNode, 'tagName', 'P');
+        });
 
-      Logger.t('id is set automatically if id prop not provided', GeneralSteps.sequence([
-        Logger.t('is set normally if prop is provided', Chain.asStep({}, [
-          cRender({ id: 'test' }),
-          cDOMNode(cAssertProperty('id', 'test')),
-          cRemove
-        ])),
+        it('iframe editor does not change element', async () => {
+          using ctx = await render({ tagName: 'p' });
+          assertProperty(ctx.DOMNode, 'tagName', 'TEXTAREA');
+        });
+      });
 
-        Logger.t('gets set automatically to uuid if not set', Chain.asStep({}, [
-          cRender({}),
-          cDOMNode(Chain.op((node: Element) => {
-            Assertions.assertEq('Should not be uuid', typeof node.id === 'string' && node.id.indexOf('tiny-react') !== -1, true);
-          })),
-          cRemove
-        ])),
-      ])),
+      context('id is set automatically if id prop not provided', () => {
+        it('is set normally if prop is provided', async () => {
+          using ctx = await render({ id: 'test' });
+          assertProperty(ctx.DOMNode, 'id', 'test');
+        });
 
-      Logger.t('sets name on form', GeneralSteps.sequence([
-        Logger.t('is not set when prop is not provided', Chain.asStep({}, [
-          cRender({}),
-          cDOMNode(cAssertProperty('name', '')),
-          cRemove
-        ])),
+        it('gets set automatically to uuid if not set', async () => {
+          using ctx = await render();
+          Assertions.assertEq('Should not be uuid', typeof ctx.DOMNode.id === 'string' && ctx.DOMNode.id.indexOf('tiny-react') !== -1, true);
+        });
+      });
 
-        Logger.t('is set when prop is provided', Chain.asStep({}, [
-          cRender({ textareaName: 'test' }),
-          cDOMNode(cAssertProperty('name', 'test')),
-          cRemove
-        ])),
-      ])),
+      context('sets name on form', () => {
+        it('is not set when prop is not provided', async () => {
+          using ctx = await render();
+          assertProperty(ctx.DOMNode, 'name', '');
+        });
 
-      Logger.t('Value prop should propagate changes to editor', Chain.asStep({}, [
-        cRender({ value: '<p>Initial Value</p>' }),
-        cEditor(cAssertContent('<p>Initial Value</p>')),
-        cReRender({ value: '<p>New Value</p>' }),
-        cEditor(cAssertContent('<p>New Value</p>')),
-        cRemove
-      ])),
+        it('is set when prop is provided', async () => {
+          using ctx = await render({ textareaName: 'test' });
+          assertProperty(ctx.DOMNode, 'name', 'test');
+        });
+      });
 
-      Logger.t('Disabled prop should disable editor', Chain.asStep({}, [
-        cRender({}),
-        cEditor(Chain.op((editor) => {
-          Assertions.assertEq(
-            'Should be design mode', true, version === '4' ? !editor.readonly : editor.mode.get() === 'design');
-        })),
-        cReRender({ disabled: true }),
-        cEditor(Chain.op((editor) => {
-          Assertions.assertEq('Should be readonly mode', true, version === '4' ? editor.readonly : editor.mode.get() === 'readonly');
-        })),
-        cRemove
-      ]))
-    ])
+      it('Value prop should propagate changes to editor', async () => {
+        using ctx = await render({ value: '<p>Initial Value</p>' });
+        TinyAssertions.assertContent(ctx.editor, '<p>Initial Value</p>');
+        ctx.reRender({ ...defaultProps, value: '<p>New Value</p>' });
+        TinyAssertions.assertContent(ctx.editor, '<p>New Value</p>');
+      });
+
+      it('Disabled prop should disable editor', async () => {
+        using ctx = await render();
+        Assertions.assertEq('Should be design mode', true, '4' === version ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
+        ctx.reRender({ ...defaultProps, disabled: true });
+        Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
+      });
+    })
   );
-
-  Pipeline.async({}, VERSIONS.map(sTestVersion), success, failure);
 });
