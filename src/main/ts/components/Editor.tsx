@@ -6,7 +6,22 @@ import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBe
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
 
-type EditorOptions = Parameters<TinyMCE['init']>[0];
+type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
+
+interface DoNotUse<T extends string> {
+  __brand: T;
+}
+
+type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'license_key';
+
+export type EditorOptions = Parameters<TinyMCE['init']>[0];
+
+export type InitOptions = Omit<OmitStringIndexSignature<EditorOptions>, OmittedInitProps> & {
+  selector?: DoNotUse<'selector prop is handled internally by the component'>;
+  target?: DoNotUse<'target prop is handled internally by the component'>;
+  readonly?: DoNotUse<'readonly prop is overridden by the component, use the `disabled` prop instead'>;
+  license_key?: DoNotUse<'license_key prop is overridden by the integration, use the `licenseKey` prop instead'>;
+};
 
 export type Version = `${'4' | '5' | '6' | '7'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
 
@@ -17,7 +32,7 @@ export interface IProps {
   initialValue: string;
   onEditorChange: (a: string, editor: TinyMCEEditor) => void;
   value: string;
-  init: EditorOptions & Partial<Record<'selector' | 'target' | 'readonly' | 'license_key', undefined>>;
+  init: InitOptions;
   tagName: string;
   tabIndex: number;
   cloudChannel: Version;
@@ -348,7 +363,7 @@ export class Editor extends React.Component<IAllProps> {
     }
 
     const finalInit: EditorOptions = {
-      ...this.props.init,
+      ...this.props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
       readonly: this.props.disabled,

@@ -75,6 +75,16 @@ describe('EditorInitTest', () => {
         ctx.reRender({ ...defaultProps, disabled: true });
         Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
       });
+
+      it('Using an overriden props will cause a TS error', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        using _ = await render({
+          init: {
+            // @ts-expect-error Overriden props
+            target: document.createElement('div'), readonly: true, selector: 'textarea#my-id', license_key: 'gpl'
+          }
+        });
+      });
     })
   );
 });
