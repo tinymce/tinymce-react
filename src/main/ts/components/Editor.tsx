@@ -14,14 +14,14 @@ interface DoNotUse<T extends string> {
 
 type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'license_key';
 
-export type EditorOptions = Parameters<TinyMCE['init']>[0];
+type EditorOptions = Parameters<TinyMCE['init']>[0];
 
 export type InitOptions = Omit<OmitStringIndexSignature<EditorOptions>, OmittedInitProps> & {
   selector?: DoNotUse<'selector prop is handled internally by the component'>;
   target?: DoNotUse<'target prop is handled internally by the component'>;
   readonly?: DoNotUse<'readonly prop is overridden by the component, use the `disabled` prop instead'>;
   license_key?: DoNotUse<'license_key prop is overridden by the integration, use the `licenseKey` prop instead'>;
-};
+} & { [key: string]: unknown };
 
 export type Version = `${'4' | '5' | '6' | '7'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
 
