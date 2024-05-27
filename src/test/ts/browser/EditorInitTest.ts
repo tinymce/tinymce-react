@@ -85,6 +85,28 @@ describe('EditorInitTest', () => {
           }
         });
       });
+
+      it('Assigning other unknown props to the editor is allowed', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        using _ = await render({
+          init: {
+            mergetags_list: [{
+              title: 'Client',
+              menu: [
+                {
+                  value: 'Client.LastCallDate',
+                  title: 'Call date'
+                },
+                {
+                  value: 'Client.Name',
+                  title: 'Client name'
+                }
+              ]
+            }],
+            something_else: 'value'
+          }
+        });
+      });
     })
   );
 });
