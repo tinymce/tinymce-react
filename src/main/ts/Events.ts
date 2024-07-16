@@ -1,4 +1,4 @@
-import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
+import type { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
 
 export type EventHandler<A> = (a: EditorEvent<A>, editor: TinyMCEEditor) => unknown;
 

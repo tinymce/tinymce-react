@@ -4,7 +4,7 @@ import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
 import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
+import type { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
 
 type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 
