@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Updated dependencies. #INT-3324
+
+### Changed
+- Moved tinymce dependency to peerDependencies, as well as making it optional. #INT-3324
+
 ## 5.1.0 - 2024-06-11
 
 ### Added
