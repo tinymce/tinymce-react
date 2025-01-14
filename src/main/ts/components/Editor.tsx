@@ -350,7 +350,13 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
+  private testFunc = () => {
+    // eslint-disable-next-line no-console
+    console.log('test');
+  };
+
   private rollbackChange = () => {
+    this.testFunc();
     const editor = this.editor;
     const value = this.props.value;
     if (editor && value && value !== this.currentContent) {
