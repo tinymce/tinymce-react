@@ -3,6 +3,7 @@
 
 mixedBeehiveFlow(
   container: [ resourceRequestMemory: '3Gi', resourceLimitMemory: '3Gi' ],
+  testContainer: [ selenium: [ image: "selenium/standalone-chrome:127.0" ] ],
   testPrefix: 'Tiny-React',
   platforms: [
     [ browser: 'chrome', headless: true ],
