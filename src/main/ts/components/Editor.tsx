@@ -146,6 +146,7 @@ export class Editor extends React.Component<IAllProps> {
 
   private id: string;
   private elementRef: React.RefObject<HTMLElement>;
+  private latestUpdate: string | null = null;
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
@@ -403,7 +404,15 @@ export class Editor extends React.Component<IAllProps> {
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
         if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(newContent, editor);
+          if (this.latestUpdate === null) {
+            setTimeout(() => {
+              if (this.props.onEditorChange && this.latestUpdate !== null) {
+                this.props.onEditorChange(this.latestUpdate, editor);
+                this.latestUpdate = null;
+              }
+            });
+          }
+          this.latestUpdate = newContent;
         }
       }
     }
