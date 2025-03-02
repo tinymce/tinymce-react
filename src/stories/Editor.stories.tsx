@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { ArgTypes, StoryObj } from '@storybook/react';
 import React from 'react';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
@@ -81,9 +82,8 @@ export const ControlledInput: StoryObj<typeof Editor> = {
         <Editor
           apiKey={apiKey}
           value={data}
-          onEditorChange={(e, editor) => {
-            console.log('Calling setData with', e);
-            setData(e)
+          onEditorChange={(e, _editor) => {
+            setData(e);
           }}
           tinymceScriptSrc='../../node_modules/tinymce/tinymce.js'
         />
@@ -96,7 +96,6 @@ export const ControlledInput: StoryObj<typeof Editor> = {
     );
   }
 };
-
 
 // The editor will enforce a value that is given to it.
 // Note that the value must be valid HTML or it will forever correcting it and then rolling back the change.
