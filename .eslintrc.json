@@ -5,7 +5,10 @@
         "**/*.ts",
         "**/*.tsx"
       ],
-      "extends": "plugin:@tinymce/standard",
+      "extends": [
+        "plugin:@tinymce/standard",
+        "plugin:react-hooks/recommended"
+      ],
       "parserOptions": {
         "project": "tsconfig.json",
         "sourceType": "module"
@@ -20,7 +23,12 @@
         "src/test/**/*"
       ],
       "rules": {
-        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          {
+            "argsIgnorePattern": "^_"
+          }
+        ],
         "no-var": "off" // Without this the `using` keyword causes eslint to throw an error during linting.
       }
     }

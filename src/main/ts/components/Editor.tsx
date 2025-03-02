@@ -1,10 +1,19 @@
 import * as React from 'react';
+import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
-import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import type { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
+import {
+  configHandlers,
+  isBeforeInputEventAvailable,
+  isFunction,
+  isInDoc,
+  isTextareaOrInput,
+  mergePlugins,
+  setMode,
+  uuid
+} from '../Utils';
+import { EditorPropTypes } from './EditorPropTypes';
 
 type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 
@@ -135,171 +144,66 @@ export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 /**
  * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/ TinyMCE React Technical Reference}
  */
-export class Editor extends React.Component<IAllProps> {
-  public static propTypes: IEditorPropTypes = EditorPropTypes;
+export const Editor: React.FC<IAllProps> = (props) => {
+  const {
+    cloudChannel = '7',
+    tinymceScriptSrc,
+    onScriptsLoad,
+    onScriptsLoadError,
+    initialValue,
+    value,
+    rollback,
+    onEditorChange,
+  } = props;
+  const editorRef = React.useRef<TinyMCEEditor>();
+  const elementRef = React.useRef<HTMLElement>(null);
+  const [ id ] = React.useState(props.id || uuid('tiny-react'));
+  const inline = React.useMemo(() => props.inline ?? props.init?.inline ?? false, [ props.inline, props.init?.inline ]);
+  const boundHandlersRef = React.useRef<Record<string, (event: EditorEvent<unknown>) => unknown>>({});
+  const rollbackTimerRef = React.useRef<number>();
+  const [ valueCursor, setValueCursor ] = React.useState<Bookmark>();
 
-  public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '7',
-  };
+  const view = elementRef.current?.ownerDocument.defaultView ?? window;
 
-  public editor?: TinyMCEEditor;
-
-  private id: string;
-  private elementRef: React.RefObject<HTMLElement>;
-  private inline: boolean;
-  private currentContent?: string;
-  private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
-  private rollbackTimer: number | undefined = undefined;
-  private valueCursor: Bookmark | undefined = undefined;
-
-  public constructor(props: Partial<IAllProps>) {
-    super(props);
-    this.id = this.props.id || uuid('tiny-react');
-    this.elementRef = React.createRef<HTMLElement>();
-    this.inline = this.props.inline ?? this.props.init?.inline ?? false;
-    this.boundHandlers = {};
-  }
-
-  private get view() {
-    return this.elementRef.current?.ownerDocument.defaultView ?? window;
-  }
-
-  public componentDidUpdate(prevProps: Partial<IAllProps>) {
-    if (this.rollbackTimer) {
-      clearTimeout(this.rollbackTimer);
-      this.rollbackTimer = undefined;
-    }
-    if (this.editor) {
-      this.bindHandlers(prevProps);
-      if (this.editor.initialized) {
-        this.currentContent = this.currentContent ?? this.editor.getContent();
-        if (typeof this.props.initialValue === 'string' && this.props.initialValue !== prevProps.initialValue) {
-          // same as resetContent in TinyMCE 5
-          this.editor.setContent(this.props.initialValue);
-          this.editor.undoManager.clear();
-          this.editor.undoManager.add();
-          this.editor.setDirty(false);
-        } else if (typeof this.props.value === 'string' && this.props.value !== this.currentContent) {
-          const localEditor = this.editor;
-          localEditor.undoManager.transact(() => {
-            // inline editors grab focus when restoring selection
-            // so we don't try to keep their selection unless they are currently focused
-            let cursor: Bookmark | undefined;
-            if (!this.inline || localEditor.hasFocus()) {
-              try {
-                // getBookmark throws exceptions when the editor has not been focused
-                // possibly only in inline mode but I'm not taking chances
-                cursor = localEditor.selection.getBookmark(3);
-              } catch (e) { /* ignore */ }
-            }
-            const valueCursor = this.valueCursor;
-            localEditor.setContent(this.props.value as string);
-            if (!this.inline || localEditor.hasFocus()) {
-              for (const bookmark of [ cursor, valueCursor ]) {
-                if (bookmark) {
-                  try {
-                    localEditor.selection.moveToBookmark(bookmark);
-                    this.valueCursor = bookmark;
-                    break;
-                  } catch (e) { /* ignore */ }
-                }
-              }
-            }
-          });
-        }
-        if (this.props.disabled !== prevProps.disabled) {
-          const disabled = this.props.disabled ?? false;
-          setMode(this.editor, disabled ? 'readonly' : 'design');
-        }
-      }
-    }
-  }
-
-  public componentDidMount() {
-    if (getTinymce(this.view) !== null) {
-      this.initialise();
-    } else if (Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
-      this.props.onScriptsLoadError?.(new Error('No `tinymce` global is present but the `tinymceScriptSrc` prop was an empty array.'));
-    } else if (this.elementRef.current?.ownerDocument) {
-      const successHandler = () => {
-        this.props.onScriptsLoad?.();
-        this.initialise();
-      };
-      const errorHandler = (err: unknown) => {
-        this.props.onScriptsLoadError?.(err);
-      };
-      ScriptLoader.loadList(
-        this.elementRef.current.ownerDocument,
-        this.getScriptSources(),
-        this.props.scriptLoading?.delay ?? 0,
-        successHandler,
-        errorHandler
-      );
-    }
-  }
-
-  public componentWillUnmount() {
-    const editor = this.editor;
-    if (editor) {
-      editor.off(this.changeEvents(), this.handleEditorChange);
-      editor.off(this.beforeInputEvent(), this.handleBeforeInput);
-      editor.off('keypress', this.handleEditorChangeSpecial);
-      editor.off('keydown', this.handleBeforeInputSpecial);
-      editor.off('NewBlock', this.handleEditorChange);
-      Object.keys(this.boundHandlers).forEach((eventName) => {
-        editor.off(eventName, this.boundHandlers[eventName]);
-      });
-      this.boundHandlers = {};
-      editor.remove();
-      this.editor = undefined;
-    }
-  }
-
-  public render() {
-    return this.inline ? this.renderInline() : this.renderIframe();
-  }
-
-  private changeEvents() {
-    const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
+  // Add other necessary useEffect hooks for handling prop changes
+  //
+  const changeEvents = React.useCallback(() => {
+    const isIE = getTinymce(view)?.Env?.browser?.isIE();
     return (isIE
       ? 'change keyup compositionend setcontent CommentChange'
       : 'change input compositionend setcontent CommentChange'
     );
-  }
+  }, [ view ]);
 
-  private beforeInputEvent() {
-    return isBeforeInputEventAvailable() ? 'beforeinput SelectionChange' : 'SelectionChange';
-  }
+  const beforeInputEvent = React.useCallback(() => isBeforeInputEventAvailable() ? 'beforeinput SelectionChange' : 'SelectionChange', []);
 
-  private renderInline() {
-    const { tagName = 'div' } = this.props;
+  const renderInline = () => {
+    const { tagName = 'div' } = props;
 
     return React.createElement(tagName, {
-      ref: this.elementRef,
-      id: this.id,
-      tabIndex: this.props.tabIndex
+      ref: elementRef,
+      id,
+      tabIndex: props.tabIndex
     });
-  }
+  };
 
-  private renderIframe() {
-    return React.createElement('textarea', {
-      ref: this.elementRef,
-      style: { visibility: 'hidden' },
-      name: this.props.textareaName,
-      id: this.id,
-      tabIndex: this.props.tabIndex
-    });
-  }
+  const renderIframe = () => React.createElement('textarea', {
+    ref: elementRef,
+    style: { visibility: 'hidden' },
+    name: props.textareaName,
+    id,
+    tabIndex: props.tabIndex
+  });
 
-  private getScriptSources(): ScriptItem[] {
-    const async = this.props.scriptLoading?.async;
-    const defer = this.props.scriptLoading?.defer;
-    if (this.props.tinymceScriptSrc !== undefined) {
-      if (typeof this.props.tinymceScriptSrc === 'string') {
-        return [{ src: this.props.tinymceScriptSrc, async, defer }];
+  const getScriptSources = () => {
+    const async = props.scriptLoading?.async;
+    const defer = props.scriptLoading?.defer;
+    if (tinymceScriptSrc !== undefined) {
+      if (typeof tinymceScriptSrc === 'string') {
+        return [{ src: tinymceScriptSrc, async, defer }];
       }
       // multiple scripts can be specified which allows for hybrid mode
-      return this.props.tinymceScriptSrc.map((item) => {
+      return tinymceScriptSrc.map((item) => {
         if (typeof item === 'string') {
           // async does not make sense for multiple items unless
           // they are not dependent (which will be unlikely)
@@ -310,150 +214,161 @@ export class Editor extends React.Component<IAllProps> {
       });
     }
     // fallback to the cloud when the tinymceScriptSrc is not specified
-    const channel = this.props.cloudChannel as Version; // `cloudChannel` is in `defaultProps`, so it's always defined.
-    const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
+    const channel = cloudChannel as Version; // `cloudChannel` is in `defaultProps`, so it's always defined.
+    const apiKey = props.apiKey ? props.apiKey : 'no-api-key';
     const cloudTinyJs = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
     return [{ src: cloudTinyJs, async, defer }];
-  }
+  };
 
-  private getInitialValue() {
-    if (typeof this.props.initialValue === 'string') {
-      return this.props.initialValue;
-    } else if (typeof this.props.value === 'string') {
-      return this.props.value;
+  const getInitialValue = () => {
+    if (typeof initialValue === 'string') {
+      return initialValue;
+    } else if (typeof value === 'string') {
+      return value;
     } else {
       return '';
     }
-  }
+  };
 
-  private bindHandlers(prevProps: Partial<IAllProps>) {
-    if (this.editor !== undefined) {
-      // typescript chokes trying to understand the type of the lookup function
-      configHandlers(this.editor, prevProps, this.props, this.boundHandlers, (key) => this.props[key] as any);
-      // check if we should monitor editor changes
-      const isValueControlled = (p: Partial<IAllProps>) => p.onEditorChange !== undefined || p.value !== undefined;
-      const wasControlled = isValueControlled(prevProps);
-      const nowControlled = isValueControlled(this.props);
-      if (!wasControlled && nowControlled) {
-        this.editor.on(this.changeEvents(), this.handleEditorChange);
-        this.editor.on(this.beforeInputEvent(), this.handleBeforeInput);
-        this.editor.on('keydown', this.handleBeforeInputSpecial);
-        this.editor.on('keyup', this.handleEditorChangeSpecial);
-        this.editor.on('NewBlock', this.handleEditorChange);
-      } else if (wasControlled && !nowControlled) {
-        this.editor.off(this.changeEvents(), this.handleEditorChange);
-        this.editor.off(this.beforeInputEvent(), this.handleBeforeInput);
-        this.editor.off('keydown', this.handleBeforeInputSpecial);
-        this.editor.off('keyup', this.handleEditorChangeSpecial);
-        this.editor.off('NewBlock', this.handleEditorChange);
-      }
-    }
-  }
-
-  private rollbackChange = () => {
-    const editor = this.editor;
-    const value = this.props.value;
-    if (editor && value && value !== this.currentContent) {
+  const rollbackChange = React.useCallback(() => {
+    const editor = editorRef.current;
+    const content = editor?.getContent();
+    if (editor && value && value !== content) {
       editor.undoManager.ignore(() => {
         editor.setContent(value);
         // only restore cursor on inline editors when they are focused
         // as otherwise it will cause a focus grab
-        if (this.valueCursor && (!this.inline || editor.hasFocus())) {
+        if (valueCursor && (!inline || editor.hasFocus())) {
           try {
-            editor.selection.moveToBookmark(this.valueCursor);
+            editor.selection.moveToBookmark(valueCursor);
           } catch (e) { /* ignore */ }
         }
       });
     }
-    this.rollbackTimer = undefined;
-  };
+    rollbackTimerRef.current = undefined;
+  }, [ value, inline, valueCursor ]);
 
-  private handleBeforeInput = (_evt: EditorEvent<unknown>) => {
-    if (this.props.value !== undefined && this.props.value === this.currentContent && this.editor) {
-      if (!this.inline || this.editor.hasFocus()) {
+  const bindHandlers = React.useCallback(() => {
+    if (editorRef.current !== undefined) {
+      // typescript chokes trying to understand the type of the lookup function
+      configHandlers(editorRef.current, props, boundHandlersRef.current, (key) => props[key] as any);
+      // check if we should monitor editor changes
+    }
+  }, [ props ]);
+
+  const handleBeforeInput = React.useCallback((_evt: EditorEvent<unknown>) => {
+    const content = editorRef.current?.getContent();
+    if (value !== undefined && value === content && editorRef.current) {
+      if (!inline || editorRef.current.hasFocus()) {
         try {
           // getBookmark throws exceptions when the editor has not been focused
           // possibly only in inline mode but I'm not taking chances
-          this.valueCursor = this.editor.selection.getBookmark(3);
+          setValueCursor(editorRef.current.selection.getBookmark(3));
         } catch (e) { /* ignore */ }
       }
     }
-  };
+  }, [ value, inline ]);
 
-  private handleBeforeInputSpecial = (evt: EditorEvent<KeyboardEvent>) => {
+  const handleBeforeInputSpecial = React.useCallback((evt: EditorEvent<KeyboardEvent>) => {
     if (evt.key === 'Enter' || evt.key === 'Backspace' || evt.key === 'Delete') {
-      this.handleBeforeInput(evt);
+      handleBeforeInput(evt);
     }
-  };
+  }, [ handleBeforeInput ]);
 
-  private handleEditorChange = (_evt: EditorEvent<unknown>) => {
-    const editor = this.editor;
-    if (editor && editor.initialized) {
-      const newContent = editor.getContent();
-      if (this.props.value !== undefined && this.props.value !== newContent && this.props.rollback !== false) {
+  const handleEditorChange = React.useCallback((_evt: EditorEvent<unknown>) => {
+    const currentEditor = editorRef.current;
+    if (currentEditor && currentEditor.initialized) {
+      const newContent = currentEditor.getContent();
+      if (value !== undefined && value !== newContent && rollback !== false) {
         // start a timer and revert to the value if not applied in time
-        if (!this.rollbackTimer) {
-          this.rollbackTimer = window.setTimeout(
-            this.rollbackChange,
-            typeof this.props.rollback === 'number' ? this.props.rollback : 200
+        if (!rollbackTimerRef.current) {
+          rollbackTimerRef.current = window.setTimeout(
+            rollbackChange,
+            typeof rollback === 'number' ? rollback : 200
           );
         }
       }
 
-      if (newContent !== this.currentContent) {
-        this.currentContent = newContent;
-        if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(newContent, editor);
-        }
+      if (isFunction(onEditorChange)) {
+        onEditorChange(newContent, currentEditor);
       }
     }
-  };
+  }, [ value, onEditorChange, rollback, rollbackChange ]);
 
-  private handleEditorChangeSpecial = (evt: EditorEvent<KeyboardEvent>) => {
+  const handleEditorChangeSpecial = React.useCallback((evt: EditorEvent<KeyboardEvent>) => {
     if (evt.key === 'Backspace' || evt.key === 'Delete') {
-      this.handleEditorChange(evt);
+      handleEditorChange(evt);
     }
-  };
+  }, [ handleEditorChange ]);
 
-  private initialise = (attempts = 0) => {
-    const target = this.elementRef.current;
+  React.useEffect(() => {
+    if (editorRef.current !== undefined) {
+      // check if we should monitor editor changes
+      const isValueControlled = onEditorChange !== undefined || value !== undefined;
+      if (isValueControlled) {
+        editorRef.current.on(changeEvents(), handleEditorChange);
+        editorRef.current.on(beforeInputEvent(), handleBeforeInput);
+        editorRef.current.on('keydown', handleBeforeInputSpecial);
+        editorRef.current.on('keyup', handleEditorChangeSpecial);
+        editorRef.current.on('NewBlock', handleEditorChange);
+      } else {
+        editorRef.current.off(changeEvents(), handleEditorChange);
+        editorRef.current.off(beforeInputEvent(), handleBeforeInput);
+        editorRef.current.off('keydown', handleBeforeInputSpecial);
+        editorRef.current.off('keyup', handleEditorChangeSpecial);
+        editorRef.current.off('NewBlock', handleEditorChange);
+      }
+    }
+  }, [
+    onEditorChange,
+    value,
+    handleEditorChange,
+    handleBeforeInput,
+    handleBeforeInputSpecial,
+    handleEditorChangeSpecial,
+    beforeInputEvent,
+    changeEvents
+  ]);
+
+  const initialise = React.useCallback((attempts = 0) => {
+    const target = elementRef.current;
     if (!target) {
       return; // Editor has been unmounted
     }
     if (!isInDoc(target)) {
-      // this is probably someone trying to help by rendering us offscreen
+      // is probably someone trying to help by rendering us offscreen
       // but we can't do that because the editor iframe must be in the document
       // in order to have state
       if (attempts === 0) {
         // we probably just need to wait for the current events to be processed
-        setTimeout(() => this.initialise(1), 1);
+        setTimeout(() => initialise(1), 1);
       } else if (attempts < 100) {
         // wait for ten seconds, polling every tenth of a second
-        setTimeout(() => this.initialise(attempts + 1), 100);
+        setTimeout(() => initialise(attempts + 1), 100);
       } else {
-        // give up, at this point it seems that more polling is unlikely to help
+        // give up, at point it seems that more polling is unlikely to help
         throw new Error('tinymce can only be initialised when in a document');
       }
       return;
     }
 
-    const tinymce = getTinymce(this.view);
+    const tinymce = getTinymce(view);
     if (!tinymce) {
       throw new Error('tinymce should have been loaded into global scope');
     }
 
     const finalInit: EditorOptions = {
-      ...this.props.init as Omit<InitOptions, OmittedInitProps>,
+      ...props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
-      readonly: this.props.disabled,
-      inline: this.inline,
-      plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
-      toolbar: this.props.toolbar ?? this.props.init?.toolbar,
-      ...(this.props.licenseKey ? { license_key: this.props.licenseKey } : {}),
-      setup: (editor) => {
-        this.editor = editor;
-        this.bindHandlers({});
+      readonly: props.disabled,
+      inline,
+      plugins: mergePlugins(props.init?.plugins, props.plugins),
+      toolbar: props.toolbar ?? props.init?.toolbar,
+      ...(props.licenseKey ? { license_key: props.licenseKey } : {}),
+      setup: (ed) => {
+        editorRef.current = ed;
+        bindHandlers();
 
         // When running in inline mode the editor gets the initial value
         // from the innerHTML of the element it is initialized on.
@@ -461,43 +376,145 @@ export class Editor extends React.Component<IAllProps> {
         // to remove XSS in the react integration so we have a chicken and egg
         // problem... We avoid it by sneaking in a set content before the first
         // "official" setContent and using TinyMCE to do the sanitization.
-        if (this.inline && !isTextareaOrInput(target)) {
-          editor.once('PostRender', (_evt) => {
-            editor.setContent(this.getInitialValue(), { no_events: true });
+        if (inline && !isTextareaOrInput(target)) {
+          ed.once('PostRender', (_evt) => {
+            ed.setContent(getInitialValue(), { no_events: true });
           });
         }
 
-        if (this.props.init && isFunction(this.props.init.setup)) {
-          this.props.init.setup(editor);
+        if (props.init && isFunction(props.init.setup)) {
+          props.init.setup(ed);
         }
       },
       init_instance_callback: (editor) => {
         // check for changes that happened since tinymce.init() was called
-        const initialValue = this.getInitialValue();
-        this.currentContent = this.currentContent ?? editor.getContent();
-        if (this.currentContent !== initialValue) {
-          this.currentContent = initialValue;
+        const retrievedInitialValue = getInitialValue();
+        const currentEditorContent = editor.getContent();
+        if (currentEditorContent !== retrievedInitialValue) {
           // same as resetContent in TinyMCE 5
-          editor.setContent(initialValue);
+          editor.setContent(retrievedInitialValue);
           editor.undoManager.clear();
           editor.undoManager.add();
           editor.setDirty(false);
         }
-        const disabled = this.props.disabled ?? false;
-        setMode(this.editor, disabled ? 'readonly' : 'design');
+        const disabled = props.disabled ?? false;
+        setMode(editor, disabled ? 'readonly' : 'design');
         // ensure existing init_instance_callback is called
-        if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
-          this.props.init.init_instance_callback(editor);
+        if (props.init && isFunction(props.init.init_instance_callback)) {
+          props.init.init_instance_callback(editor);
         }
       }
     };
-    if (!this.inline) {
+    if (!inline) {
       target.style.visibility = '';
     }
     if (isTextareaOrInput(target)) {
-      target.value = this.getInitialValue();
+      target.value = getInitialValue();
     }
 
     tinymce.init(finalInit);
-  };
-}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (getTinymce(view) !== null) {
+      initialise();
+    } else if (Array.isArray(tinymceScriptSrc) && tinymceScriptSrc.length === 0) {
+      onScriptsLoadError?.(new Error('No `tinymce` global is present but the `tinymceScriptSrc` prop was an empty array.'));
+    } else if (elementRef.current?.ownerDocument) {
+      const successHandler = () => {
+        onScriptsLoad?.();
+        initialise();
+      };
+      const errorHandler = (err: unknown) => {
+        onScriptsLoadError?.(err);
+      };
+      ScriptLoader.loadList(
+        elementRef.current.ownerDocument,
+        getScriptSources(),
+        props.scriptLoading?.delay ?? 0,
+        successHandler,
+        errorHandler
+      );
+    }
+
+    const boundHandlers = boundHandlersRef.current;
+
+    return () => {
+      const editor = editorRef.current;
+      if (editor) {
+        editor.off(changeEvents(), handleEditorChange);
+        editor.off(beforeInputEvent(), handleBeforeInput);
+        editor.off('keypress', handleEditorChangeSpecial);
+        editor.off('keydown', handleBeforeInputSpecial);
+        editor.off('NewBlock', handleEditorChange);
+        Object.keys(boundHandlers).forEach((eventName) => {
+          editor.off(eventName, boundHandlers[eventName]);
+        });
+        boundHandlersRef.current = {};
+        editor.remove();
+        editorRef.current = undefined;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (editorRef.current) {
+      bindHandlers();
+    }
+  });
+
+  React.useEffect(() => {
+    if (rollbackTimerRef.current) {
+      clearTimeout(rollbackTimerRef.current);
+      rollbackTimerRef.current = undefined;
+    }
+    if (editorRef.current) {
+      if (editorRef.current.initialized) {
+        const editorContent = editorRef.current.getContent();
+        if (typeof initialValue === 'string') {
+          // same as resetContent in TinyMCE 5
+          editorRef.current.setContent(initialValue);
+          editorRef.current.undoManager.clear();
+          editorRef.current.undoManager.add();
+          editorRef.current.setDirty(false);
+        } else if (typeof value === 'string' && value !== editorContent) {
+          const localEditor = editorRef.current;
+          localEditor.undoManager.transact(() => {
+            // inline editors grab focus when restoring selection
+            // so we don't try to keep their selection unless they are currently focused
+            let cursor: Bookmark | undefined;
+            if (!inline || localEditor.hasFocus()) {
+              try {
+                // getBookmark throws exceptions when the editor has not been focused
+                // possibly only in inline mode but I'm not taking chances
+                cursor = localEditor.selection.getBookmark(3);
+              } catch (e) { /* ignore */ }
+            }
+            localEditor.setContent(value as string);
+            if (!inline || localEditor.hasFocus()) {
+              for (const bookmark of [ cursor, valueCursor ]) {
+                if (bookmark) {
+                  try {
+                    localEditor.selection.moveToBookmark(bookmark);
+                    setValueCursor(bookmark);
+                    break;
+                  } catch (e) { /* ignore */ }
+                }
+              }
+            }
+          });
+        }
+        if (props.disabled) {
+          const disabled = props.disabled ?? false;
+          setMode(editorRef.current, disabled ? 'readonly' : 'design');
+        }
+      }
+    }
+  }, [ initialValue, inline, props.disabled, value, valueCursor ]);
+
+  return inline ? renderInline() : renderIframe();
+};
+
+Editor.propTypes = EditorPropTypes;

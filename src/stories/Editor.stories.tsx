@@ -1,6 +1,6 @@
+import { ArgTypes, StoryObj } from '@storybook/react';
 import React from 'react';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
-import { StoryObj } from '@storybook/react';
 import { Editor, IAllProps } from '../main/ts/components/Editor';
 
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
@@ -10,7 +10,7 @@ const initialValue = `
 `.trim();
 
 /** Assigning this on a StoryObj will allow its args to be modified. */
-const argTypes = {
+const argTypes: Partial<ArgTypes<IAllProps>> = {
   // Define arg types that need it, i.e. ones that haven't got a good default:
   plugins: { control: { type: 'text' }},
   toolbar: { control: { type: 'text' }},
@@ -28,7 +28,7 @@ export default {
   }
 };
 
-export const IframeEditor: StoryObj<Editor> = {
+export const IframeEditor: StoryObj<typeof Editor> = {
   args: {
     apiKey,
     initialValue,
@@ -36,7 +36,7 @@ export const IframeEditor: StoryObj<Editor> = {
   argTypes,
 };
 
-export const InlineEditor: StoryObj<Editor> = {
+export const InlineEditor: StoryObj<typeof Editor> = {
   args: {
     apiKey,
     initialValue,
@@ -52,7 +52,7 @@ export const InlineEditor: StoryObj<Editor> = {
   )
 };
 
-export const ControlledInput: StoryObj<Editor> = {
+export const ControlledInputLocalScript: StoryObj<typeof Editor> = {
   render: () => {
     const [ data, setData ] = React.useState(initialValue);
     return (
@@ -61,6 +61,7 @@ export const ControlledInput: StoryObj<Editor> = {
           apiKey={apiKey}
           value={data}
           onEditorChange={(e) => setData(e)}
+          tinymceScriptSrc='../../node_modules/tinymce/tinymce.js'
         />
         <textarea
           style={{ width: '100%', height: '200px' }}
@@ -72,9 +73,34 @@ export const ControlledInput: StoryObj<Editor> = {
   }
 };
 
+export const ControlledInput: StoryObj<typeof Editor> = {
+  render: () => {
+    const [ data, setData ] = React.useState(initialValue);
+    return (
+      <div>
+        <Editor
+          apiKey={apiKey}
+          value={data}
+          onEditorChange={(e, editor) => {
+            console.log('Calling setData with', e);
+            setData(e)
+          }}
+          tinymceScriptSrc='../../node_modules/tinymce/tinymce.js'
+        />
+        <textarea
+          style={{ width: '100%', height: '200px' }}
+          value={data}
+          onChange={(e) => setData(e.target.value)}
+        />
+      </div>
+    );
+  }
+};
+
+
 // The editor will enforce a value that is given to it.
 // Note that the value must be valid HTML or it will forever correcting it and then rolling back the change.
-export const ControlledInputFixed: StoryObj<Editor> = {
+export const ControlledInputFixed: StoryObj<typeof Editor> = {
   render: () =>
     <Editor
       apiKey={apiKey}
@@ -82,7 +108,7 @@ export const ControlledInputFixed: StoryObj<Editor> = {
     />
 };
 
-export const ControlledInputLimitLength: StoryObj<Editor> = {
+export const ControlledInputLimitLength: StoryObj<typeof Editor> = {
   render: () => {
     const sizeLimit = 50;
     const [ data, setData ] = React.useState('<p>This field can only take 50 characters.</p>');
@@ -124,7 +150,7 @@ export const ControlledInputLimitLength: StoryObj<Editor> = {
   }
 };
 
-export const ToggleDisabledProp: StoryObj<Editor> = {
+export const ToggleDisabledProp: StoryObj<typeof Editor> = {
   render: () => {
     const [ disabled, setDisabled ] = React.useState(true);
     const toggleDisabled = () => setDisabled((prev) => !prev);
@@ -143,7 +169,7 @@ export const ToggleDisabledProp: StoryObj<Editor> = {
   }
 };
 
-export const CloudChannelSetTo5Dev: StoryObj<Editor> = {
+export const CloudChannelSetTo5Dev: StoryObj<typeof Editor> = {
   name: 'Cloud Channel Set To "6-dev"',
   render: () => (
     <div>
