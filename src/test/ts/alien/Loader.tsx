@@ -81,7 +81,13 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
     /** By rendering the Editor into the same root, React will perform a diff and update. */
     reRender: (newProps: IAllProps) => new Promise<void>((resolve) => {
       root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>);
-      resolve();
+      if ('value' in newProps) {
+        ctx.editor.once('change', () => {
+          resolve();
+        });
+      } else {
+        resolve();
+      }
     }),
     remove,
     [Symbol.dispose]: remove
