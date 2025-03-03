@@ -145,7 +145,7 @@ export class Editor extends React.Component<IAllProps> {
   public editor?: TinyMCEEditor;
 
   private id: string;
-  private elementRef: React.RefObject<HTMLElement>;
+  private elementRef: React.RefObject<HTMLElement | null>;
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
@@ -155,7 +155,7 @@ export class Editor extends React.Component<IAllProps> {
   public constructor(props: Partial<IAllProps>) {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
-    this.elementRef = React.createRef<HTMLElement>();
+    this.elementRef = React.createRef<HTMLElement | null>();
     this.inline = this.props.inline ?? this.props.init?.inline ?? false;
     this.boundHandlers = {};
   }

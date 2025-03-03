@@ -1,11 +1,11 @@
 import { Fun, Optional } from '@ephox/katamari';
 import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import { before, context } from '@ephox/bedrock-client';
 import { VersionLoader } from '@tinymce/miniature';
+import { createRoot } from 'react-dom/client';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');
@@ -33,6 +33,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
   const originalInit = props.init || {};
   const originalSetup = originalInit.setup || Fun.noop;
   const ref = React.createRef<Editor>();
+  const root = createRoot(container);
 
   const ctx = await new Promise<Context>((resolve, reject) => {
     const init: IProps['init'] = {
@@ -43,18 +44,18 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
         editor.on('SkinLoaded', () => {
           setTimeout(() => {
             Optional.from(ref.current)
-              .map(ReactDOM.findDOMNode)
-              .bind(Optional.from)
+              .map((editorInstance) => editorInstance.editor?.targetElm as HTMLElement)
               .map(SugarElement.fromDom)
               .filter(SugarNode.isHTMLElement)
               .map((val) => val.dom)
-              .fold(() => reject('Could not find DOMNode'), (DOMNode) => {
-                resolve({
-                  ref,
-                  editor,
-                  DOMNode,
-                });
-              });
+              .fold(() =>
+                reject('Could not find editor element'),
+              (DOMNode) => resolve({
+                ref: ref as React.RefObject<Editor>,
+                editor,
+                DOMNode
+              })
+              );
           }, 0);
         });
       }
@@ -67,20 +68,21 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
      * touch the nodes created by TinyMCE. Since this only seems to be an issue when rendering TinyMCE 4 directly
      * into a root and a fix would be a breaking change, let's just wrap the editor in a <div> here for now.
      */
-    ReactDOM.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} /></div>, container);
+    root.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} /></div>);
   });
 
   const remove = () => {
-    ReactDOM.unmountComponentAtNode(container);
+    root.unmount();
     Remove.remove(SugarElement.fromDom(container));
   };
 
   return {
     ...ctx,
     /** By rendering the Editor into the same root, React will perform a diff and update. */
-    reRender: (newProps: IAllProps) => new Promise<void>((resolve) =>
-      ReactDOM.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>, container, resolve)
-    ),
+    reRender: (newProps: IAllProps) => new Promise<void>((resolve) => {
+      root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>);
+      resolve();
+    }),
     remove,
     [Symbol.dispose]: remove
   };
