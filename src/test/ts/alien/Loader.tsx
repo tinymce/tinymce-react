@@ -81,13 +81,19 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
     /** By rendering the Editor into the same root, React will perform a diff and update. */
     reRender: (newProps: IAllProps) => new Promise<void>((resolve) => {
       root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>);
-      if ('value' in newProps) {
-        ctx.editor.once('change', () => {
-          resolve();
-        });
-      } else {
-        resolve();
+
+      if (newProps.disabled) {
+        if (ctx.editor.editorManager.majorVersion === '4') {
+          /** This should be `setMode` from TinyMCE v4 but we can't access it here. */
+          ctx.editor.readonly = true;
+        } else {
+          ctx.editor.mode.set('readonly');
+        }
       }
+
+      newProps.value
+        ? ctx.editor.once('change', () => resolve())
+        : resolve();
     }),
     remove,
     [Symbol.dispose]: remove
