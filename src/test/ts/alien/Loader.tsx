@@ -1,11 +1,11 @@
 import { Fun, Optional } from '@ephox/katamari';
 import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
+import * as ReactDOMClient from 'react-dom/client';
 import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import { before, context } from '@ephox/bedrock-client';
 import { VersionLoader } from '@tinymce/miniature';
-import { createRoot } from 'react-dom/client';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');
@@ -33,7 +33,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
   const originalInit = props.init || {};
   const originalSetup = originalInit.setup || Fun.noop;
   const ref = React.createRef<Editor>();
-  const root = createRoot(container);
+  const root = ReactDOMClient.createRoot(container);
 
   const ctx = await new Promise<Context>((resolve, reject) => {
     const init: IProps['init'] = {
@@ -44,17 +44,18 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
         editor.on('SkinLoaded', () => {
           setTimeout(() => {
             Optional.from(ref.current)
-              .map((editorInstance) => editorInstance.editor?.targetElm as HTMLElement)
+              .bind((editorInstance) => Optional.from(editorInstance.editor?.targetElm))
+              .filter((elm) => elm instanceof window.HTMLElement)
               .map(SugarElement.fromDom)
               .filter(SugarNode.isHTMLElement)
               .map((val) => val.dom)
-              .fold(() =>
-                reject('Could not find editor element'),
-              (DOMNode) => resolve({
-                ref: ref as React.RefObject<Editor>,
-                editor,
-                DOMNode
-              })
+              .fold(() => reject('Could not find DOMNode'), (DOMNode) => {
+                resolve({
+                  ref: ref as React.RefObject<Editor>,
+                  editor,
+                  DOMNode,
+                });
+              }
               );
           }, 0);
         });
