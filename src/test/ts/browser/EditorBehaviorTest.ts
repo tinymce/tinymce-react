@@ -1,13 +1,13 @@
-import * as Loader from '../alien/Loader';
 import { PlatformDetection } from '@ephox/sand';
+import * as Loader from '../alien/Loader';
 
 import { describe, it } from '@ephox/bedrock-client';
 
+import { Assertions, Waiter } from '@ephox/agar';
+import { TinyAssertions } from '@ephox/mcagar';
+import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
 import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventStore, VERSIONS } from '../alien/TestHelpers';
-import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
-import { Assertions } from '@ephox/agar';
-import { TinyAssertions } from '@ephox/mcagar';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
 
@@ -88,6 +88,9 @@ describe('EditorBehaviourTest', () => {
         using ctx = await render({ initialValue: '<p>Initial Content</p>' });
         await ctx.reRender({ onSetContent: eventStore.createHandler('onSetContent') });
 
+        // Wait for the event handler to register
+        await Waiter.pWait(1);
+
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Content</p>');
         ctx.editor.setContent('<p>New Content</p>');
 
@@ -116,6 +119,10 @@ describe('EditorBehaviourTest', () => {
         ctx.editor.setContent('<p>Initial Content</p>');
 
         await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') });
+
+        // Wait for the event handler to register
+        await Waiter.pWait(1);
+
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {

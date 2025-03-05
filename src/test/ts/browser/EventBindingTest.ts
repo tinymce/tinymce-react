@@ -1,5 +1,5 @@
-import { Assert, describe } from '@ephox/bedrock-client';
-import { Arr, Obj, Fun } from '@ephox/katamari';
+import { Assert, describe, it } from '@ephox/bedrock-client';
+import { Arr, Fun, Obj } from '@ephox/katamari';
 import { IAllProps } from 'src/main/ts/components/Editor';
 import { configHandlers2 } from '../../../main/ts/Utils';
 
@@ -34,7 +34,16 @@ describe('EventBindingTest', () => {
 
   const on = (name: string, handler: Handler, _prepend?: boolean) => calls.push({ type: 'on', name, handler });
   const off = (name: string, handler: Handler) => calls.push({ type: 'off', name, handler });
-  const adapter = (lookup: typeof dummyLookupProp, key: string): Handler => ({ key });
+  const adapter = (() => {
+    const cache = new Map<string, Handler>();
+    return (lookup: typeof dummyLookupProp, key: string): Handler => {
+      if (!cache.has(key)) {
+        cache.set(key, { key });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return cache.get(key)!;
+    };
+  })();
   const dummyLookupProp: any = <K extends keyof IAllProps>(_key: K) => Fun.die('not implemented');
 
   // dummy functions for handlers
@@ -42,41 +51,48 @@ describe('EventBindingTest', () => {
   const blurHandler = Fun.noop;
 
   // check no handlers
-  calls = [];
-  boundHandlers = {};
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  configHandlers2(dummyLookupProp, on, off, adapter, {}, {}, boundHandlers);
-  check({}, []);
+  it('check no handlers', () => {
+    calls = [];
+    boundHandlers = {};
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    configHandlers2(dummyLookupProp, on, off, adapter, {}, boundHandlers);
+    check({}, []);
+  });
 
   // check adding handlers
   // nothing should be removed and the focus and blur handler should be added
-  calls = [];
-  boundHandlers = {};
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  configHandlers2(dummyLookupProp, on, off, adapter, {}, { onFocus: focusHandler, onBlur: blurHandler }, boundHandlers);
-  check({ Focus: 'on', Blur: 'on' }, [ 'onFocus', 'onBlur' ]);
+  it('check adding handlers', () => {
+    calls = [];
+    boundHandlers = {};
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler, onBlur: blurHandler }, boundHandlers);
+    check({ Focus: 'on', Blur: 'on' }, [ 'onFocus', 'onBlur' ]);
+  });
 
   // check changing an unrelated property while keeping handlers the same
   // nothing should be added or removed and the bound handlers should stay the same
-  calls = [];
-  boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
-  configHandlers2(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    dummyLookupProp,
-    on,
-    off,
-    adapter,
-    { onFocus: focusHandler, onBlur: blurHandler, disabled: true },
-    { onFocus: focusHandler, onBlur: blurHandler, disabled: false },
-    boundHandlers
-  );
-  check({}, [ 'onFocus', 'onBlur' ]);
+  it('check changing an unrelated property while keeping handlers the same', () => {
+    calls = [];
+    boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
+    configHandlers2(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      dummyLookupProp,
+      on,
+      off,
+      adapter,
+      { onFocus: focusHandler, onBlur: blurHandler, disabled: false },
+      boundHandlers
+    );
+    check({}, [ 'onFocus', 'onBlur' ]);
+  });
 
   // check removing a handler for Blur while keeping the Focus handler
   // the blur handler should be removed and the focus handler should remain afterwards
-  calls = [];
-  boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler, onBlur: blurHandler }, { onFocus: focusHandler }, boundHandlers);
-  check({ Blur: 'off' }, [ 'onFocus' ]);
+  it('check removing a handler for Blur while keeping the Focus handler', () => {
+    calls = [];
+    boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler }, boundHandlers);
+    check({ Blur: 'off' }, [ 'onFocus' ]);
+  });
 });

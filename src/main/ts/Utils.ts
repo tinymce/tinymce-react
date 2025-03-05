@@ -36,10 +36,32 @@ export const configHandlers2 = <H> (
   currEventKeys.forEach((key) => {
     const wrappedHandler = adapter(handlerLookup, key);
     const eventName = eventAttrToEventName(key);
-    boundHandlers[eventName] = wrappedHandler;
-    on(eventName, wrappedHandler);
+    if (wrappedHandler !== boundHandlers[eventName]) {
+      boundHandlers[eventName] = wrappedHandler;
+      on(eventName, wrappedHandler);
+    }
   });
 };
+
+const adapterMemo = (() => {
+  const cache = new Map<TinyMCEEditor, <K extends keyof IEventPropTypes> (lookup: PropLookup, key: K) => (e: any) => unknown>();
+  return (editor: TinyMCEEditor) => {
+    let result = cache.get(editor);
+    const lookupCache = new Map<keyof IEventPropTypes, [any, (e: any) => unknown]>();
+    if (!result) {
+      result = (handlerLookup, key) => {
+        if (!lookupCache.has(key) || lookupCache.get(key)?.[0] !== handlerLookup(key)) {
+          lookupCache.set(key, [ handlerLookup(key), (e) => handlerLookup(key)?.(e, editor) ]);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return lookupCache.get(key)![1];
+      };
+      cache.set(editor, result);
+    }
+    return result;
+  };
+
+})();
 
 export const configHandlers = (
   editor: TinyMCEEditor,
@@ -51,8 +73,7 @@ export const configHandlers = (
     lookup,
     editor.on.bind(editor),
     editor.off.bind(editor),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    (handlerLookup, key) => (e) => handlerLookup(key)?.(e, editor),
+    adapterMemo(editor),
     props,
     boundHandlers
   );

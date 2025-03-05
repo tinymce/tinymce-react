@@ -144,7 +144,7 @@ export interface IAllProps extends Partial<IProps>, Partial<IEvents> { }
 /**
  * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/ TinyMCE React Technical Reference}
  */
-export const Editor: React.FC<IAllProps> = (props) => {
+export const Editor = React.forwardRef<HTMLElement, IAllProps>((props, ref) => {
   const {
     cloudChannel = '7',
     tinymceScriptSrc,
@@ -156,12 +156,13 @@ export const Editor: React.FC<IAllProps> = (props) => {
     onEditorChange,
   } = props;
   const editorRef = React.useRef<TinyMCEEditor>();
-  const elementRef = React.useRef<HTMLElement>(null);
+  const elementRef = React.useRef<HTMLElement | null>(null);
   const [ id ] = React.useState(props.id || uuid('tiny-react'));
   const inline = React.useMemo(() => props.inline ?? props.init?.inline ?? false, [ props.inline, props.init?.inline ]);
   const boundHandlersRef = React.useRef<Record<string, (event: EditorEvent<unknown>) => unknown>>({});
   const rollbackTimerRef = React.useRef<number>();
   const [ valueCursor, setValueCursor ] = React.useState<Bookmark>();
+  const currentContentRef = React.useRef<string>(initialValue ?? '');
 
   const view = elementRef.current?.ownerDocument.defaultView ?? window;
 
@@ -181,14 +182,28 @@ export const Editor: React.FC<IAllProps> = (props) => {
     const { tagName = 'div' } = props;
 
     return React.createElement(tagName, {
-      ref: elementRef,
+      ref: (el: HTMLElement) => {
+        elementRef.current = el;
+        if (typeof ref === 'function') {
+          ref(el);
+        } else if (ref) {
+          ref.current = el;
+        }
+      },
       id,
       tabIndex: props.tabIndex
     });
   };
 
   const renderIframe = () => React.createElement('textarea', {
-    ref: elementRef,
+    ref: (el) => {
+      elementRef.current = el;
+      if (typeof ref === 'function') {
+        ref(el);
+      } else if (ref) {
+        ref.current = el;
+      }
+    },
     style: { visibility: 'hidden' },
     name: props.textareaName,
     id,
@@ -289,8 +304,11 @@ export const Editor: React.FC<IAllProps> = (props) => {
         }
       }
 
-      if (isFunction(onEditorChange)) {
-        onEditorChange(newContent, currentEditor);
+      if (newContent !== currentContentRef.current) {
+        currentContentRef.current = newContent;
+        if (isFunction(onEditorChange)) {
+          onEditorChange(newContent, currentEditor);
+        }
       }
     }
   }, [ value, onEditorChange, rollback, rollbackChange ]);
@@ -300,35 +318,6 @@ export const Editor: React.FC<IAllProps> = (props) => {
       handleEditorChange(evt);
     }
   }, [ handleEditorChange ]);
-
-  React.useEffect(() => {
-    if (editorRef.current !== undefined) {
-      // check if we should monitor editor changes
-      const isValueControlled = onEditorChange !== undefined || value !== undefined;
-      if (isValueControlled) {
-        editorRef.current.on(changeEvents(), handleEditorChange);
-        editorRef.current.on(beforeInputEvent(), handleBeforeInput);
-        editorRef.current.on('keydown', handleBeforeInputSpecial);
-        editorRef.current.on('keyup', handleEditorChangeSpecial);
-        editorRef.current.on('NewBlock', handleEditorChange);
-      } else {
-        editorRef.current.off(changeEvents(), handleEditorChange);
-        editorRef.current.off(beforeInputEvent(), handleBeforeInput);
-        editorRef.current.off('keydown', handleBeforeInputSpecial);
-        editorRef.current.off('keyup', handleEditorChangeSpecial);
-        editorRef.current.off('NewBlock', handleEditorChange);
-      }
-    }
-  }, [
-    onEditorChange,
-    value,
-    handleEditorChange,
-    handleBeforeInput,
-    handleBeforeInputSpecial,
-    handleEditorChangeSpecial,
-    beforeInputEvent,
-    changeEvents
-  ]);
 
   const initialise = React.useCallback((attempts = 0) => {
     const target = elementRef.current;
@@ -460,10 +449,39 @@ export const Editor: React.FC<IAllProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
+    if (editorRef.current !== undefined) {
+      // check if we should monitor editor changes
+      const isValueControlled = onEditorChange !== undefined || value !== undefined;
+      if (isValueControlled) {
+        editorRef.current.on(changeEvents(), handleEditorChange);
+        editorRef.current.on(beforeInputEvent(), handleBeforeInput);
+        editorRef.current.on('keydown', handleBeforeInputSpecial);
+        editorRef.current.on('keyup', handleEditorChangeSpecial);
+        editorRef.current.on('NewBlock', handleEditorChange);
+      } else {
+        editorRef.current.off(changeEvents(), handleEditorChange);
+        editorRef.current.off(beforeInputEvent(), handleBeforeInput);
+        editorRef.current.off('keydown', handleBeforeInputSpecial);
+        editorRef.current.off('keyup', handleEditorChangeSpecial);
+        editorRef.current.off('NewBlock', handleEditorChange);
+      }
+    }
+  }, [
+    onEditorChange,
+    value,
+    handleEditorChange,
+    handleBeforeInput,
+    handleBeforeInputSpecial,
+    handleEditorChangeSpecial,
+    beforeInputEvent,
+    changeEvents
+  ]);
+
+  React.useEffect(() => {
     if (editorRef.current) {
       bindHandlers();
     }
-  });
+  }, [ bindHandlers ]);
 
   React.useEffect(() => {
     if (rollbackTimerRef.current) {
@@ -515,6 +533,6 @@ export const Editor: React.FC<IAllProps> = (props) => {
   }, [ initialValue, inline, props.disabled, value, valueCursor ]);
 
   return inline ? renderInline() : renderIframe();
-};
+});
 
 Editor.propTypes = EditorPropTypes;

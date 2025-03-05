@@ -48,9 +48,6 @@ const EventStore = () => {
 };
 
 export {
-  VALID_API_KEY,
-  EventStore,
-  VERSIONS,
-  CLOUD_VERSIONS,
-  Version
+  CLOUD_VERSIONS, EventStore, VALID_API_KEY, Version, VERSIONS
 };
+
