@@ -1,3 +1,4 @@
+import { Type } from '@ephox/katamari';
 import * as React from 'react';
 import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
@@ -524,7 +525,7 @@ export const Editor = React.forwardRef<HTMLElement, IAllProps>((props, ref) => {
             }
           });
         }
-        if (props.disabled) {
+        if (Type.isNonNullable(props.disabled)) {
           const disabled = props.disabled ?? false;
           setMode(editorRef.current, disabled ? 'readonly' : 'design');
         }
