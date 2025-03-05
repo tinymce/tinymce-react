@@ -1,10 +1,10 @@
-import { Assertions } from '@ephox/agar';
+import { Assertions, Waiter } from '@ephox/agar';
 import { context, describe, it } from '@ephox/bedrock-client';
 
-import { VALID_API_KEY, VERSIONS } from '../alien/TestHelpers';
-import * as Loader from '../alien/Loader';
 import { TinyAssertions } from '@ephox/mcagar';
 import { IAllProps } from 'src/main/ts';
+import * as Loader from '../alien/Loader';
+import { VALID_API_KEY, VERSIONS } from '../alien/TestHelpers';
 
 const assertProperty = (obj: {}, propName: string, expected: unknown) => {
   Assertions.assertEq(propName.toString() + ' should be ' + expected, expected, (obj as any)[propName]);
@@ -66,14 +66,15 @@ describe('EditorInitTest', () => {
         using ctx = await render({ value: '<p>Initial Value</p>' });
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Value</p>');
         ctx.reRender({ ...defaultProps, value: '<p>New Value</p>' });
-        TinyAssertions.assertContent(ctx.editor, '<p>New Value</p>');
+        await Waiter.pTryUntil('Wait for content to update', () => TinyAssertions.assertContent(ctx.editor, '<p>New Value</p>'));
       });
 
       it('Disabled prop should disable editor', async () => {
         using ctx = await render();
         Assertions.assertEq('Should be design mode', true, '4' === version ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
         ctx.reRender({ ...defaultProps, disabled: true });
-        Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
+        await Waiter.pTryUntil('Wait for editor to be readonly',
+          () => Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly'));
       });
 
       it('Using an overriden props will cause a TS error', async () => {

@@ -1,11 +1,11 @@
+import { before, context } from '@ephox/bedrock-client';
 import { Fun, Optional } from '@ephox/katamari';
 import { SugarElement, SugarNode } from '@ephox/sugar';
+import { VersionLoader } from '@tinymce/miniature';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { before, context } from '@ephox/bedrock-client';
-import { VersionLoader } from '@tinymce/miniature';
+import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');
@@ -15,7 +15,7 @@ Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose');
 export interface Context {
   DOMNode: HTMLElement;
   editor: TinyMCEEditor;
-  ref: React.RefObject<Editor>;
+  ref: React.RefObject<HTMLElement>;
 }
 
 const getRoot = () => Optional.from(document.getElementById('root')).getOrThunk(() => {
@@ -32,7 +32,7 @@ export interface ReactEditorContext extends Context, Disposable {
 export const render = async (props: Partial<IAllProps> = {}, container: HTMLElement = getRoot()): Promise<ReactEditorContext> => {
   const originalInit = props.init || {};
   const originalSetup = originalInit.setup || Fun.noop;
-  const ref = React.createRef<Editor>();
+  const ref = React.createRef<HTMLElement>();
 
   const ctx = await new Promise<Context>((resolve, reject) => {
     const init: IProps['init'] = {

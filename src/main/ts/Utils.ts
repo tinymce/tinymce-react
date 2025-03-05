@@ -1,6 +1,7 @@
-import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
+import { Type } from '@ephox/katamari';
+import type { EditorEvent, Editor as TinyMCEEditor } from 'tinymce';
 import { IAllProps } from './components/Editor';
-import type { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
+import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 
@@ -15,35 +16,55 @@ export const configHandlers2 = <H> (
   on: (name: string, handler: H) => void,
   off: (name: string, handler: H) => void,
   adapter: <K extends keyof IEventPropTypes> (lookup: PropLookup, key: K) => H,
-  prevProps: Partial<IAllProps>,
   props: Partial<IAllProps>,
   boundHandlers: Record<string, H>
 ): void => {
-  const prevEventKeys = Object.keys(prevProps).filter(isEventProp);
+  const eventKeys: Array<keyof IEventPropTypes> = Object.keys(eventPropTypes) as Array<keyof IEventPropTypes>;
   const currEventKeys = Object.keys(props).filter(isEventProp);
+  const unboundEventKeys = eventKeys.filter((key) => props[key] === undefined);
 
-  const removedKeys = prevEventKeys.filter((key) => props[key] === undefined);
-  const addedKeys = currEventKeys.filter((key) => prevProps[key] === undefined);
-
-  removedKeys.forEach((key) => {
+  unboundEventKeys.forEach((key) => {
     // remove event handler
     const eventName = eventAttrToEventName(key);
     const wrappedHandler = boundHandlers[eventName];
-    off(eventName, wrappedHandler);
-    delete boundHandlers[eventName];
+    if (Type.isNonNullable(wrappedHandler)) {
+      off(eventName, wrappedHandler);
+      delete boundHandlers[eventName];
+    }
   });
 
-  addedKeys.forEach((key) => {
+  currEventKeys.forEach((key) => {
     const wrappedHandler = adapter(handlerLookup, key);
     const eventName = eventAttrToEventName(key);
-    boundHandlers[eventName] = wrappedHandler;
-    on(eventName, wrappedHandler);
+    if (wrappedHandler !== boundHandlers[eventName]) {
+      boundHandlers[eventName] = wrappedHandler;
+      on(eventName, wrappedHandler);
+    }
   });
 };
 
+const adapterMemo = (() => {
+  const cache = new Map<TinyMCEEditor, <K extends keyof IEventPropTypes> (lookup: PropLookup, key: K) => (e: any) => unknown>();
+  return (editor: TinyMCEEditor) => {
+    let result = cache.get(editor);
+    const lookupCache = new Map<keyof IEventPropTypes, [any, (e: any) => unknown]>();
+    if (!result) {
+      result = (handlerLookup, key) => {
+        if (!lookupCache.has(key) || lookupCache.get(key)?.[0] !== handlerLookup(key)) {
+          lookupCache.set(key, [ handlerLookup(key), (e) => handlerLookup(key)?.(e, editor) ]);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return lookupCache.get(key)![1];
+      };
+      cache.set(editor, result);
+    }
+    return result;
+  };
+
+})();
+
 export const configHandlers = (
   editor: TinyMCEEditor,
-  prevProps: Partial<IAllProps>,
   props: Partial<IAllProps>,
   boundHandlers: Record<string, (event: EditorEvent<any>) => unknown>,
   lookup: PropLookup
@@ -52,9 +73,7 @@ export const configHandlers = (
     lookup,
     editor.on.bind(editor),
     editor.off.bind(editor),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    (handlerLookup, key) => (e) => handlerLookup(key)?.(e, editor),
-    prevProps,
+    adapterMemo(editor),
     props,
     boundHandlers
   );
