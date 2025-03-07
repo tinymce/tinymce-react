@@ -93,7 +93,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
       }
 
       newProps.value
-        ? ctx.editor.once('change', () => resolve())
+        ? ctx.editor.once('change', (_event) => resolve())
         : resolve();
     }),
     remove,
