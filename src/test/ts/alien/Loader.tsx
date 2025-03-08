@@ -6,6 +6,7 @@ import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/
 import { Editor as TinyMCEEditor } from 'tinymce';
 import { before, context } from '@ephox/bedrock-client';
 import { VersionLoader } from '@tinymce/miniature';
+import { setMode } from 'src/main/ts/Utils';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');
@@ -84,12 +85,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
       root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>);
 
       if (newProps.disabled) {
-        if (ctx.editor.editorManager.majorVersion === '4') {
-          /** This should be `setMode` from TinyMCE v4 but we can't access it here. */
-          ctx.editor.readonly = true;
-        } else {
-          ctx.editor.mode.set('readonly');
-        }
+        setMode(ctx.editor, 'readonly');
       }
 
       newProps.value
