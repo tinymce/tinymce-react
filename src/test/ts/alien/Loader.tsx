@@ -46,7 +46,6 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
           setTimeout(() => {
             Optional.from(ref.current)
               .bind((editorInstance) => Optional.from(editorInstance.editor?.targetElm))
-              .filter((elm) => elm instanceof window.HTMLElement)
               .map(SugarElement.fromDom)
               .filter(SugarNode.isHTMLElement)
               .map((val) => val.dom)

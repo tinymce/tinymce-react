@@ -89,7 +89,7 @@ describe('EditorBehaviourTest', () => {
         await ctx.reRender({ onSetContent: eventStore.createHandler('onSetContent') });
 
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Content</p>');
-        await Waiter.pWait(0);
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('onSetContent', (events) => {
@@ -115,7 +115,7 @@ describe('EditorBehaviourTest', () => {
         eventStore.clearState();
         ctx.editor.setContent('<p>Initial Content</p>');
         await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') });
-        await Waiter.pWait(0);
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {
