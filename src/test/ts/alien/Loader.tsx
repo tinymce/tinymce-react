@@ -1,5 +1,5 @@
 import { Fun, Optional } from '@ephox/katamari';
-import { SugarElement, SugarNode } from '@ephox/sugar';
+import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
@@ -72,6 +72,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
 
   const remove = () => {
     ReactDOM.unmountComponentAtNode(container);
+    Remove.remove(SugarElement.fromDom(container));
   };
 
   return {

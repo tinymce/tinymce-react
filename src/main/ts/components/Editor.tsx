@@ -190,7 +190,7 @@ export class Editor extends React.Component<IAllProps> {
                 // getBookmark throws exceptions when the editor has not been focused
                 // possibly only in inline mode but I'm not taking chances
                 cursor = localEditor.selection.getBookmark(3);
-              } catch (e) { /* ignore */ }
+              } catch (_e) { /* ignore */ }
             }
             const valueCursor = this.valueCursor;
             localEditor.setContent(this.props.value as string);
@@ -201,7 +201,7 @@ export class Editor extends React.Component<IAllProps> {
                     localEditor.selection.moveToBookmark(bookmark);
                     this.valueCursor = bookmark;
                     break;
-                  } catch (e) { /* ignore */ }
+                  } catch (_e) { /* ignore */ }
                 }
               }
             }
@@ -361,7 +361,7 @@ export class Editor extends React.Component<IAllProps> {
         if (this.valueCursor && (!this.inline || editor.hasFocus())) {
           try {
             editor.selection.moveToBookmark(this.valueCursor);
-          } catch (e) { /* ignore */ }
+          } catch (_e) { /* ignore */ }
         }
       });
     }
@@ -375,7 +375,7 @@ export class Editor extends React.Component<IAllProps> {
           // getBookmark throws exceptions when the editor has not been focused
           // possibly only in inline mode but I'm not taking chances
           this.valueCursor = this.editor.selection.getBookmark(3);
-        } catch (e) { /* ignore */ }
+        } catch (_e) { /* ignore */ }
       }
     }
   };
@@ -498,6 +498,7 @@ export class Editor extends React.Component<IAllProps> {
       target.value = this.getInitialValue();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     tinymce.init(finalInit);
   };
 }

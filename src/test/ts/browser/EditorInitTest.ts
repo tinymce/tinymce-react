@@ -65,14 +65,14 @@ describe('EditorInitTest', () => {
       it('Value prop should propagate changes to editor', async () => {
         using ctx = await render({ value: '<p>Initial Value</p>' });
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Value</p>');
-        ctx.reRender({ ...defaultProps, value: '<p>New Value</p>' });
+        await ctx.reRender({ ...defaultProps, value: '<p>New Value</p>' });
         TinyAssertions.assertContent(ctx.editor, '<p>New Value</p>');
       });
 
       it('Disabled prop should disable editor', async () => {
         using ctx = await render();
         Assertions.assertEq('Should be design mode', true, '4' === version ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
-        ctx.reRender({ ...defaultProps, disabled: true });
+        await ctx.reRender({ ...defaultProps, disabled: true });
         Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
       });
 
