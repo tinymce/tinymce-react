@@ -6,7 +6,7 @@ import { describe, it } from '@ephox/bedrock-client';
 import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventStore, VERSIONS } from '../alien/TestHelpers';
 import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
-import { Assertions } from '@ephox/agar';
+import { Assertions, Waiter } from '@ephox/agar';
 import { TinyAssertions } from '@ephox/mcagar';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
@@ -89,6 +89,7 @@ describe('EditorBehaviourTest', () => {
         await ctx.reRender({ onSetContent: eventStore.createHandler('onSetContent') });
 
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Content</p>');
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('onSetContent', (events) => {
@@ -98,7 +99,6 @@ describe('EditorBehaviourTest', () => {
             events[0].editorEvent.content
           );
         });
-
         eventStore.clearState();
       });
 
@@ -114,8 +114,8 @@ describe('EditorBehaviourTest', () => {
         });
         eventStore.clearState();
         ctx.editor.setContent('<p>Initial Content</p>');
-
         await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') });
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {
