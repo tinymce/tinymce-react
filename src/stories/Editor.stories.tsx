@@ -1,6 +1,6 @@
+import { StoryObj } from '@storybook/react';
 import React from 'react';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
-import { StoryObj } from '@storybook/react';
 import { Editor, IAllProps } from '../main/ts/components/Editor';
 
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
@@ -60,7 +60,9 @@ export const ControlledInput: StoryObj<Editor> = {
         <Editor
           apiKey={apiKey}
           value={data}
-          onEditorChange={(e) => setData(e)}
+          onEditorChange={(e) => {
+            setData(e);
+          }}
         />
         <textarea
           style={{ width: '100%', height: '200px' }}
