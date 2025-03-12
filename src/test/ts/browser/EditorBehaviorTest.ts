@@ -135,7 +135,7 @@ describe('EditorBehaviourTest', () => {
 
         eventStore.clearState();
       });
-      it.only('INT-3226: onEditorChange is triggered only twice after calling insertContent', async () => {
+      it('INT-3226: onEditorChange is triggered only twice after calling insertContent', async () => {
         using ctx = await render({ onEditorChange: eventStore.createHandler('onEditorChange') });
         const { editor } = ctx;
         editor.setContent('<p>abc</p>');
