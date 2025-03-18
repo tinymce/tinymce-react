@@ -6,7 +6,7 @@ import { getTinymce } from '../TinyMCE';
 import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
-const changeEvents = 'change input compositionend setcontent CommentChange';
+const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
 type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 
