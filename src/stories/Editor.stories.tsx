@@ -61,7 +61,6 @@ export const ControlledInput: StoryObj<Editor> = {
           apiKey={apiKey}
           value={data}
           onEditorChange={(e) => {
-            console.log('change');
             setData(e);
           }}
         />
