@@ -1,10 +1,12 @@
 import * as React from 'react';
+import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode } from '../Utils';
+import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import type { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
+
+const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
 type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 
@@ -241,7 +243,7 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off(this.changeEvents(), this.handleEditorChange);
+      editor.off(changeEvents, this.handleEditorChange);
       editor.off(this.beforeInputEvent(), this.handleBeforeInput);
       editor.off('keypress', this.handleEditorChangeSpecial);
       editor.off('keydown', this.handleBeforeInputSpecial);
@@ -257,14 +259,6 @@ export class Editor extends React.Component<IAllProps> {
 
   public render() {
     return this.inline ? this.renderInline() : this.renderIframe();
-  }
-
-  private changeEvents() {
-    const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
-    return (isIE
-      ? 'change keyup compositionend setcontent CommentChange'
-      : 'change input compositionend setcontent CommentChange'
-    );
   }
 
   private beforeInputEvent() {
@@ -335,13 +329,13 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on(this.changeEvents(), this.handleEditorChange);
+        this.editor.on(changeEvents, this.handleEditorChange);
         this.editor.on(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.on('keydown', this.handleBeforeInputSpecial);
         this.editor.on('keyup', this.handleEditorChangeSpecial);
         this.editor.on('NewBlock', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off(this.changeEvents(), this.handleEditorChange);
+        this.editor.off(changeEvents, this.handleEditorChange);
         this.editor.off(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.off('keydown', this.handleBeforeInputSpecial);
         this.editor.off('keyup', this.handleEditorChangeSpecial);
