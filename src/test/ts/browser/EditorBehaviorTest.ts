@@ -1,13 +1,13 @@
-import * as Loader from '../alien/Loader';
 import { PlatformDetection } from '@ephox/sand';
+import * as Loader from '../alien/Loader';
 
 import { describe, it } from '@ephox/bedrock-client';
 
+import { Assertions, Waiter } from '@ephox/agar';
+import { TinyAssertions, TinySelections } from '@ephox/mcagar';
+import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
 import { getTinymce } from '../../../main/ts/TinyMCE';
 import { EventStore, VERSIONS } from '../alien/TestHelpers';
-import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
-import { Assertions } from '@ephox/agar';
-import { TinyAssertions } from '@ephox/mcagar';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
 
@@ -89,6 +89,7 @@ describe('EditorBehaviourTest', () => {
         await ctx.reRender({ onSetContent: eventStore.createHandler('onSetContent') });
 
         TinyAssertions.assertContent(ctx.editor, '<p>Initial Content</p>');
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('onSetContent', (events) => {
@@ -98,7 +99,6 @@ describe('EditorBehaviourTest', () => {
             events[0].editorEvent.content
           );
         });
-
         eventStore.clearState();
       });
 
@@ -114,8 +114,8 @@ describe('EditorBehaviourTest', () => {
         });
         eventStore.clearState();
         ctx.editor.setContent('<p>Initial Content</p>');
-
         await ctx.reRender({ onSetContent: eventStore.createHandler('NewHandler') });
+        await Waiter.pWait(0); // Wait for React's state updates to complete before setting new content
         ctx.editor.setContent('<p>New Content</p>');
 
         eventStore.each<SetContentEvent>('InitialHandler', (events) => {
@@ -134,6 +134,23 @@ describe('EditorBehaviourTest', () => {
         });
 
         eventStore.clearState();
+      });
+      it('INT-3226: onEditorChange is triggered only once after calling insertContent', async () => {
+        using ctx = await render({ onEditorChange: eventStore.createHandler('onEditorChange') });
+        const { editor } = ctx;
+        editor.setContent('<p>abc</p>');
+        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => ctx.editor.getContent() === '<p>abc</p>');
+        eventStore.clearState();
+        TinySelections.setSelection(editor, [ 0, 0 ], 1, [ 0, 0 ], 2);
+        editor.insertContent('e');
+        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => ctx.editor.getContent() === '<p>aec</p>');
+        eventStore.each<string>('onEditorChange', (events) => {
+          Assertions.assertEq(
+            'onEditorChange should have been triggered once',
+            1,
+            events.length
+          );
+        });
       });
     })
   );

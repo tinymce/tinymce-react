@@ -1,10 +1,14 @@
 import * as React from 'react';
+import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
-import { isFunction, isTextareaOrInput, mergePlugins, uuid, configHandlers, isBeforeInputEventAvailable, isInDoc, setMode, debounce } from '../Utils';
+
+import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid, , debounce } from '../Utils';
+
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
-import type { Bookmark, Editor as TinyMCEEditor, EditorEvent, TinyMCE } from 'tinymce';
+
+const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
 type OmitStringIndexSignature<T> = { [K in keyof T as string extends K ? never : K]: T[K] };
 
@@ -145,7 +149,7 @@ export class Editor extends React.Component<IAllProps> {
   public editor?: TinyMCEEditor;
 
   private id: string;
-  private elementRef: React.RefObject<HTMLElement>;
+  private elementRef: React.RefObject<HTMLElement | null>;
   private inline: boolean;
   private currentContent?: string;
   private boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>;
@@ -155,7 +159,7 @@ export class Editor extends React.Component<IAllProps> {
   public constructor(props: Partial<IAllProps>) {
     super(props);
     this.id = this.props.id || uuid('tiny-react');
-    this.elementRef = React.createRef<HTMLElement>();
+    this.elementRef = React.createRef<HTMLElement | null>();
     this.inline = this.props.inline ?? this.props.init?.inline ?? false;
     this.boundHandlers = {};
   }
@@ -190,7 +194,7 @@ export class Editor extends React.Component<IAllProps> {
                 // getBookmark throws exceptions when the editor has not been focused
                 // possibly only in inline mode but I'm not taking chances
                 cursor = localEditor.selection.getBookmark(3);
-              } catch (e) { /* ignore */ }
+              } catch (_e) { /* ignore */ }
             }
             const valueCursor = this.valueCursor;
             localEditor.setContent(this.props.value as string);
@@ -201,7 +205,7 @@ export class Editor extends React.Component<IAllProps> {
                     localEditor.selection.moveToBookmark(bookmark);
                     this.valueCursor = bookmark;
                     break;
-                  } catch (e) { /* ignore */ }
+                  } catch (_e) { /* ignore */ }
                 }
               }
             }
@@ -241,7 +245,7 @@ export class Editor extends React.Component<IAllProps> {
   public componentWillUnmount() {
     const editor = this.editor;
     if (editor) {
-      editor.off(this.changeEvents(), this.handleEditorChange);
+      editor.off(changeEvents, this.handleEditorChange);
       editor.off(this.beforeInputEvent(), this.handleBeforeInput);
       editor.off('keypress', this.handleEditorChangeSpecial);
       editor.off('keydown', this.handleBeforeInputSpecial);
@@ -257,14 +261,6 @@ export class Editor extends React.Component<IAllProps> {
 
   public render() {
     return this.inline ? this.renderInline() : this.renderIframe();
-  }
-
-  private changeEvents() {
-    const isIE = getTinymce(this.view)?.Env?.browser?.isIE();
-    return (isIE
-      ? 'change keyup compositionend setcontent CommentChange'
-      : 'change input compositionend setcontent CommentChange'
-    );
   }
 
   private beforeInputEvent() {
@@ -335,13 +331,13 @@ export class Editor extends React.Component<IAllProps> {
       const wasControlled = isValueControlled(prevProps);
       const nowControlled = isValueControlled(this.props);
       if (!wasControlled && nowControlled) {
-        this.editor.on(this.changeEvents(), this.handleEditorChange);
+        this.editor.on(changeEvents, this.handleEditorChange);
         this.editor.on(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.on('keydown', this.handleBeforeInputSpecial);
         this.editor.on('keyup', this.handleEditorChangeSpecial);
         this.editor.on('NewBlock', this.handleEditorChange);
       } else if (wasControlled && !nowControlled) {
-        this.editor.off(this.changeEvents(), this.handleEditorChange);
+        this.editor.off(changeEvents, this.handleEditorChange);
         this.editor.off(this.beforeInputEvent(), this.handleBeforeInput);
         this.editor.off('keydown', this.handleBeforeInputSpecial);
         this.editor.off('keyup', this.handleEditorChangeSpecial);
@@ -361,7 +357,7 @@ export class Editor extends React.Component<IAllProps> {
         if (this.valueCursor && (!this.inline || editor.hasFocus())) {
           try {
             editor.selection.moveToBookmark(this.valueCursor);
-          } catch (e) { /* ignore */ }
+          } catch (_e) { /* ignore */ }
         }
       });
     }
@@ -375,7 +371,7 @@ export class Editor extends React.Component<IAllProps> {
           // getBookmark throws exceptions when the editor has not been focused
           // possibly only in inline mode but I'm not taking chances
           this.valueCursor = this.editor.selection.getBookmark(3);
-        } catch (e) { /* ignore */ }
+        } catch (_e) { /* ignore */ }
       }
     }
   };
@@ -502,6 +498,7 @@ export class Editor extends React.Component<IAllProps> {
       target.value = this.getInitialValue();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     tinymce.init(finalInit);
   };
 }
