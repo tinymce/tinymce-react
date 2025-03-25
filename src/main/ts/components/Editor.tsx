@@ -3,7 +3,9 @@ import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'ti
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
-import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid } from '../Utils';
+
+import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid, , debounce } from '../Utils';
+
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
 
 const changeEvents = 'change keyup compositionend setcontent CommentChange';
@@ -381,26 +383,30 @@ export class Editor extends React.Component<IAllProps> {
   };
 
   private handleEditorChange = (_evt: EditorEvent<unknown>) => {
-    const editor = this.editor;
-    if (editor && editor.initialized) {
-      const newContent = editor.getContent();
-      if (this.props.value !== undefined && this.props.value !== newContent && this.props.rollback !== false) {
+    debounce(() => {
+      const editor = this.editor;
+      if (editor && editor.initialized) {
+        const newContent = editor.getContent();
+        if (this.props.value !== undefined && this.props.value !== newContent && this.props.rollback !== false) {
         // start a timer and revert to the value if not applied in time
-        if (!this.rollbackTimer) {
-          this.rollbackTimer = window.setTimeout(
-            this.rollbackChange,
-            typeof this.props.rollback === 'number' ? this.props.rollback : 200
-          );
+          if (!this.rollbackTimer) {
+            this.rollbackTimer = window.setTimeout(
+              this.rollbackChange,
+              typeof this.props.rollback === 'number' ? this.props.rollback : 200
+            );
+          }
         }
-      }
 
-      if (newContent !== this.currentContent) {
-        this.currentContent = newContent;
-        if (isFunction(this.props.onEditorChange)) {
-          this.props.onEditorChange(newContent, editor);
+        if (newContent !== this.currentContent) {
+          this.currentContent = newContent;
+          if (isFunction(this.props.onEditorChange)) {
+            this.props.onEditorChange(newContent, editor);
+          }
         }
       }
     }
+    , 100
+    );
   };
 
   private handleEditorChangeSpecial = (evt: EditorEvent<KeyboardEvent>) => {
