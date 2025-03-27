@@ -76,6 +76,6 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.1"
   },
-  "version": "7.0.0-rc",
+  "version": "7.0.0",
   "name": "@tinymce/tinymce-react"
 }
