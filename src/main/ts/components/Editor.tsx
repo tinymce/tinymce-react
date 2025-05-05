@@ -95,9 +95,14 @@ export interface IProps {
   toolbar: NonNullable<EditorOptions['toolbar']>;
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#disabled React Tech Ref - disabled}
-   * @description Whether the editor should be "disabled" (read-only).
+   * @description Whether the editor should be "disabled".
    */
   disabled: boolean;
+  /**
+   * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#readonly React Tech Ref - readonly}
+   * @description Whether the editor should be readonly.
+   */
+  readonly: boolean;
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#textareaname React Tech Ref - textareaName}
    * @description Set the `name` attribute of the `textarea` element used for the editor in forms. Only valid in iframe mode.
@@ -209,9 +214,9 @@ export class Editor extends React.Component<IAllProps> {
             }
           });
         }
-        if (this.props.disabled !== prevProps.disabled) {
-          const disabled = this.props.disabled ?? false;
-          setMode(this.editor, disabled ? 'readonly' : 'design');
+        if (this.props.readonly !== prevProps.readonly) {
+          const readonly = this.props.readonly ?? false;
+          setMode(this.editor, readonly ? 'readonly' : 'design');
         }
       }
     }
@@ -440,7 +445,7 @@ export class Editor extends React.Component<IAllProps> {
       ...this.props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
-      readonly: this.props.disabled,
+      disabled: this.props.disabled,
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
@@ -477,8 +482,8 @@ export class Editor extends React.Component<IAllProps> {
           editor.undoManager.add();
           editor.setDirty(false);
         }
-        const disabled = this.props.disabled ?? false;
-        setMode(this.editor, disabled ? 'readonly' : 'design');
+        const readonly = this.props.readonly ?? false;
+        setMode(this.editor, readonly ? 'readonly' : 'design');
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);
