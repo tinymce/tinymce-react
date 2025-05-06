@@ -69,11 +69,27 @@ describe('EditorInitTest', () => {
         TinyAssertions.assertContent(ctx.editor, '<p>New Value</p>');
       });
 
-      it('Disabled prop should disable editor', async () => {
+      it('Disabled prop should disable editor', async function () {
+        using ctx = await render();
+        const editor = ctx.editor;
+        const minorVersion = parseInt(editor.editorManager.minorVersion, 10);
+        // disabled option was re-introduced in tinymce 7.6
+        if (version !== '7' || minorVersion < 6) {
+          this.skip();
+        }
+
+        Assertions.assertEq('Should be enabled', false, editor.options.get('disabled'));
+        await ctx.reRender({ ...defaultProps, disabled: true });
+        Assertions.assertEq('Should be disabled', true,
+          editor.options.get('disabled'));
+      });
+
+      it('Readonly prop should set editor to readonly mode', async () => {
         using ctx = await render();
         Assertions.assertEq('Should be design mode', true, '4' === version ? !ctx.editor.readonly : ctx.editor.mode.get() === 'design');
         await ctx.reRender({ ...defaultProps, disabled: true });
         Assertions.assertEq('Should be readonly mode', true, '4' === version ? ctx.editor.readonly : ctx.editor.mode.get() === 'readonly');
+
       });
 
       it('Using an overriden props will cause a TS error', async () => {

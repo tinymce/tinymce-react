@@ -21,7 +21,8 @@ type EditorOptions = Parameters<TinyMCE['init']>[0];
 export type InitOptions = Omit<OmitStringIndexSignature<EditorOptions>, OmittedInitProps> & {
   selector?: DoNotUse<'selector prop is handled internally by the component'>;
   target?: DoNotUse<'target prop is handled internally by the component'>;
-  readonly?: DoNotUse<'readonly prop is overridden by the component, use the `disabled` prop instead'>;
+  readonly?: DoNotUse<'readonly prop is overridden by the component'>;
+  disabled?: DoNotUse<'disabled prop is overridden by the component'>;
   license_key?: DoNotUse<'license_key prop is overridden by the integration, use the `licenseKey` prop instead'>;
 } & { [key: string]: unknown };
 
@@ -95,7 +96,7 @@ export interface IProps {
   toolbar: NonNullable<EditorOptions['toolbar']>;
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#disabled React Tech Ref - disabled}
-   * @description Whether the editor should be "disabled".
+   * @description Whether the editor should be disabled.
    */
   disabled: boolean;
   /**
@@ -214,9 +215,14 @@ export class Editor extends React.Component<IAllProps> {
             }
           });
         }
+
         if (this.props.readonly !== prevProps.readonly) {
           const readonly = this.props.readonly ?? false;
           setMode(this.editor, readonly ? 'readonly' : 'design');
+        }
+
+        if (this.props.disabled !== prevProps.disabled) {
+          this.editor.options.set('disabled', this.props.disabled);
         }
       }
     }

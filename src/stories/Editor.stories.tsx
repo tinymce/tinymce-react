@@ -157,7 +157,7 @@ export const ToggleReadonlyProp: StoryObj<Editor> = {
           readonly={readonly}
         />
         <button onClick={toggleReadonly}>
-          {readonly ? 'Enable Editor' : 'Disable Editor'}
+          {readonly ? 'Set editable' : 'Set Readonly'}
         </button>
       </div>
     );
