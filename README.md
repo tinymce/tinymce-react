@@ -10,6 +10,10 @@ This package is a thin wrapper around [TinyMCE](https://github.com/tinymce/tinym
 * For our quick demos, check out the TinyMCE React [Storybook](https://tinymce.github.io/tinymce-react/).
 
 
+### Support
+
+Version 7.0 is intended to support TinyMCE version 7.6 and above.
+
 ### Issues
 
 Have you found an issue with tinymce-react or do you have a feature request? Open up an [issue](https://github.com/tinymce/tinymce-react/issues) and let us know or submit a [pull request](https://github.com/tinymce/tinymce-react/pulls). *Note: For issues concerning TinyMCE please visit the [TinyMCE repository](https://github.com/tinymce/tinymce).*
