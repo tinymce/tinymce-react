@@ -101,6 +101,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   plugins: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
   toolbar: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
   disabled: PropTypes.bool,
+  readonly: PropTypes.bool,
   textareaName: PropTypes.string,
   tinymceScriptSrc: PropTypes.oneOfType([
     PropTypes.string,
