@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
-- `disabled` property is now mapped to the TinyMCE `disabled` option.
+- The `disabled` property now toggles the `disabled` option. #TINY-11906
 
 ### Added
-- Added `readonly` property that maps to the TinyMCE `readonly` option.
+- Added `readonly` property that can be used to toggle the `readonly` mode. #TINY-11906
 
 ## 6.1.0 - 2025-03-31
 

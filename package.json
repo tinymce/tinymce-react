@@ -68,14 +68,15 @@
     "react-dom": "^19.0.0",
     "rimraf": "^6.0.1",
     "storybook": "^8.6.4",
-    "tinymce": "^7.2.1",
+    "tinymce": "^7",
     "tinymce-4": "npm:tinymce@^4",
     "tinymce-5": "npm:tinymce@^5",
     "tinymce-6": "npm:tinymce@^6",
     "tinymce-7": "npm:tinymce@^7",
+    "tinymce-7.5": "npm:tinymce@7.5",
     "typescript": "~5.8.2",
     "vite": "^6.2.1"
   },
-  "version": "7.0.0-rc",
+  "version": "6.2.0-rc",
   "name": "@tinymce/tinymce-react"
 }

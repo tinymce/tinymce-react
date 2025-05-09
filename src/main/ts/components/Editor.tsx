@@ -2,9 +2,12 @@ import * as React from 'react';
 import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
-import { getTinymce } from '../TinyMCE';
-import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid } from '../Utils';
+import { configHandlers, isBeforeInputEventAvailable,
+  isFunction, isInDoc, isTextareaOrInput, mergePlugins,
+  setMode, uuid, isDisabledOptionSupported,
+  getTinymceOrError } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+import { getTinymce } from '../TinyMCE';
 
 const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
@@ -14,7 +17,7 @@ interface DoNotUse<T extends string> {
   __brand: T;
 }
 
-type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'license_key';
+type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'disabled' | 'license_key';
 
 type EditorOptions = Parameters<TinyMCE['init']>[0];
 
@@ -222,7 +225,11 @@ export class Editor extends React.Component<IAllProps> {
         }
 
         if (this.props.disabled !== prevProps.disabled) {
-          this.editor.options.set('disabled', this.props.disabled);
+          if (isDisabledOptionSupported(this.view)) {
+            this.editor.options.set('disabled', this.props.disabled);
+          } else {
+            setMode(this.editor, this.props.disabled ? 'readonly' : 'design');
+          }
         }
       }
     }
@@ -442,16 +449,16 @@ export class Editor extends React.Component<IAllProps> {
       return;
     }
 
-    const tinymce = getTinymce(this.view);
-    if (!tinymce) {
-      throw new Error('tinymce should have been loaded into global scope');
-    }
+    const tinymce = getTinymceOrError(this.view);
 
     const finalInit: EditorOptions = {
       ...this.props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
-      disabled: this.props.disabled,
+      ...isDisabledOptionSupported(this.view)
+        ? { disabled: this.props.disabled, readonly: this.props.readonly }
+        : { readonly: this.props.disabled || this.props.readonly }
+      ,
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
@@ -488,8 +495,7 @@ export class Editor extends React.Component<IAllProps> {
           editor.undoManager.add();
           editor.setDirty(false);
         }
-        const readonly = this.props.readonly ?? false;
-        setMode(this.editor, readonly ? 'readonly' : 'design');
+
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);
