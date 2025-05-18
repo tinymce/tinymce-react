@@ -145,6 +145,25 @@ export const ToggleDisabledProp: StoryObj<Editor> = {
   }
 };
 
+export const ToggleReadonlyProp: StoryObj<Editor> = {
+  render: () => {
+    const [ readonly, setReadonly ] = React.useState(true);
+    const toggleReadonly = () => setReadonly((prev) => !prev);
+    return (
+      <div>
+        <Editor
+          apiKey={apiKey}
+          initialValue={initialValue}
+          readonly={readonly}
+        />
+        <button onClick={toggleReadonly}>
+          {readonly ? 'Set editable' : 'Set Readonly'}
+        </button>
+      </div>
+    );
+  }
+};
+
 export const CloudChannelSetTo5Dev: StoryObj<Editor> = {
   name: 'Cloud Channel Set To "6-dev"',
   render: () => (

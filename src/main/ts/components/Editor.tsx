@@ -2,9 +2,12 @@ import * as React from 'react';
 import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 import { IEvents } from '../Events';
 import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
-import { getTinymce } from '../TinyMCE';
-import { configHandlers, isBeforeInputEventAvailable, isFunction, isInDoc, isTextareaOrInput, mergePlugins, setMode, uuid } from '../Utils';
+import { configHandlers, isBeforeInputEventAvailable,
+  isFunction, isInDoc, isTextareaOrInput, mergePlugins,
+  setMode, uuid, isDisabledOptionSupported,
+  getTinymceOrError } from '../Utils';
 import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+import { getTinymce } from '../TinyMCE';
 
 const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
@@ -14,14 +17,15 @@ interface DoNotUse<T extends string> {
   __brand: T;
 }
 
-type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'license_key';
+type OmittedInitProps = 'selector' | 'target' | 'readonly' | 'disabled' | 'license_key';
 
 type EditorOptions = Parameters<TinyMCE['init']>[0];
 
 export type InitOptions = Omit<OmitStringIndexSignature<EditorOptions>, OmittedInitProps> & {
   selector?: DoNotUse<'selector prop is handled internally by the component'>;
   target?: DoNotUse<'target prop is handled internally by the component'>;
-  readonly?: DoNotUse<'readonly prop is overridden by the component, use the `disabled` prop instead'>;
+  readonly?: DoNotUse<'readonly prop is overridden by the component'>;
+  disabled?: DoNotUse<'disabled prop is overridden by the component'>;
   license_key?: DoNotUse<'license_key prop is overridden by the integration, use the `licenseKey` prop instead'>;
 } & { [key: string]: unknown };
 
@@ -95,9 +99,14 @@ export interface IProps {
   toolbar: NonNullable<EditorOptions['toolbar']>;
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#disabled React Tech Ref - disabled}
-   * @description Whether the editor should be "disabled" (read-only).
+   * @description Whether the editor should be disabled.
    */
   disabled: boolean;
+  /**
+   * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#readonly React Tech Ref - readonly}
+   * @description Whether the editor should be readonly.
+   */
+  readonly: boolean;
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#textareaname React Tech Ref - textareaName}
    * @description Set the `name` attribute of the `textarea` element used for the editor in forms. Only valid in iframe mode.
@@ -209,9 +218,18 @@ export class Editor extends React.Component<IAllProps> {
             }
           });
         }
+
+        if (this.props.readonly !== prevProps.readonly) {
+          const readonly = this.props.readonly ?? false;
+          setMode(this.editor, readonly ? 'readonly' : 'design');
+        }
+
         if (this.props.disabled !== prevProps.disabled) {
-          const disabled = this.props.disabled ?? false;
-          setMode(this.editor, disabled ? 'readonly' : 'design');
+          if (isDisabledOptionSupported(this.view)) {
+            this.editor.options.set('disabled', this.props.disabled);
+          } else {
+            setMode(this.editor, this.props.disabled ? 'readonly' : 'design');
+          }
         }
       }
     }
@@ -431,16 +449,16 @@ export class Editor extends React.Component<IAllProps> {
       return;
     }
 
-    const tinymce = getTinymce(this.view);
-    if (!tinymce) {
-      throw new Error('tinymce should have been loaded into global scope');
-    }
+    const tinymce = getTinymceOrError(this.view);
 
     const finalInit: EditorOptions = {
       ...this.props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
-      readonly: this.props.disabled,
+      ...isDisabledOptionSupported(this.view)
+        ? { disabled: this.props.disabled, readonly: this.props.readonly }
+        : { readonly: this.props.disabled || this.props.readonly }
+      ,
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
@@ -477,8 +495,7 @@ export class Editor extends React.Component<IAllProps> {
           editor.undoManager.add();
           editor.setDirty(false);
         }
-        const disabled = this.props.disabled ?? false;
-        setMode(this.editor, disabled ? 'readonly' : 'design');
+
         // ensure existing init_instance_callback is called
         if (this.props.init && isFunction(this.props.init.init_instance_callback)) {
           this.props.init.init_instance_callback(editor);

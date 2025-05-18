@@ -1,6 +1,8 @@
 import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 import { IAllProps } from './components/Editor';
 import type { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
+import { getTinymce } from './TinyMCE';
+import { TinyVer } from '@tinymce/miniature';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 
@@ -109,4 +111,19 @@ export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'd
       (editor as any).setMode(mode);
     }
   }
+};
+
+export const getTinymceOrError = (view: Window) => {
+  const tinymce = getTinymce(view);
+  if (!tinymce) {
+    throw new Error('tinymce should have been loaded into global scope');
+  }
+
+  return tinymce;
+};
+
+export const isDisabledOptionSupported = (view: Window) => {
+  const tinymce = getTinymceOrError(view);
+
+  return !TinyVer.isLessThan(tinymce, '7.6.0');
 };
