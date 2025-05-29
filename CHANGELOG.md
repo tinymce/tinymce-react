@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.2.0 - 2025-05-29
+
 ### Changed
 - The `disabled` property now toggles the `disabled` option. #TINY-11906
 
