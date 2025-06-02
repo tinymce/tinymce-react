@@ -2,7 +2,6 @@ import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
 import { IAllProps } from './components/Editor';
 import type { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
 import { getTinymce } from './TinyMCE';
-import { TinyVer } from '@tinymce/miniature';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
 
@@ -122,8 +121,4 @@ export const getTinymceOrError = (view: Window) => {
   return tinymce;
 };
 
-export const isDisabledOptionSupported = (view: Window) => {
-  const tinymce = getTinymceOrError(view);
-
-  return !TinyVer.isLessThan(tinymce, '7.6.0');
-};
+export const isDisabledOptionSupported = (editor: TinyMCEEditor) => editor.options && editor.options.isRegistered('disabled');

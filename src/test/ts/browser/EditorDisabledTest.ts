@@ -74,4 +74,37 @@ describe('EditorDisabledTest', () => {
       });
     });
   });
+
+  context('with TinyMCE 5', () => {
+    Loader.withVersion('5', (render) => {
+      it('toggling disabled prop should update the editor\'s mode', async () => {
+        using ctx = await render({
+          disabled: true
+        });
+
+        Assertions.assertEq('mode is design', 'readonly', ctx.editor.mode.get());
+        await ctx.reRender({
+          disabled: false
+        });
+
+        await Waiter.pTryUntil('editor\'s state should be updated', () => {
+          Assertions.assertEq('mode is design', 'design', ctx.editor.mode.get());
+        });
+      });
+
+      it('toggling readonly prop should change the editor\'s mode', async () => {
+        using ctx = await render({
+          readonly: true
+        });
+        Assertions.assertEq('mode is readonly', 'readonly', ctx.editor.mode.get());
+
+        await ctx.reRender({
+          readonly: false
+        });
+        await Waiter.pTryUntil('editor\'s mode should be updated', () => {
+          Assertions.assertEq('mode is design', 'design', ctx.editor.mode.get());
+        });
+      });
+    });
+  });
 });

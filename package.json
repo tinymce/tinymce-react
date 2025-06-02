@@ -26,7 +26,6 @@
   "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
   "license": "MIT",
   "dependencies": {
-    "@tinymce/miniature": "^6.0.0",
     "prop-types": "^15.6.2"
   },
   "peerDependencies": {
@@ -59,6 +58,7 @@
     "@storybook/react-vite": "^8.6.4",
     "@tinymce/beehive-flow": "^0.19.0",
     "@tinymce/eslint-plugin": "^2.4.0",
+    "@tinymce/miniature": "^6.0.0",
     "@types/node": "^22.13.10",
     "@types/prop-types": "^15.7.14",
     "@types/react": "^19.0.0",
