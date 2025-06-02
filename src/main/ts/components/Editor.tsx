@@ -225,7 +225,7 @@ export class Editor extends React.Component<IAllProps> {
         }
 
         if (this.props.disabled !== prevProps.disabled) {
-          if (isDisabledOptionSupported(this.view)) {
+          if (isDisabledOptionSupported(this.editor)) {
             this.editor.options.set('disabled', this.props.disabled);
           } else {
             setMode(this.editor, this.props.disabled ? 'readonly' : 'design');
@@ -455,10 +455,8 @@ export class Editor extends React.Component<IAllProps> {
       ...this.props.init as Omit<InitOptions, OmittedInitProps>,
       selector: undefined,
       target,
-      ...isDisabledOptionSupported(this.view)
-        ? { disabled: this.props.disabled, readonly: this.props.readonly }
-        : { readonly: this.props.disabled || this.props.readonly }
-      ,
+      disabled: this.props.disabled,
+      readonly: this.props.readonly,
       inline: this.inline,
       plugins: mergePlugins(this.props.init?.plugins, this.props.plugins),
       toolbar: this.props.toolbar ?? this.props.init?.toolbar,
@@ -481,6 +479,14 @@ export class Editor extends React.Component<IAllProps> {
 
         if (this.props.init && isFunction(this.props.init.setup)) {
           this.props.init.setup(editor);
+        }
+
+        if (this.props.disabled) {
+          if (isDisabledOptionSupported(this.editor)) {
+            this.editor.options.set('disabled', this.props.disabled);
+          } else {
+            this.editor.mode.set('readonly');
+          }
         }
       },
       init_instance_callback: (editor) => {
