@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.2.1 - 2025-06-03
+
 ### Fixed
 - Project build failure caused by a missing `@tinymce/miniature` dependency. #INT-3347
 
