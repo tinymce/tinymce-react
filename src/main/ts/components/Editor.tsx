@@ -133,6 +133,7 @@ export interface IProps {
     async?: boolean;
     defer?: boolean;
     delay?: number;
+    nonce?: string;
   };
   /**
    * @see {@link https://www.tiny.cloud/docs/tinymce/7/react-ref/#licenseKey React Tech Ref - licenseKey}
@@ -306,16 +307,17 @@ export class Editor extends React.Component<IAllProps> {
   private getScriptSources(): ScriptItem[] {
     const async = this.props.scriptLoading?.async;
     const defer = this.props.scriptLoading?.defer;
+    const nonce = this.props.scriptLoading?.nonce;
     if (this.props.tinymceScriptSrc !== undefined) {
       if (typeof this.props.tinymceScriptSrc === 'string') {
-        return [{ src: this.props.tinymceScriptSrc, async, defer }];
+        return [{ src: this.props.tinymceScriptSrc, async, defer, nonce }];
       }
       // multiple scripts can be specified which allows for hybrid mode
       return this.props.tinymceScriptSrc.map((item) => {
         if (typeof item === 'string') {
           // async does not make sense for multiple items unless
           // they are not dependent (which will be unlikely)
-          return { src: item, async, defer };
+          return { src: item, async, defer, nonce };
         } else {
           return item;
         }
@@ -325,7 +327,7 @@ export class Editor extends React.Component<IAllProps> {
     const channel = this.props.cloudChannel as Version; // `cloudChannel` is in `defaultProps`, so it's always defined.
     const apiKey = this.props.apiKey ? this.props.apiKey : 'no-api-key';
     const cloudTinyJs = `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js`;
-    return [{ src: cloudTinyJs, async, defer }];
+    return [{ src: cloudTinyJs, async, defer, nonce }];
   }
 
   private getInitialValue() {
