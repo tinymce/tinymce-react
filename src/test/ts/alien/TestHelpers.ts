@@ -10,8 +10,8 @@ interface EventHandlerArgs<T> {
 
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
-const VERSIONS: Version[] = [ '4', '5', '6', '7' ];
-const CLOUD_VERSIONS: Version[] = [ '5', '6', '7' ];
+const VERSIONS: Version[] = [ '5', '6', '7', '8' ];
+const CLOUD_VERSIONS: Version[] = [ '5', '6', '7', '8' ];
 
 const VALID_API_KEY = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
 

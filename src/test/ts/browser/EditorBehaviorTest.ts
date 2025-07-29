@@ -17,7 +17,7 @@ describe('EditorBehaviourTest', () => {
     // INT-2278: This test currently times out in IE so we are skipping it
     return;
   }
-  const versionRegex = /6|7/;
+  const versionRegex = /6|7|8/;
 
   const isEditor = (val: unknown): val is TinyMCEEditor => {
     const tinymce = getTinymce(window);

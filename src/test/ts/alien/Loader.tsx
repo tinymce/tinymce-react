@@ -69,7 +69,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
      * touch the nodes created by TinyMCE. Since this only seems to be an issue when rendering TinyMCE 4 directly
      * into a root and a fix would be a breaking change, let's just wrap the editor in a <div> here for now.
      */
-    root.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} /></div>);
+    root.render(<div><Editor ref={ref} apiKey='no-api-key' {...props} init={init} licenseKey='gpl'/></div>);
   });
 
   const remove = () => {
@@ -81,7 +81,7 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
     ...ctx,
     /** By rendering the Editor into the same root, React will perform a diff and update. */
     reRender: (newProps: IAllProps) => new Promise<void>((resolve) => {
-      root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps} /></div>);
+      root.render(<div><Editor apiKey='no-api-key' ref={ctx.ref} {...newProps}/></div>);
 
       if (newProps.disabled) {
         setMode(ctx.editor, 'readonly');

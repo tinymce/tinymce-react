@@ -29,7 +29,7 @@ export type InitOptions = Omit<OmitStringIndexSignature<EditorOptions>, OmittedI
   license_key?: DoNotUse<'license_key prop is overridden by the integration, use the `licenseKey` prop instead'>;
 } & { [key: string]: unknown };
 
-export type Version = `${'4' | '5' | '6' | '7'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
+export type Version = `${'4' | '5' | '6' | '7' | '8'}${'' | '-dev' | '-testing' | `.${number}` | `.${number}.${number}`}`;
 
 export interface IProps {
   /**
@@ -150,7 +150,7 @@ export class Editor extends React.Component<IAllProps> {
   public static propTypes: IEditorPropTypes = EditorPropTypes;
 
   public static defaultProps: Partial<IAllProps> = {
-    cloudChannel: '7',
+    cloudChannel: '8',
   };
 
   public editor?: TinyMCEEditor;
