@@ -2,4 +2,4 @@
 
 ## Reporting a Vulnerability
 
-For details on how to report security issues to Tiny, refer to the [Reporting TinyMCE security issues documentation](https://www.tiny.cloud/docs/tinymce/6/security/#reporting-tinymce-security-issues).
+For details on how to report security issues to Tiny, refer to the [Reporting TinyMCE security issues documentation](https://www.tiny.cloud/docs/tinymce/latest/security/#reporting-tinymce-security-issues).
