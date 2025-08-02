@@ -6,6 +6,7 @@ export interface ScriptItem {
   src: string;
   async?: boolean;
   defer?: boolean;
+  nonce?: string;
 }
 
 interface Id {
@@ -20,6 +21,7 @@ const injectScriptTag = (doc: Document, item: ScriptItem & Id, handler: (id: str
   scriptTag.src = item.src;
   scriptTag.async = item.async ?? false;
   scriptTag.defer = item.defer ?? false;
+  scriptTag.nonce = item.nonce;
 
   const loadHandler = () => {
     scriptTag.removeEventListener('load', loadHandler);
