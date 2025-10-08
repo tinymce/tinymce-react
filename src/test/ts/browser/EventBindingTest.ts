@@ -1,6 +1,7 @@
 import { Assert, describe } from '@ephox/bedrock-client';
 import { Arr, Obj, Fun } from '@ephox/katamari';
 import { IAllProps } from 'src/main/ts/components/Editor';
+
 import { configHandlers2 } from '../../../main/ts/Utils';
 
 interface Handler {
@@ -44,7 +45,7 @@ describe('EventBindingTest', () => {
   // check no handlers
   calls = [];
   boundHandlers = {};
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   configHandlers2(dummyLookupProp, on, off, adapter, {}, {}, boundHandlers);
   check({}, []);
 
@@ -52,7 +53,7 @@ describe('EventBindingTest', () => {
   // nothing should be removed and the focus and blur handler should be added
   calls = [];
   boundHandlers = {};
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   configHandlers2(dummyLookupProp, on, off, adapter, {}, { onFocus: focusHandler, onBlur: blurHandler }, boundHandlers);
   check({ Focus: 'on', Blur: 'on' }, [ 'onFocus', 'onBlur' ]);
 
@@ -61,7 +62,7 @@ describe('EventBindingTest', () => {
   calls = [];
   boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
   configHandlers2(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
     dummyLookupProp,
     on,
     off,
@@ -76,7 +77,7 @@ describe('EventBindingTest', () => {
   // the blur handler should be removed and the focus handler should remain afterwards
   calls = [];
   boundHandlers = { Focus: adapter(focusHandler, 'onFocus'), Blur: adapter(blurHandler, 'onBlur') };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   configHandlers2(dummyLookupProp, on, off, adapter, { onFocus: focusHandler, onBlur: blurHandler }, { onFocus: focusHandler }, boundHandlers);
   check({ Blur: 'off' }, [ 'onFocus' ]);
 });

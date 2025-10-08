@@ -1,6 +1,7 @@
 import { StoryObj } from '@storybook/react';
 import React from 'react';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
+
 import { Editor, IAllProps } from '../main/ts/components/Editor';
 
 const apiKey = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';

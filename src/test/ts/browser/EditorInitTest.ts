@@ -1,10 +1,10 @@
 import { Assertions } from '@ephox/agar';
 import { context, describe, it } from '@ephox/bedrock-client';
-
-import { VALID_API_KEY, VERSIONS } from '../alien/TestHelpers';
-import * as Loader from '../alien/Loader';
 import { TinyAssertions } from '@ephox/mcagar';
 import { IAllProps } from 'src/main/ts';
+
+import * as Loader from '../alien/Loader';
+import { VALID_API_KEY, VERSIONS } from '../alien/TestHelpers';
 
 const assertProperty = (obj: {}, propName: string, expected: unknown) => {
   Assertions.assertEq(propName.toString() + ' should be ' + expected, expected, (obj as any)[propName]);

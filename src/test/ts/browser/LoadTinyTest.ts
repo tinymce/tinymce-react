@@ -2,17 +2,17 @@
 import { Assertions } from '@ephox/agar';
 import { beforeEach, describe, it } from '@ephox/bedrock-client';
 import { Arr, Global, Strings } from '@ephox/katamari';
-
-import { CLOUD_VERSIONS, VALID_API_KEY, VERSIONS, type Version } from '../alien/TestHelpers';
-import { render } from '../alien/Loader';
-import { ScriptLoader } from 'src/main/ts/ScriptLoader2';
 import { Attribute, Remove, SelectorFilter, SugarElement } from '@ephox/sugar';
+import { ScriptLoader } from 'src/main/ts/ScriptLoader2';
+
+import { render } from '../alien/Loader';
+import { CLOUD_VERSIONS, VALID_API_KEY, VERSIONS, type Version } from '../alien/TestHelpers';
 
 const assertTinymceVersion = (version: Version) => {
   Assertions.assertEq(`Loaded version of TinyMCE should be ${version}`, version, Global.tinymce.majorVersion);
 };
 
-export const deleteTinymce = () => {
+export const deleteTinymce = (): void => {
   ScriptLoader.reinitialize();
 
   delete Global.tinymce;

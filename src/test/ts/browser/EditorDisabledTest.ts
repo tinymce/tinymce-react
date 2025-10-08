@@ -1,6 +1,7 @@
-import { context, describe, it } from '@ephox/bedrock-client';
-import * as Loader from '../alien/Loader';
 import { Assertions, Waiter } from '@ephox/agar';
+import { context, describe, it } from '@ephox/bedrock-client';
+
+import * as Loader from '../alien/Loader';
 
 describe('EditorDisabledTest', () => {
 
