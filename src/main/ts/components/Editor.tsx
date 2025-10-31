@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 
-import { IEvents } from '../Events';
-import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
+import type { IEvents } from '../Events';
+import { type ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
 import {
   configHandlers,
@@ -13,7 +13,7 @@ import {
   setMode, uuid
 } from '../Utils';
 
-import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+import { EditorPropTypes, type IEditorPropTypes } from './EditorPropTypes';
 
 const changeEvents = 'change keyup compositionend setcontent CommentChange';
 

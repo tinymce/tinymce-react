@@ -1,7 +1,7 @@
 import type { EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
 
-import { IAllProps } from './components/Editor';
-import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
+import type { IAllProps } from './components/Editor';
+import { eventPropTypes, type IEventPropTypes } from './components/EditorPropTypes';
 import { getTinymce } from './TinyMCE';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
