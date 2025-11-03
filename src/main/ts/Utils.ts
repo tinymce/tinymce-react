@@ -1,6 +1,7 @@
-import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
-import { IAllProps } from './components/Editor';
-import type { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
+import type { EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
+
+import type { IAllProps } from './components/Editor';
+import { eventPropTypes, type IEventPropTypes } from './components/EditorPropTypes';
 import { getTinymce } from './TinyMCE';
 
 export const isFunction = (x: unknown): x is Function => typeof x === 'function';
@@ -53,7 +54,7 @@ export const configHandlers = (
     lookup,
     editor.on.bind(editor),
     editor.off.bind(editor),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
     (handlerLookup, key) => (e) => handlerLookup(key)?.(e, editor),
     prevProps,
     props,
@@ -85,9 +86,9 @@ const normalizePluginArray = (plugins?: string | string[]): string[] => {
 // eslint-disable-next-line max-len
 export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
 
-export const isBeforeInputEventAvailable = () => window.InputEvent && typeof (InputEvent.prototype as any).getTargetRanges === 'function';
+export const isBeforeInputEventAvailable = (): boolean => window.InputEvent && typeof (InputEvent.prototype as any).getTargetRanges === 'function';
 
-export const isInDoc = (elem: Node) => {
+export const isInDoc = (elem: Node): boolean => {
   if (!('isConnected' in Node.prototype)) {
     // Fallback for IE and old Edge
     let current = elem;
@@ -102,7 +103,7 @@ export const isInDoc = (elem: Node) => {
   return elem.isConnected;
 };
 
-export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'design') => {
+export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'design'): void => {
   if (editor !== undefined) {
     if (editor.mode != null && typeof editor.mode === 'object' && typeof editor.mode.set === 'function') {
       editor.mode.set(mode);
@@ -112,7 +113,7 @@ export const setMode = (editor: TinyMCEEditor | undefined, mode: 'readonly' | 'd
   }
 };
 
-export const getTinymceOrError = (view: Window) => {
+export const getTinymceOrError = (view: Window): TinyMCE => {
   const tinymce = getTinymce(view);
   if (!tinymce) {
     throw new Error('tinymce should have been loaded into global scope');
@@ -121,4 +122,4 @@ export const getTinymceOrError = (view: Window) => {
   return tinymce;
 };
 
-export const isDisabledOptionSupported = (editor: TinyMCEEditor) => editor.options && editor.options.isRegistered('disabled');
+export const isDisabledOptionSupported = (editor: TinyMCEEditor): boolean => editor.options && editor.options.isRegistered('disabled');

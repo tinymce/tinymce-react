@@ -8,6 +8,12 @@ interface EventHandlerArgs<T> {
   editor: TinyMCEEditor;
 }
 
+interface EventStore {
+  each: <T>(name: string, assertState: (state: EventHandlerArgs<T>[]) => void) => void;
+  createHandler: <T>(name: string) => HandlerType<T>;
+  clearState: () => void;
+}
+
 type HandlerType<A> = (a: A, editor: TinyMCEEditor) => unknown;
 
 const VERSIONS: Version[] = [ '5', '6', '7', '8' ];
@@ -15,7 +21,7 @@ const CLOUD_VERSIONS: Version[] = [ '5', '6', '7', '8' ];
 
 const VALID_API_KEY = 'qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc';
 
-const EventStore = () => {
+const EventStore = (): EventStore => {
   const state: Cell<Record<string, EventHandlerArgs<unknown>[]>> = Cell({});
 
   const createHandler = <T>(name: string): HandlerType<T> => (event: T, editor) => {
@@ -48,9 +54,9 @@ const EventStore = () => {
 };
 
 export {
-  VALID_API_KEY,
-  EventStore,
-  VERSIONS,
   CLOUD_VERSIONS,
-  Version
+  EventStore,
+  VALID_API_KEY,
+  Version,
+  VERSIONS
 };

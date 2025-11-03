@@ -1,12 +1,12 @@
-import { PlatformDetection } from '@ephox/sand';
-import * as Loader from '../alien/Loader';
-
-import { describe, it } from '@ephox/bedrock-client';
 
 import { Assertions, Waiter } from '@ephox/agar';
+import { describe, it } from '@ephox/bedrock-client';
 import { TinyAssertions, TinySelections } from '@ephox/mcagar';
+import { PlatformDetection } from '@ephox/sand';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
+
 import { getTinymce } from '../../../main/ts/TinyMCE';
+import * as Loader from '../alien/Loader';
 import { EventStore, VERSIONS } from '../alien/TestHelpers';
 
 type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;

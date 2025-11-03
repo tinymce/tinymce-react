@@ -1,12 +1,13 @@
+import { before, context } from '@ephox/bedrock-client';
 import { Fun, Optional } from '@ephox/katamari';
 import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
+import { VersionLoader } from '@tinymce/miniature';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
-import { Editor as TinyMCEEditor } from 'tinymce';
-import { before, context } from '@ephox/bedrock-client';
-import { VersionLoader } from '@tinymce/miniature';
 import { setMode } from 'src/main/ts/Utils';
+import { Editor as TinyMCEEditor } from 'tinymce';
+
+import { Editor, IAllProps, IProps, Version } from '../../../main/ts/components/Editor';
 
 // @ts-expect-error Remove when dispose polyfill is not needed
 Symbol.dispose ??= Symbol('Symbol.dispose');

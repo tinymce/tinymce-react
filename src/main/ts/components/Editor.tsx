@@ -1,13 +1,19 @@
 import * as React from 'react';
 import type { Bookmark, EditorEvent, TinyMCE, Editor as TinyMCEEditor } from 'tinymce';
-import { IEvents } from '../Events';
-import { ScriptItem, ScriptLoader } from '../ScriptLoader2';
-import { configHandlers, isBeforeInputEventAvailable,
-  isFunction, isInDoc, isTextareaOrInput, mergePlugins,
-  setMode, uuid, isDisabledOptionSupported,
-  getTinymceOrError } from '../Utils';
-import { EditorPropTypes, IEditorPropTypes } from './EditorPropTypes';
+
+import type { IEvents } from '../Events';
+import { type ScriptItem, ScriptLoader } from '../ScriptLoader2';
 import { getTinymce } from '../TinyMCE';
+import {
+  configHandlers,
+  getTinymceOrError,
+  isBeforeInputEventAvailable,
+  isDisabledOptionSupported,
+  isFunction, isInDoc, isTextareaOrInput, mergePlugins,
+  setMode, uuid
+} from '../Utils';
+
+import { EditorPropTypes, type IEditorPropTypes } from './EditorPropTypes';
 
 const changeEvents = 'change keyup compositionend setcontent CommentChange';
 
@@ -175,7 +181,7 @@ export class Editor extends React.Component<IAllProps> {
     return this.elementRef.current?.ownerDocument.defaultView ?? window;
   }
 
-  public componentDidUpdate(prevProps: Partial<IAllProps>) {
+  public componentDidUpdate(prevProps: Partial<IAllProps>): void {
     if (this.rollbackTimer) {
       clearTimeout(this.rollbackTimer);
       this.rollbackTimer = undefined;
@@ -235,7 +241,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     if (getTinymce(this.view) !== null) {
       this.initialise();
     } else if (Array.isArray(this.props.tinymceScriptSrc) && this.props.tinymceScriptSrc.length === 0) {
@@ -258,7 +264,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     const editor = this.editor;
     if (editor) {
       editor.off(changeEvents, this.handleEditorChange);
@@ -275,7 +281,7 @@ export class Editor extends React.Component<IAllProps> {
     }
   }
 
-  public render() {
+  public render(): React.ReactElement {
     return this.inline ? this.renderInline() : this.renderIframe();
   }
 
