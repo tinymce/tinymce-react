@@ -8,32 +8,30 @@ Official React component for TinyMCE, the rich text editor. It wraps TinyMCE as 
 
 ### Cloud CDN
 
-In your React project:
-
 1. [Sign up for a Tiny Cloud account](https://www.tiny.cloud/pricing/) to receive a Tiny Cloud API key.
-2. `npm install @tinymce/tinymce-react`
-3. Include the following code:
+1. Then in your React project:
+    1. Run `npm install @tinymce/tinymce-react`
+    1. Include the following code:
 
-```js
-import React from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+        ```js
+        import React from 'react';
+        import { Editor } from '@tinymce/tinymce-react';
 
-export default function App() {
-  return (
-    <>
-      <h1>TinyMCE React demo</h1>
-      <Editor
-        apiKey="your-api-key"
-        init={{
-          plugins: 'lists link image table code help wordcount'
-        }}
-      />
-    </>
-  );
-}
-```
-
-4. Update the `apiKey` prop on the `Editor` component to include your Tiny Cloud API key.
+        export default function App() {
+          return (
+            <>
+              <h1>TinyMCE React demo</h1>
+              <Editor
+                apiKey="your-api-key"
+                init={{
+                  plugins: 'lists link image table code help wordcount'
+                }}
+              />
+            </>
+          );
+        }
+        ```
+    1. Update the `apiKey` prop on the `Editor` component to include your Tiny Cloud API key.
 
 For more information: [Using TinyMCE with React - Cloud CDN](https://www.tiny.cloud/docs/tinymce/latest/react-cloud/)
 
