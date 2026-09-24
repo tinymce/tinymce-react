@@ -1,5 +1,5 @@
 {
-  "description": "Official TinyMCE React Component",
+  "description": "Official React component for the TinyMCE rich text editor.",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
   },
@@ -22,7 +22,16 @@
     "build-storybook": "storybook build",
     "deploy-storybook": "storybook build && gh-pages -d ./storybook-static -u 'tiny-bot <no-reply@tiny.cloud>' --nojekyll"
   },
-  "keywords": [],
+  "keywords": [
+    "tinymce",
+    "react",
+    "component",
+    "editor",
+    "wysiwyg",
+    "rich-text-editor",
+    "html",
+    "contenteditable"
+  ],
   "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
   "license": "MIT",
   "dependencies": {
