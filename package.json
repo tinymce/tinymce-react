@@ -1,5 +1,5 @@
 {
-  "description": "Official React component for TinyMCE, a rich text editor.",
+  "description": "Official React component for TinyMCE rich text editor.",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
   },

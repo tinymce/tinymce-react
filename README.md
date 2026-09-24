@@ -2,7 +2,7 @@
 
 ## About
 
- Official React component for TinyMCE, the rich text editor. It makes integrating TinyMCE into React applications easy and seamless.
+ Official React component for TinyMCE rich text edito makes integrating TinyMCE into React applications easy and seamless. It automatically pulls `tinymce` from the Tiny Cloud CDN unless configured to use a different setup, such as self-hosting the [tinymce NPM package](https://www.npmjs.com/package/tinymce)
 
 ## Quickstart
 
