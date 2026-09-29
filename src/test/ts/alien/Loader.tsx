@@ -1,4 +1,4 @@
-import { before, context } from '@ephox/bedrock-client';
+import { after, before, context } from '@ephox/bedrock-client';
 import { Fun, Optional } from '@ephox/katamari';
 import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
 import { VersionLoader } from '@tinymce/miniature';
@@ -109,5 +109,13 @@ export const withVersion = (version: Version, fn: (render: RenderWithVersion) =>
     });
 
     fn(render as RenderWithVersion);
+
+    after(() => {
+      // remove script tag for version
+      const scriptTag = document.querySelector(`script[src*="tinymce-${version}"]`);
+      if (scriptTag) {
+        scriptTag.remove();
+      }
+    });
   });
 };
