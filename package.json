@@ -1,5 +1,5 @@
 {
-  "description": "Official TinyMCE React Component",
+  "description": "Official React component for the TinyMCE rich text editor.",
   "repository": {
     "url": "https://github.com/tinymce/tinymce-react"
   },
@@ -22,11 +22,21 @@
     "build-storybook": "storybook build",
     "deploy-storybook": "storybook build && gh-pages -d ./storybook-static -u 'tiny-bot <no-reply@tiny.cloud>' --nojekyll"
   },
-  "keywords": [],
+  "keywords": [
+    "tinymce",
+    "react",
+    "component",
+    "editor",
+    "wysiwyg",
+    "rich-text-editor",
+    "html",
+    "contenteditable"
+  ],
   "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
   "license": "MIT",
   "dependencies": {
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "tinymce-8": "npm:tinymce@^8.0.0"
   },
   "peerDependencies": {
     "react": "^19.0.0 || ^18.0.0 || ^17.0.1 || ^16.7.0",
@@ -74,7 +84,7 @@
     "tinymce-6": "npm:tinymce@^6",
     "tinymce-7": "npm:tinymce@^7",
     "tinymce-7.5": "npm:tinymce@7.5",
-    "tinymce-8": "npm:tinymce@^8.0.0",
+    "tinymce-premium": "^8.9.2",
     "typescript": "~5.8.2",
     "vite": "^7.1.5"
   },

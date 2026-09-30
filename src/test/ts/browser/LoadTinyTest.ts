@@ -42,7 +42,7 @@ describe('LoadTinyTest', () => {
 
   CLOUD_VERSIONS.forEach((version) => {
     it(`Should be able to load TinyMCE from Cloud (${version})`, async () => {
-      const apiKey = 'a-fake-api-key';
+      const apiKey = VALID_API_KEY;
       using _ = await render({ apiKey, cloudChannel: version });
       assertTinymceVersion(version);
       Assertions.assertEq(
@@ -55,10 +55,24 @@ describe('LoadTinyTest', () => {
     it(`Should be able to load TinyMCE (${version}) in hybrid`, async () => {
       using _ = await render({
         tinymceScriptSrc: [
-          `/project/node_modules/tinymce-${version}/tinymce.min.js`,
-          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?tinydrive=${version}`
+          `/project/node_modules/tinymce-${version}/tinymce.min.js`
         ],
-        plugins: [ 'tinydrive' ]
+        apiKey: VALID_API_KEY,
+        licenseKey: 'gpl',
+        plugins: [ 'formatpainter' ],
+        // TinyMCE 8 requires the Commercial License Key Manager to validate an apiKey. It's not
+        // served from Tiny Cloud, so for a self-hosted core it needs to load from the local
+        // `tinymce-premium` package instead. See https://www.tiny.cloud/docs/tinymce/latest/license-key/
+        init: version === '8' ? {
+          external_plugins: {
+            licensekeymanager: '/project/node_modules/tinymce-premium/plugins/licensekeymanager/plugin.min.js',
+            formatpainter: `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}/plugin.min.js`
+          }
+        } : {
+          external_plugins: {
+            formatpainter: `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}/plugin.min.js`,
+          }
+        },
       });
       assertTinymceVersion(version);
       Assertions.assertEq(
@@ -67,9 +81,9 @@ describe('LoadTinyTest', () => {
         Global.tinymce.baseURI.path
       );
       Assertions.assertEq(
-        'The tinydrive plugin should have defaults for the cloud',
-        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/tinydrive/${version}/plugin.min.js`,
-        (Global.tinymce.defaultOptions || Global.tinymce.defaultSettings)?.custom_plugin_urls?.tinydrive
+        'The formatpainter plugin should have been loaded from Cloud',
+        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}`,
+        Global.tinymce.PluginManager.urls.formatpainter
       );
     });
   });

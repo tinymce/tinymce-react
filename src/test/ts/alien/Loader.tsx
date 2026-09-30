@@ -1,4 +1,4 @@
-import { before, context } from '@ephox/bedrock-client';
+import { after, before, context } from '@ephox/bedrock-client';
 import { Fun, Optional } from '@ephox/katamari';
 import { Remove, SugarElement, SugarNode } from '@ephox/sugar';
 import { VersionLoader } from '@tinymce/miniature';
@@ -51,13 +51,25 @@ export const render = async (props: Partial<IAllProps> = {}, container: HTMLElem
               .filter(SugarNode.isHTMLElement)
               .map((val) => val.dom)
               .fold(() => reject('Could not find DOMNode'), (DOMNode) => {
-                resolve({
-                  ref: ref as React.RefObject<Editor>,
-                  editor,
-                  DOMNode,
-                });
-              }
-              );
+                // This is a workaround to avoid a race condition occurring in tinymce 8 where licenseKeyManager is still validating the license key
+                // after global tinymce is removed in a clean up. Specifically, it happens when unloading/loading different versions of TinyMCE
+                if (editor.licenseKeyManager) {
+                  editor.licenseKeyManager.validate({}).then(() => {
+                    resolve({
+                      ref: ref as React.RefObject<Editor>,
+                      editor,
+                      DOMNode,
+                    });
+                  // eslint-disable-next-line no-console
+                  }).catch((reason) => console.warn(reason));
+                } else {
+                  resolve({
+                    ref: ref as React.RefObject<Editor>,
+                    editor,
+                    DOMNode,
+                  });
+                }
+              });
           }, 0);
         });
       }
@@ -109,5 +121,13 @@ export const withVersion = (version: Version, fn: (render: RenderWithVersion) =>
     });
 
     fn(render as RenderWithVersion);
+
+    after(() => {
+      // remove script tag for version
+      const scriptTag = document.querySelector(`script[src*="tinymce-${version}"]`);
+      if (scriptTag) {
+        scriptTag.remove();
+      }
+    });
   });
 };
