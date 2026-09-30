@@ -40,7 +40,7 @@ describe('LoadTinyTest', () => {
     });
   });
 
-  ['7'].forEach((version) => {
+  CLOUD_VERSIONS.forEach((version) => {
     it(`Should be able to load TinyMCE from Cloud (${version})`, async () => {
       const apiKey = VALID_API_KEY;
       using _ = await render({ apiKey, cloudChannel: version });
