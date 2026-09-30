@@ -55,8 +55,7 @@ describe('LoadTinyTest', () => {
     it(`Should be able to load TinyMCE (${version}) in hybrid`, async () => {
       using _ = await render({
         tinymceScriptSrc: [
-          `/project/node_modules/tinymce-${version}/tinymce.min.js`,
-          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?formatpainter=${version}`
+          `/project/node_modules/tinymce-${version}/tinymce.min.js`
         ],
         apiKey: VALID_API_KEY,
         licenseKey: 'gpl',
@@ -67,8 +66,13 @@ describe('LoadTinyTest', () => {
         init: version === '8' ? {
           external_plugins: {
             licensekeymanager: '/project/node_modules/tinymce-premium/plugins/licensekeymanager/plugin.min.js',
+            formatpainter: `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}/plugin.min.js`
           }
-        } : {},
+        } : {
+          external_plugins: {
+            formatpainter: `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}/plugin.min.js`,
+          }
+        },
       });
       assertTinymceVersion(version);
       Assertions.assertEq(
