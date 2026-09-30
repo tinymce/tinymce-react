@@ -56,17 +56,17 @@ describe('LoadTinyTest', () => {
       using _ = await render({
         tinymceScriptSrc: [
           `/project/node_modules/tinymce-${version}/tinymce.min.js`,
-          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?casechange=${version}`,
+          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?checklist=${version}`
         ],
         apiKey: VALID_API_KEY,
         licenseKey: 'gpl',
-        plugins: [ 'casechange' ],
+        plugins: [ 'checklist' ],
         // TinyMCE 8 requires the Commercial License Key Manager to validate an apiKey. It's not
         // served from Tiny Cloud, so for a self-hosted core it needs to load from the local
         // `tinymce-premium` package instead. See https://www.tiny.cloud/docs/tinymce/latest/license-key/
         init: version === '8' ? {
           external_plugins: {
-            licensekeymanager: '/project/node_modules/tinymce-premium/plugins/licensekeymanager/plugin.min.js'
+            licensekeymanager: '/project/node_modules/tinymce-premium/plugins/licensekeymanager/plugin.min.js',
           }
         } : {},
       });
@@ -76,10 +76,11 @@ describe('LoadTinyTest', () => {
         `/project/node_modules/tinymce-${version}`,
         Global.tinymce.baseURI.path
       );
+
       Assertions.assertEq(
-        'The casechange plugin should have defaults for the cloud',
-        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/casechange/${version}/plugin.min.js`,
-        (Global.tinymce.defaultOptions || Global.tinymce.defaultSettings)?.custom_plugin_urls?.casechange
+        'The checklist plugin should have been loaded from Cloud',
+        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/checklist/${version}`,
+        Global.tinymce.PluginManager.urls.checklist
       );
     });
   });
