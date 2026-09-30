@@ -8756,9 +8756,14 @@ tinyglobby@^0.2.15:
   integrity sha512-zaOHwmiP1EqTeLRXAvVriDb00JYnfEjWGPdKEuac7MiZJ5aiDMZ4Unc98Gmajn+PBljOmO1GKV6G0KwWn3+k8A==
 
 "tinymce-8@npm:tinymce@^8.0.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-8.2.0.tgz#3fde03d91a1a8fd2d33de6a378843724e1341e2e"
-  integrity sha512-HZasRaAYQmePi+jjP4YFqHMtBJvbUaxDmjlXNf96uuyqsH6zZkGtJiFpsNi80Ec+L+snyF0OTDjrWVYDbkUrgQ==
+  version "8.9.2"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-8.9.2.tgz#0e6cb1d0230a27afe701651c1dbd99e2dac7ffdb"
+  integrity sha512-Qh6ADSC0x1F/KsrupfResNJFAaINJQBtfVjx5zxxWJ0ZrGtaKldtAXDMI6uEA57s2n+0rEtXmtbitiU4zV7+0Q==
+
+tinymce-premium@^8.9.2:
+  version "8.9.2"
+  resolved "https://registry.yarnpkg.com/tinymce-premium/-/tinymce-premium-8.9.2.tgz#e3beb35676d19709ba7ee33c5d54af46941084fa"
+  integrity sha512-9fx33G7Omixa7BlPqakx6xEs4jwQzA1EyPcS/5KenTWi+/yVEA2ILSkLeE4pfWW5qyY8ogdMYmGZDd476UJuEQ==
 
 tinymce@^8.0.2:
   version "8.2.0"

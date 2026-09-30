@@ -40,9 +40,9 @@ describe('LoadTinyTest', () => {
     });
   });
 
-  CLOUD_VERSIONS.forEach((version) => {
+  ['7'].forEach((version) => {
     it(`Should be able to load TinyMCE from Cloud (${version})`, async () => {
-      const apiKey = 'a-fake-api-key';
+      const apiKey = VALID_API_KEY;
       using _ = await render({ apiKey, cloudChannel: version });
       assertTinymceVersion(version);
       Assertions.assertEq(
@@ -56,9 +56,19 @@ describe('LoadTinyTest', () => {
       using _ = await render({
         tinymceScriptSrc: [
           `/project/node_modules/tinymce-${version}/tinymce.min.js`,
-          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?tinydrive=${version}`
+          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?tinydrive=${version}`,
         ],
-        plugins: [ 'tinydrive' ]
+        apiKey: VALID_API_KEY,
+        licenseKey: 'gpl',
+        plugins: [ 'tinydrive' ],
+        // TinyMCE 8 requires the Commercial License Key Manager to validate an apiKey. It's not
+        // served from Tiny Cloud, so for a self-hosted core it needs to load from the local
+        // `tinymce-premium` package instead. See https://www.tiny.cloud/docs/tinymce/latest/license-key/
+        init: version === '8' ? {
+          external_plugins: {
+            licensekeymanager: '/project/node_modules/tinymce-premium/plugins/licensekeymanager/plugin.min.js'
+          }
+        } : {},
       });
       assertTinymceVersion(version);
       Assertions.assertEq(

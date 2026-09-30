@@ -1,6 +1,6 @@
 
 import { Assertions, Waiter } from '@ephox/agar';
-import { describe, it } from '@ephox/bedrock-client';
+import { afterEach, describe, it } from '@ephox/bedrock-client';
 import { TinyAssertions, TinySelections } from '@ephox/mcagar';
 import { PlatformDetection } from '@ephox/sand';
 import { EditorEvent, Events, Editor as TinyMCEEditor } from 'tinymce';
@@ -28,6 +28,10 @@ describe('EditorBehaviourTest', () => {
   };
 
   const eventStore = EventStore();
+
+  afterEach(() => {
+    eventStore.clearState();
+  });
 
   VERSIONS.forEach((version) =>
     Loader.withVersion(version, (render) => {
@@ -67,7 +71,6 @@ describe('EditorBehaviourTest', () => {
           Assertions.assertEq('First arg should be new content', '<p>Initial Content</p>', events[0].editorEvent);
           Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
         });
-        eventStore.clearState();
       });
 
       it('onEditorChange should only fire when the editors content changes', async () => {
@@ -81,7 +84,6 @@ describe('EditorBehaviourTest', () => {
         eventStore.each('onEditorChange', (events) => {
           Assertions.assertEq('onEditorChange should have been fired once', 1, events.length);
         });
-        eventStore.clearState();
       });
 
       it('Should be able to register an event handler after initial render', async () => {
@@ -99,7 +101,6 @@ describe('EditorBehaviourTest', () => {
             events[0].editorEvent.content
           );
         });
-        eventStore.clearState();
       });
 
       it('Providing a new event handler and re-rendering should unbind old handler and bind new handler', async () => {
@@ -132,19 +133,21 @@ describe('EditorBehaviourTest', () => {
             events[0].editorEvent.content
           );
         });
-
-        eventStore.clearState();
       });
 
       it('INT-3226: onEditorChange is triggered only once after calling insertContent', async () => {
         using ctx = await render({ onEditorChange: eventStore.createHandler('onEditorChange') });
         const { editor } = ctx;
         editor.setContent('<p>abc</p>');
-        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => ctx.editor.getContent() === '<p>abc</p>');
+        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => {
+          return ctx.editor.getContent() === '<p>abc</p>';
+        });
         eventStore.clearState();
         TinySelections.setSelection(editor, [ 0, 0 ], 1, [ 0, 0 ], 2);
         editor.insertContent('e');
-        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => ctx.editor.getContent() === '<p>aec</p>');
+        await Waiter.pTryUntilPredicate('Editor content is set to correct value', () => {
+          return ctx.editor.getContent() === '<p>aec</p>';
+        });
         eventStore.each<string>('onEditorChange', (events) => {
           Assertions.assertEq(
             'onEditorChange should have been triggered once',
