@@ -56,11 +56,11 @@ describe('LoadTinyTest', () => {
       using _ = await render({
         tinymceScriptSrc: [
           `/project/node_modules/tinymce-${version}/tinymce.min.js`,
-          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?checklist=${version}`
+          `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce/${version}/cloud-plugins.min.js?formatpainter=${version}`
         ],
         apiKey: VALID_API_KEY,
         licenseKey: 'gpl',
-        plugins: [ 'checklist' ],
+        plugins: [ 'formatpainter' ],
         // TinyMCE 8 requires the Commercial License Key Manager to validate an apiKey. It's not
         // served from Tiny Cloud, so for a self-hosted core it needs to load from the local
         // `tinymce-premium` package instead. See https://www.tiny.cloud/docs/tinymce/latest/license-key/
@@ -76,11 +76,11 @@ describe('LoadTinyTest', () => {
         `/project/node_modules/tinymce-${version}`,
         Global.tinymce.baseURI.path
       );
-
+      console.log('PluginManager.urls.formatpainter: ', Global.tinymce.PluginManager.urls.formatpainter);
       Assertions.assertEq(
-        'The checklist plugin should have been loaded from Cloud',
-        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/checklist/${version}`,
-        Global.tinymce.PluginManager.urls.checklist
+        'The formatpainter plugin should have been loaded from Cloud',
+        `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}`,
+        Global.tinymce.PluginManager.urls.formatpainter
       );
     });
   });
