@@ -76,7 +76,6 @@ describe('LoadTinyTest', () => {
         `/project/node_modules/tinymce-${version}`,
         Global.tinymce.baseURI.path
       );
-      console.log('PluginManager.urls.formatpainter: ', Global.tinymce.PluginManager.urls.formatpainter);
       Assertions.assertEq(
         'The formatpainter plugin should have been loaded from Cloud',
         `https://cdn.tiny.cloud/1/${VALID_API_KEY}/tinymce-plugins/formatpainter/${version}`,
