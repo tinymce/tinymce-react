@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.3.1 - 2026-10-12
+
+### Changed
+- Updated the package metadata and details of the repo. #TINYINT-3450
+
 ## 6.3.0 - 2025-07-31
 
 ### Changed
